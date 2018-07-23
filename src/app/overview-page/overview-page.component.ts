@@ -9,7 +9,7 @@ import { DataService } from 'src/services/data.service';
   styleUrls: ['./overview-page.component.css'],
 })
 export class OverviewPageComponent {
-  public displayedColumns = ['id', 'name', 'level', 'company', 'type'];
+  public displayedColumns = ['id', 'name', 'level', 'company', 'node_type'];
   public dataSource = new MatTableDataSource([]);
 
   @ViewChild(MatSort) public sort: MatSort;
@@ -19,5 +19,16 @@ export class OverviewPageComponent {
   public ngOnInit() {
     this.dataSource.sort = this.sort;
     this._dataService.readAll().then((m) => this.dataSource.data = m);
+  }
+
+  public humanReadableColumnName(columnCode: string): string {
+    const columnCodeToName = new Map<string, string>([
+      ['id', 'ID'],
+      ['name', 'Название'],
+      ['level', 'Уровень'],
+      ['company', 'Компания'],
+      ['node_type', 'Тип'],
+    ]);
+    return columnCodeToName.get(columnCode);
   }
 }

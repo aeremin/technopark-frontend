@@ -1,28 +1,8 @@
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-    <td mat-cell *matCellDef="let model"> {{model.id}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Название </th>
-    <td mat-cell *matCellDef="let model"> {{model.name}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="level">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Уровень </th>
-    <td mat-cell *matCellDef="let model"> {{model.level}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="company">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Компания </th>
-    <td mat-cell *matCellDef="let model"> {{model.company}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="type">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Тип </th>
-    <td mat-cell *matCellDef="let model"> {{model.node_type}} </td>
+  <ng-container *ngFor="let col of displayedColumns" matColumnDef="{{col}}">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ humanReadableColumnName(col) }} </th>
+    <td mat-cell *matCellDef="let model"> {{model[col]}} </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
