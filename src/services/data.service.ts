@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 
-function url(path: string): string {
-  return 'https://technopark.alice.magellan2018.ru' + path;
-}
-
 export interface Model {
   id: number;
   name: string;
@@ -34,7 +30,7 @@ export class DataService {
 
   public async readAllModels(): Promise<Model[]> {
     await this.queryParamNames();
-    const response = await this._http.post(url('/model/read_all'), {}).toPromise();
+    const response = await this._http.post(this.url('/model/read_all'), {}).toPromise();
     const models: Model[] = response.json();
     return models.map((m) => this.makeHumanReadable(m));
   }
@@ -43,7 +39,7 @@ export class DataService {
     if (this._nodeCodeToHumanReadable.size > 0 && this._paramCodeToHumanReadable.size > 0)
       return;
 
-    const response = await this._http.get(url('/get-params'), {}).toPromise();
+    const response = await this._http.get(this.url('/get-params'), {}).toPromise();
     const entries: ParamTranslationEntry[] = response.json();
     entries.forEach((e) => {
       this._nodeCodeToHumanReadable.set(e.node_code, e.node_name);
@@ -63,5 +59,9 @@ export class DataService {
     model.company = companyCodeToHumanReadableName.get(model.company);
     model.node_type = this._nodeCodeToHumanReadable.get(model.node_type_code);
     return model;
+  }
+
+  private url(path: string): string {
+    return 'https://technopark.alice.magellan2018.ru' + path;
   }
 }
