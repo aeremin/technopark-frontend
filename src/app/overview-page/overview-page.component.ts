@@ -18,7 +18,7 @@ export class OverviewPageComponent {
 
   public ngOnInit() {
     this.dataSource.sort = this.sort;
-    this._dataService.readAll().then((m) => this.dataSource.data = m);
+    this._dataService.readAllModels().then((m) => this.dataSource.data = m);
   }
 
   public humanReadableColumnName(columnCode: string): string {

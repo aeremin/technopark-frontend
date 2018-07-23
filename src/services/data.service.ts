@@ -18,28 +18,40 @@ export interface Model {
   params: any;
 }
 
+interface ParamTranslationEntry {
+  node_code: string;
+  node_name: string;
+  param_code: string;
+  param_name: string;
+}
+
 @Injectable()
 export class DataService {
+  private _nodeCodeToHumanReadable = new Map<string, string>();
+  private _paramCodeToHumanReadable = new Map<string, string>();
+
   constructor(private _http: Http) {}
 
-  public async readAll(): Promise<Model[]> {
+  public async readAllModels(): Promise<Model[]> {
+    await this.queryParamNames();
     const response = await this._http.post(url('/model/read_all'), {}).toPromise();
     const models: Model[] = response.json();
     return models.map((m) => this.makeHumanReadable(m));
   }
 
-  private makeHumanReadable(model: Model): Model {
-    const nodeCodeToHumanReadableType = new Map<string, string>([
-      ['fuel_tank', 'Топливный бак'],
-      ['hull', 'Корпус'],
-      ['lss', 'Система жизнеобеспечения'],
-      ['march_engine', 'Маршевый двигатель'],
-      ['radar', 'Радар'],
-      ['shields', 'Щиты'],
-      ['shunter', 'Маневровые двигатели'],
-      ['warp_engine', 'Двигатель Уайта'],
-    ]);
+  private async queryParamNames(): Promise<void> {
+    if (this._nodeCodeToHumanReadable.size > 0 && this._paramCodeToHumanReadable.size > 0)
+      return;
 
+    const response = await this._http.get(url('/get-params'), {}).toPromise();
+    const entries: ParamTranslationEntry[] = response.json();
+    entries.forEach((e) => {
+      this._nodeCodeToHumanReadable.set(e.node_code, e.node_name);
+      this._paramCodeToHumanReadable.set(e.param_code, e.param_name);
+    });
+  }
+
+  private makeHumanReadable(model: Model): Model {
     const companyCodeToHumanReadableName = new Map<string, string>([
       ['gd', 'Гугл Дисней'],
       ['mat', 'Мицубиси АвтоВАЗ Технолоджи'],
@@ -49,7 +61,7 @@ export class DataService {
     ]);
 
     model.company = companyCodeToHumanReadableName.get(model.company);
-    model.node_type = nodeCodeToHumanReadableType.get(model.node_type_code);
+    model.node_type = this._nodeCodeToHumanReadable.get(model.node_type_code);
     return model;
   }
 }
