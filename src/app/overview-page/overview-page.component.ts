@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import {MatSort, MatTableDataSource} from '@angular/material';
 
-import { DataService } from 'src/services/data.service';
+import { DataService, Model } from 'src/services/data.service';
 
 @Component({
   selector: 'app-overview-page',
@@ -9,7 +9,7 @@ import { DataService } from 'src/services/data.service';
   styleUrls: ['./overview-page.component.css'],
 })
 export class OverviewPageComponent {
-  public displayedColumns = ['id', 'name', 'level', 'company', 'node_type'];
+  public displayedColumns = ['id', 'name', 'level', 'company'];
   public dataSource = new MatTableDataSource([]);
 
   @ViewChild(MatSort) public sort: MatSort;
@@ -17,8 +17,15 @@ export class OverviewPageComponent {
   constructor(private _dataService: DataService) { }
 
   public ngOnInit() {
+    const nodeCode = 'march_engine';
+    this._dataService.readAllModels().then(
+      (models) => {
+        this.dataSource.data = models.filter((model) => model.node_type_code == nodeCode);
+        this.displayedColumns =
+          ['id', 'name', 'level', 'company'].concat(this._dataService.paramsForNodeCode(nodeCode));
+      });
     this.dataSource.sort = this.sort;
-    this._dataService.readAllModels().then((m) => this.dataSource.data = m);
+    this.dataSource.sortingDataAccessor = (data: Model, columnId: string) => this.cellValue(data, columnId);
   }
 
   public humanReadableColumnName(columnCode: string): string {
@@ -29,6 +36,15 @@ export class OverviewPageComponent {
       ['company', 'Компания'],
       ['node_type', 'Тип'],
     ]);
-    return columnCodeToName.get(columnCode);
+    return columnCodeToName.get(columnCode) || columnCode;
+  }
+
+  public cellValue(model: Model, columnId: string): string | number {
+    if (model.hasOwnProperty(columnId))
+      return model[columnId];
+    let p = model.params[columnId];
+    if (typeof p == 'number')
+      p = p.toFixed(2);
+    return p;
   }
 }
