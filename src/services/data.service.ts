@@ -36,8 +36,13 @@ export class DataService {
     return models.map((m) => this.makeHumanReadable(m));
   }
 
-  public paramsForNodeCode(nodeCode: string): string[] {
+  public async paramsForNodeCode(nodeCode: string): Promise<string[]> {
+    await this.queryParamNames();
     return this._nodeCodeToParamCodes.get(nodeCode);
+  }
+
+  public paramsCodeToHumanReadable(nodeCode: string): string {
+    return this._paramCodeToHumanReadable.get(nodeCode) || nodeCode;
   }
 
   private async queryParamNames(): Promise<void> {
@@ -51,7 +56,8 @@ export class DataService {
       this._paramCodeToHumanReadable.set(e.param_code, e.param_name);
       if (!this._nodeCodeToParamCodes.has(e.node_code))
         this._nodeCodeToParamCodes.set(e.node_code, []);
-      this._nodeCodeToParamCodes.get(e.node_code).push(e.param_code);
+      if (!this._nodeCodeToParamCodes.get(e.node_code).includes(e.param_code))
+        this._nodeCodeToParamCodes.get(e.node_code).push(e.param_code);
     });
   }
 

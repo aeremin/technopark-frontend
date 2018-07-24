@@ -18,12 +18,10 @@ export class OverviewPageComponent {
 
   public ngOnInit() {
     const nodeCode = 'march_engine';
-    this._dataService.readAllModels().then(
-      (models) => {
-        this.dataSource.data = models.filter((model) => model.node_type_code == nodeCode);
-        this.displayedColumns =
-          ['id', 'name', 'level', 'company'].concat(this._dataService.paramsForNodeCode(nodeCode));
-      });
+    this._dataService.readAllModels()
+      .then((models) => this.dataSource.data = models.filter((model) => model.node_type_code == nodeCode));
+    this._dataService.paramsForNodeCode(nodeCode)
+      .then((result) => this.displayedColumns = ['id', 'name', 'level', 'company'].concat(result));
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor = (data: Model, columnId: string) => this.cellValue(data, columnId);
   }
@@ -36,7 +34,7 @@ export class OverviewPageComponent {
       ['company', 'Компания'],
       ['node_type', 'Тип'],
     ]);
-    return columnCodeToName.get(columnCode) || columnCode;
+    return columnCodeToName.get(columnCode) || this._dataService.paramsCodeToHumanReadable(columnCode);
   }
 
   public cellValue(model: Model, columnId: string): string | number {
