@@ -1,10 +1,28 @@
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
-  <ng-container *ngFor="let col of displayedColumns" matColumnDef="{{col}}">
+  <ng-container *ngFor="let col of getCommonColumns()" matColumnDef="{{col}}">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ humanReadableColumnName(col) }} </th>
     <td mat-cell *matCellDef="let model"> {{ cellValue(model, col) }} </td>
   </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  <ng-container matColumnDef="az_level">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Ур. АЗ</th>
+    <!-- TODO: show x/y value -->
+    <td mat-cell *matCellDef="let model"> {{ cellValue(model, 'az_level') }} </td>
+  </ng-container>
+
+  <ng-container *ngFor="let col of getParamColumns()" matColumnDef="{{col}}">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ humanReadableColumnName(col) }} </th>
+    <td mat-cell *matCellDef="let model"> {{ cellValue(model, col) }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="reserve">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let model">
+      <button mat-raised-button>&#8709;&#x2713;</button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="getAllColumns()"></tr>
+  <tr mat-row *matRowDef="let row; columns: getAllColumns();"></tr>
 </table>

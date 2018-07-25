@@ -9,10 +9,10 @@ import { DataService, Model } from 'src/services/data.service';
   styleUrls: ['./overview-page.component.css'],
 })
 export class OverviewPageComponent {
-  public displayedColumns = ['id', 'name', 'level', 'company'];
   public dataSource = new MatTableDataSource([]);
-
   @ViewChild(MatSort) public sort: MatSort;
+
+  private _paramsColumns: string[] = [];
 
   constructor(private _dataService: DataService) { }
 
@@ -21,7 +21,7 @@ export class OverviewPageComponent {
     this._dataService.readAllModels()
       .then((models) => this.dataSource.data = models.filter((model) => model.node_type_code == nodeCode));
     this._dataService.paramsForNodeCode(nodeCode)
-      .then((result) => this.displayedColumns = ['id', 'name', 'level', 'company'].concat(result));
+      .then((result) => this._paramsColumns = result.filter((c) => c != 'az_level'));
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor = (data: Model, columnId: string) => this.cellValue(data, columnId);
   }
@@ -37,12 +37,24 @@ export class OverviewPageComponent {
     return columnCodeToName.get(columnCode) || this._dataService.paramsCodeToHumanReadable(columnCode);
   }
 
+  public getAllColumns() {
+    return this.getCommonColumns().concat(['az_level']).concat(this.getParamColumns()).concat('reserve');
+  }
+
+  public getParamColumns() {
+    return this._paramsColumns;
+  }
+
+  public getCommonColumns() {
+    return ['company', 'name', 'level'];
+  }
+
   public cellValue(model: Model, columnId: string): string | number {
     if (model.hasOwnProperty(columnId))
       return model[columnId];
     let p = model.params[columnId];
     if (typeof p == 'number')
-      p = p.toFixed(2);
+      p = p.toFixed(0);
     return p;
   }
 }
