@@ -57,4 +57,8 @@ export class OverviewPageComponent {
       p = p.toFixed(0);
     return p;
   }
+
+  public isReserveDisabled(model: Model) {
+    return !(model.nodes && model.nodes.filter((node) => node.status_code == 'free').length);
+  }
 }
