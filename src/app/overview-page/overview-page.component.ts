@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import {MatSort, MatTableDataSource} from '@angular/material';
+import { MatSort, MatTableDataSource } from '@angular/material';
 
 import { DataService, Model } from 'src/services/data.service';
 
@@ -15,7 +15,10 @@ export class OverviewPageComponent {
 
   private _paramsColumns: string[] = [];
 
-  constructor(private _dataService: DataService) { }
+  constructor(private _dataService: DataService) {
+    this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = (data: Model, columnId: string) => this.cellValue(data, columnId);
+  }
 
   public ngOnInit() {
     const nodeCode = 'march_engine';
@@ -30,8 +33,6 @@ export class OverviewPageComponent {
       });
     this._dataService.paramsForNodeCode(nodeCode)
       .then((result) => this._paramsColumns = result.filter((c) => c != 'az_level'));
-    this.dataSource.sort = this.sort;
-    this.dataSource.sortingDataAccessor = (data: Model, columnId: string) => this.cellValue(data, columnId);
   }
 
   public humanReadableColumnName(columnCode: string): string {
