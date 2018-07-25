@@ -23,6 +23,7 @@ export class OverviewPageComponent {
       .then((models) => {
         this.dataSource.data = models.filter((model) => model.node_type_code == nodeCode);
         this.dataSource.data.forEach((model) => {
+          model.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
           if (model.nodes.length)
             this.chosenNodes[model.id] = model.nodes[0].id.toString();
         });
