@@ -27,7 +27,6 @@ export class OverviewPageComponent {
           if (model.nodes.length)
             this.chosenNodes[model.id] = model.nodes[0].id.toString();
         });
-        console.log(this.chosenNodes);
       });
     this._dataService.paramsForNodeCode(nodeCode)
       .then((result) => this._paramsColumns = result.filter((c) => c != 'az_level'));
