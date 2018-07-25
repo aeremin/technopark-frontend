@@ -11,6 +11,7 @@ import { DataService, Model } from 'src/services/data.service';
 export class OverviewPageComponent {
   public dataSource = new MatTableDataSource<Model>([]);
   @ViewChild(MatSort) public sort: MatSort;
+  public chosenNodes: any = {};
 
   private _paramsColumns: string[] = [];
 
@@ -19,7 +20,14 @@ export class OverviewPageComponent {
   public ngOnInit() {
     const nodeCode = 'march_engine';
     this._dataService.readAllModels()
-      .then((models) => this.dataSource.data = models.filter((model) => model.node_type_code == nodeCode));
+      .then((models) => {
+        this.dataSource.data = models.filter((model) => model.node_type_code == nodeCode);
+        this.dataSource.data.forEach((model) => {
+          if (model.nodes.length)
+            this.chosenNodes[model.id] = model.nodes[0].id.toString();
+        });
+        console.log(this.chosenNodes);
+      });
     this._dataService.paramsForNodeCode(nodeCode)
       .then((result) => this._paramsColumns = result.filter((c) => c != 'az_level'));
     this.dataSource.sort = this.sort;
@@ -60,5 +68,14 @@ export class OverviewPageComponent {
 
   public isReserveDisabled(model: Model) {
     return !(model.nodes && model.nodes.filter((node) => node.status_code == 'free').length);
+  }
+
+  public getDefaultValue(model: Model) {
+    if (model.nodes.length) return model.nodes[0].id;
+    return undefined;
+  }
+
+  public reserve(model: Model) {
+    console.log(`Reserving model with id ${model.id}, node id ${this.chosenNodes[model.id]}`);
   }
 }
