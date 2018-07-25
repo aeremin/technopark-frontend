@@ -1,6 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 
+export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved';
+
+export interface Node {
+  id: number;
+  model_id: number;
+  name: string;
+  az_level: number;
+  status_code: NodeStatus;
+  date_created: string;
+}
+
 export interface Model {
   id: number;
   name: string;
@@ -12,6 +23,7 @@ export interface Model {
   company: string;
   created: string;
   params: any;
+  nodes: Node[];
 }
 
 interface ParamTranslationEntry {
