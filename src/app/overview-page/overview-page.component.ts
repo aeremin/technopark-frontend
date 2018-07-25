@@ -66,13 +66,8 @@ export class OverviewPageComponent {
     return p;
   }
 
-  public isReserveDisabled(model: Model) {
-    return !(model.nodes && model.nodes.filter((node) => node.status_code == 'free').length);
-  }
-
-  public getDefaultValue(model: Model) {
-    if (model.nodes.length) return model.nodes[0].id;
-    return undefined;
+  public reserveEnabled(model: Model): boolean {
+    return model.nodes && model.nodes.filter((node) => node.status_code == 'free').length > 0;
   }
 
   public reserve(model: Model) {
