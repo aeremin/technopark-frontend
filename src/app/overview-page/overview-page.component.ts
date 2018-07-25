@@ -9,7 +9,7 @@ import { DataService, Model } from 'src/services/data.service';
   styleUrls: ['./overview-page.component.css'],
 })
 export class OverviewPageComponent {
-  public dataSource = new MatTableDataSource([]);
+  public dataSource = new MatTableDataSource<Model>([]);
   @ViewChild(MatSort) public sort: MatSort;
 
   private _paramsColumns: string[] = [];
