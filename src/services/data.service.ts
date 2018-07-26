@@ -33,6 +33,10 @@ interface ParamTranslationEntry {
   param_name: string;
 }
 
+export class ReservationException {
+  constructor(public error: string) {}
+}
+
 @Injectable()
 export class DataService {
   private _nodeCodeToHumanReadable = new Map<string, string>();
@@ -46,6 +50,18 @@ export class DataService {
     const response = await this._http.post(this.url('/model/read_all'), {}).toPromise();
     const models: Model[] = response.json();
     return models.map((m) => this.makeHumanReadable(m));
+  }
+
+  // tslint:disable-next-line:variable-name
+  public async reserve(node_id: number): Promise<void> {
+    // TODO: Add login screen and pass user here.
+    // tslint:disable-next-line:variable-name
+    const user_id = 4;
+    const response = await this._http.post(this.url('/node/reserve'), {node_id, user_id, password: ''}).toPromise();
+    const result: {status: string, errors?: string}  = response.json();
+    console.log(result);
+    if (result.status != 'ok')
+      throw new ReservationException(result.errors);
   }
 
   public async paramsForNodeCode(nodeCode: string): Promise<string[]> {

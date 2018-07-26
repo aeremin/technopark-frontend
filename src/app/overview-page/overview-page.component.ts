@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
-import { MatSort, MatTableDataSource } from '@angular/material';
+import { MatSort, MatTableDataSource, MatSnackBar } from '@angular/material';
 
-import { DataService, Model } from 'src/services/data.service';
+import { DataService, Model, ReservationException } from 'src/services/data.service';
 
 @Component({
   selector: 'app-overview-page',
@@ -15,7 +15,8 @@ export class OverviewPageComponent {
 
   private _paramsColumns: string[] = [];
 
-  constructor(private _dataService: DataService) {
+  constructor(private _dataService: DataService,
+              private _matSnackBar: MatSnackBar) {
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor = (data: Model, columnId: string) => this.cellValue(data, columnId);
   }
@@ -71,7 +72,19 @@ export class OverviewPageComponent {
     return model.nodes && model.nodes.filter((node) => node.status_code == 'free').length > 0;
   }
 
-  public reserve(model: Model) {
-    console.log(`Reserving model with id ${model.id}, node id ${this.chosenNodes[model.id]}`);
+  public async reserve(model: Model) {
+    const nodeId = this.chosenNodes[model.id];
+    console.log(`Reserving model with id ${model.id}, node id ${nodeId}`);
+    try {
+      await this._dataService.reserve(nodeId);
+      this._matSnackBar.open(`Узел ${nodeId} модели ${model.name} успешно зарезервирован.`, '', { duration: 2000 });
+      this.ngOnInit();
+    } catch (err) {
+      if (err instanceof ReservationException)
+        this._matSnackBar.open(`Ошибка: ${err.error}.`, '', { duration: 3000 });
+      else
+        this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });
+      console.log(err);
+    }
   }
 }

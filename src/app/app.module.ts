@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
-import { MatButtonModule, MatSelectModule, MatSortModule, MatTableModule } from '@angular/material';
+import { MatButtonModule, MatSelectModule, MatSnackBarModule, MatSortModule, MatTableModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -23,6 +23,7 @@ import { OverviewPageComponent } from './overview-page/overview-page.component';
     HttpClientModule,
     MatButtonModule,
     MatSelectModule,
+    MatSnackBarModule,
     MatSortModule,
     MatTableModule,
   ],
