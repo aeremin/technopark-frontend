@@ -1,3 +1,6 @@
+<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Фильтр">
+</mat-form-field>
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
   <ng-container *ngFor="let col of getCommonColumns()" [matColumnDef]="col">
@@ -8,13 +11,15 @@
   <ng-container matColumnDef="az_level">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Ур. АЗ</th>
     <td mat-cell *matCellDef="let model">
-      <mat-form-field>
-        <mat-select [disabled]="!nodePickerEnabled(model)" [(value)]="chosenNodes[model.id]">
-          <mat-option *ngFor="let node of model.nodes" value="{{node.id}}" [disabled]="!nodeAvailable(node)">
-            {{node.az_level}}/{{model.params.az_level}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="az_dropdown">
+        <mat-form-field>
+          <mat-select [disabled]="!nodePickerEnabled(model)" [(value)]="chosenNodes[model.id]">
+            <mat-option *ngFor="let node of model.nodes" value="{{node.id}}" [disabled]="!nodeAvailable(node)">
+              {{node.az_level}}/{{model.params.az_level}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </td>
   </ng-container>
 

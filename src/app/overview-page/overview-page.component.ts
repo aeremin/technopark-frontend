@@ -47,6 +47,13 @@ export class OverviewPageComponent {
           return this.cellValue(model, columnId);
         }
       };
+    this.dataSource.filterPredicate = ((model: Model, filter: string) => {
+      const valuesToCheck = [model.company, model.name];
+      for (const col of this.getParamColumns()) {
+        valuesToCheck.push(model.params[col].toString());
+      }
+      return valuesToCheck.some((s) => s.toLocaleLowerCase().includes(filter));
+    });
   }
 
   public humanReadableColumnName(columnCode: string): string {
@@ -107,6 +114,10 @@ export class OverviewPageComponent {
         this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });
       console.log(err);
     }
+  }
+
+  public applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   private _bestAvailableNode(model: Model): Node | undefined {

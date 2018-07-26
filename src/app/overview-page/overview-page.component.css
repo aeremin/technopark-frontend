@@ -1,11 +1,17 @@
-.mat-form-field,
-.mat-form-field-wrapper,
-.mat-form-field-inflix
+.az_dropdown .mat-form-field,
+.az_dropdown .mat-form-field-wrapper,
+.az_dropdown .mat-form-field-inflix
 {
     min-width: 90px !important;
     width: 90px !important;
 }
 
-tr:hover {
+tr:hover
+{
     background: rgba(0, 0, 0, 0.03);
-  }
+}
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}
