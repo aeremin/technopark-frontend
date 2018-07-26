@@ -10,11 +10,13 @@ import { AppRoutingModule } from 'src/app/core/app.routing.module';
 import { DataService } from 'src/services/data.service';
 import { AppComponent } from './app.component';
 import { OverviewPageComponent } from './overview-page/overview-page.component';
+import { ReservationTableComponent } from './reservation-table/reservation-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     OverviewPageComponent,
+    ReservationTableComponent,
   ],
   imports: [
     BrowserModule,
