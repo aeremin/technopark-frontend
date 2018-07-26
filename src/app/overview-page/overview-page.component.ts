@@ -16,10 +16,7 @@ export class OverviewPageComponent {
   private _paramsColumns: string[] = [];
 
   constructor(private _dataService: DataService,
-              private _matSnackBar: MatSnackBar) {
-    this.dataSource.sort = this.sort;
-    this.dataSource.sortingDataAccessor = (data: Model, columnId: string) => this.cellValue(data, columnId);
-  }
+              private _matSnackBar: MatSnackBar) { }
 
   public ngOnInit() {
     const nodeCode = 'march_engine';
@@ -45,6 +42,8 @@ export class OverviewPageComponent {
       });
     this._dataService.paramsForNodeCode(nodeCode)
       .then((result) => this._paramsColumns = result.filter((c) => c != 'az_level'));
+    this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = (data: Model, columnId: string) => this.cellValue(data, columnId);
   }
 
   public humanReadableColumnName(columnCode: string): string {
