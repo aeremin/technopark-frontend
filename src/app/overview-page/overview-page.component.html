@@ -1,4 +1,10 @@
 <mat-form-field>
   <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Фильтр">
 </mat-form-field>
-<reservation-table-component  [nodeCode]='"march_engine"' [filter]='filter'></reservation-table-component>
+<mat-tab-group>
+  <mat-tab  *ngFor="let tab of tabs" [label]="tab.nodeName">
+      <reservation-table-component [nodeCode]='tab.nodeCode' [filter]='filter'></reservation-table-component>
+  </mat-tab>
+</mat-tab-group>
+
+

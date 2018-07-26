@@ -45,11 +45,14 @@ export class DataService {
 
   constructor(private _http: Http) {}
 
-  public async readAllModels(): Promise<Model[]> {
-    await this.queryParamNames();
-    const response = await this._http.post(this.url('/model/read_all'), {}).toPromise();
+  public async readAllModels(nodeCode?: string): Promise<Model[]> {
+    const response = await this._http.post(this.url('/model/read_all'), {node_type_code: nodeCode}).toPromise();
     const models: Model[] = response.json();
     return models.map((m) => this.makeHumanReadable(m));
+  }
+
+  public async loadStaticData(): Promise<void> {
+    await this.queryParamNames();
   }
 
   // tslint:disable-next-line:variable-name
@@ -64,8 +67,11 @@ export class DataService {
       throw new ReservationException(result.errors);
   }
 
-  public async paramsForNodeCode(nodeCode: string): Promise<string[]> {
-    await this.queryParamNames();
+  public nodeCodeToHumanReadable(): Map<string, string> {
+    return this._nodeCodeToHumanReadable;
+  }
+
+  public paramsForNodeCode(nodeCode: string): string[] {
     return this._nodeCodeToParamCodes.get(nodeCode);
   }
 
