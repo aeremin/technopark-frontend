@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
-import { MatSort, MatTableDataSource, MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatSort, MatTableDataSource } from '@angular/material';
 
-import { DataService, Model, ReservationException } from 'src/services/data.service';
+import { DataService, Model, Node, ReservationException } from 'src/services/data.service';
 
 @Component({
   selector: 'app-overview-page',
@@ -28,8 +28,19 @@ export class OverviewPageComponent {
         this.dataSource.data = models.filter((model) => model.node_type_code == nodeCode);
         this.dataSource.data.forEach((model) => {
           model.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
-          if (model.nodes.length)
+          // Hack: add fake node to show 0/xxx in az_level column
+          if (!model.nodes.length) {
+            model.nodes.push({
+              az_level: 0, date_created: '', name: '',
+              model_id: model.id, id: -1, status_code: 'fake',
+            });
+          }
+          const availableNodes = model.nodes.filter((node) => this.nodeAvailable(node));
+          if (availableNodes.length)
+            this.chosenNodes[model.id] = availableNodes[0].id.toString();
+          else
             this.chosenNodes[model.id] = model.nodes[0].id.toString();
+
         });
       });
     this._dataService.paramsForNodeCode(nodeCode)
@@ -68,8 +79,16 @@ export class OverviewPageComponent {
     return p;
   }
 
+  public nodePickerEnabled(model: Model): boolean {
+    return model.nodes.filter((node) => node.status_code != 'fake').length > 0;
+  }
+
+  public nodeAvailable(node: Node): boolean {
+    return node.status_code ==  'free';
+  }
+
   public reserveEnabled(model: Model): boolean {
-    return model.nodes && model.nodes.filter((node) => node.status_code == 'free').length > 0;
+    return model.nodes && model.nodes.filter((node) => this.nodeAvailable(node)).length > 0;
   }
 
   public async reserve(model: Model) {

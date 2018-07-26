@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 
-export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved';
+export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved' | 'fake';
 
 export interface Node {
   id: number;
