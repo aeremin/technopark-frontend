@@ -106,7 +106,14 @@ export class ReservationTableComponent implements OnInit {
     console.log(`Reserving model with id ${model.id}, node id ${nodeId}`);
     try {
       await this._dataService.reserve(nodeId);
-      this._matSnackBar.open(`Узел ${nodeId} модели ${model.name} успешно зарезервирован.`, '', { duration: 2000 });
+      let reservedWord = 'зарезервирован';
+      if (this.nodeCode == 'lss')
+        reservedWord = reservedWord + 'а';
+      if (this.nodeCode == 'shunter')
+        reservedWord = reservedWord + 'ы';
+      const nodeName = this._dataService.nodeCodeToHumanReadable().get(this.nodeCode);
+        this._matSnackBar.open(
+          `${nodeName} модели ${model.name} успешно ${reservedWord}.`, '', { duration: 2000 });
       this.ngOnInit();
     } catch (err) {
       if (err instanceof ReservationException)
