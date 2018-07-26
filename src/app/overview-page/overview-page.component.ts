@@ -32,18 +32,21 @@ export class OverviewPageComponent {
               model_id: model.id, id: -1, status_code: 'fake',
             });
           }
-          const availableNodes = model.nodes.filter((node) => this.nodeAvailable(node));
-          if (availableNodes.length)
-            this.chosenNodes[model.id] = availableNodes[0].id.toString();
-          else
-            this.chosenNodes[model.id] = model.nodes[0].id.toString();
-
+          this.chosenNodes[model.id] = (this._bestAvailableNode(model) || model.nodes[0]).id.toString();
         });
       });
     this._dataService.paramsForNodeCode(nodeCode)
       .then((result) => this._paramsColumns = result.filter((c) => c != 'az_level'));
     this.dataSource.sort = this.sort;
-    this.dataSource.sortingDataAccessor = (data: Model, columnId: string) => this.cellValue(data, columnId);
+    this.dataSource.sortingDataAccessor =
+      (model: Model, columnId: string) => {
+        if (columnId == 'az_level') {
+          const node = this._bestAvailableNode(model);
+          return node ? node.az_level : 0;
+        } else {
+          return this.cellValue(model, columnId);
+        }
+      };
   }
 
   public humanReadableColumnName(columnCode: string): string {
@@ -104,5 +107,13 @@ export class OverviewPageComponent {
         this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });
       console.log(err);
     }
+  }
+
+  private _bestAvailableNode(model: Model): Node | undefined {
+    const availableNodes = model.nodes.filter((node) => this.nodeAvailable(node));
+    if (availableNodes.length)
+      return availableNodes[0];
+    else
+      return undefined;
   }
 }
