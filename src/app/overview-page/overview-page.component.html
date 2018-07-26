@@ -15,7 +15,7 @@
         <mat-form-field>
           <mat-select [disabled]="!nodePickerEnabled(model)" [(value)]="chosenNodes[model.id]">
             <mat-option *ngFor="let node of model.nodes" value="{{node.id}}" [disabled]="!nodeAvailable(node)">
-              {{node.az_level}}/{{model.params.az_level}}
+              {{node.az_level.toFixed(0)}}/{{model.params.az_level.toFixed(0)}}
             </mat-option>
           </mat-select>
         </mat-form-field>
