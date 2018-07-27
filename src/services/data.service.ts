@@ -32,6 +32,7 @@ interface ParamTranslationEntry {
   node_name: string;
   param_code: string;
   param_name: string;
+  param_short_name: string;
 }
 
 export class ReservationException {
@@ -93,7 +94,7 @@ export class DataService {
     const entries: ParamTranslationEntry[] = response.json();
     entries.forEach((e) => {
       this._nodeCodeToHumanReadable.set(e.node_code, e.node_name);
-      this._paramCodeToHumanReadable.set(e.param_code, e.param_name);
+      this._paramCodeToHumanReadable.set(e.param_code, e.param_short_name);
       if (!this._nodeCodeToParamCodes.has(e.node_code))
         this._nodeCodeToParamCodes.set(e.node_code, []);
       if (!this._nodeCodeToParamCodes.get(e.node_code).includes(e.param_code))
