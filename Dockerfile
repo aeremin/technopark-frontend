@@ -10,5 +10,5 @@ RUN npm run build
 FROM nginx:1.15
 # Needed for the healthcheck
 RUN apt-get update && apt-get install -y curl
-COPY --from=node /app/dist/medicine-frontend /usr/share/nginx/html
+COPY --from=node /app/dist/technopark-frontend /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
