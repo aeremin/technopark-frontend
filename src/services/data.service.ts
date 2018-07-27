@@ -52,6 +52,7 @@ export class DataService {
     await this.queryParamNames();
     const models = await this.readAllModels();
     this._readAllSubject = new BehaviorSubject(models);
+    setInterval(() => this.reReadAllModels(), 60000);
   }
 
   public readAllModelsObservable(): Observable<Model[]> {
@@ -69,7 +70,7 @@ export class DataService {
     if (result.status != 'ok')
       throw new ReservationException(result.errors);
 
-    this._readAllSubject.next(await this.readAllModels());
+    this.reReadAllModels();
   }
 
   public nodeCodeToHumanReadable(): Map<string, string> {
@@ -116,6 +117,10 @@ export class DataService {
 
   private url(path: string): string {
     return 'https://technopark-backend.alice.magellan2018.ru' + path;
+  }
+
+  private async reReadAllModels(): Promise<void> {
+    this._readAllSubject.next(await this.readAllModels());
   }
 
   private async readAllModels(): Promise<Model[]> {
