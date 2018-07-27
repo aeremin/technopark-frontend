@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved' | 'fake';
 
@@ -43,16 +44,18 @@ export class DataService {
   private _paramCodeToHumanReadable = new Map<string, string>();
   private _nodeCodeToParamCodes = new Map<string, string[]>();
 
+  private _readAllSubject: BehaviorSubject<Model[]>;
+
   constructor(private _http: Http) {}
 
-  public async readAllModels(nodeCode?: string): Promise<Model[]> {
-    const response = await this._http.post(this.url('/model/read_all'), {node_type_code: nodeCode}).toPromise();
-    const models: Model[] = response.json();
-    return models.map((m) => this.makeHumanReadable(m));
+  public async init(): Promise<void> {
+    await this.queryParamNames();
+    const models = await this.readAllModels();
+    this._readAllSubject = new BehaviorSubject(models);
   }
 
-  public async loadStaticData(): Promise<void> {
-    await this.queryParamNames();
+  public readAllModelsObservable(): Observable<Model[]> {
+    return this._readAllSubject;
   }
 
   // tslint:disable-next-line:variable-name
@@ -65,6 +68,8 @@ export class DataService {
     console.log(result);
     if (result.status != 'ok')
       throw new ReservationException(result.errors);
+
+    this._readAllSubject.next(await this.readAllModels());
   }
 
   public nodeCodeToHumanReadable(): Map<string, string> {
@@ -111,5 +116,11 @@ export class DataService {
 
   private url(path: string): string {
     return 'https://technopark-backend.alice.magellan2018.ru' + path;
+  }
+
+  private async readAllModels(): Promise<Model[]> {
+    const response = await this._http.post(this.url('/model/read_all'), {}).toPromise();
+    const models: Model[] = response.json();
+    return models.map((m) => this.makeHumanReadable(m));
   }
 }

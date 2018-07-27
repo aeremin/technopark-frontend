@@ -22,7 +22,7 @@ export class OverviewPageComponent {
   }
 
   public async ngOnInit() {
-    await this._dataService.loadStaticData();
+    await this._dataService.init();
     this.tabs = [];
     this._dataService.nodeCodeToHumanReadable().forEach(
       (nodeName, nodeCode) => this.tabs.push({nodeCode, nodeName}));

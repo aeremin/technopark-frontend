@@ -23,37 +23,40 @@ export class ReservationTableComponent implements OnInit {
               private _matSnackBar: MatSnackBar) { }
 
   public async ngOnInit() {
-    await this._dataService.loadStaticData();
-    const models = await this._dataService.readAllModels(this.nodeCode);
-    this.dataSource.data = models.filter((model) => model.node_type_code == this.nodeCode);
-    this.dataSource.data.forEach((model) => {
-      model.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
-      // Hack: add fake node to show 0/xxx in az_level column
-      if (!model.nodes.length) {
-        model.nodes.push({
-          az_level: 0, date_created: '', name: '',
-          model_id: model.id, id: -1, status_code: 'fake',
+    await this._dataService.init();
+    this._dataService.readAllModelsObservable().subscribe({
+      next: (models) => {
+        this.dataSource.data = models.filter((model) => model.node_type_code == this.nodeCode);
+        this.dataSource.data.forEach((model) => {
+          model.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
+          // Hack: add fake node to show 0/xxx in az_level column
+          if (!model.nodes.length) {
+            model.nodes.push({
+              az_level: 0, date_created: '', name: '',
+              model_id: model.id, id: -1, status_code: 'fake',
+            });
+          }
+          this.chosenNodes[model.id] = (this._bestAvailableNode(model) || model.nodes[0]).id.toString();
         });
-      }
-      this.chosenNodes[model.id] = (this._bestAvailableNode(model) || model.nodes[0]).id.toString();
-    });
-    this._paramsColumns = this._dataService.paramsForNodeCode(this.nodeCode).filter((c) => c != 'az_level');
-    this.dataSource.sort = this.sort;
-    this.dataSource.sortingDataAccessor =
-      (model: Model, columnId: string) => {
-        if (columnId == 'az_level') {
-          const node = this._bestAvailableNode(model);
-          return node ? node.az_level : 0;
-        } else {
-          return this.cellValue(model, columnId);
-        }
-      };
-    this.dataSource.filterPredicate = ((model: Model, filter: string) => {
-      const valuesToCheck = [model.company, model.name];
-      for (const col of this.getParamColumns()) {
-        valuesToCheck.push(model.params[col].toString());
-      }
-      return valuesToCheck.some((s) => s.toLocaleLowerCase().includes(filter));
+        this._paramsColumns = this._dataService.paramsForNodeCode(this.nodeCode).filter((c) => c != 'az_level');
+        this.dataSource.sort = this.sort;
+        this.dataSource.sortingDataAccessor =
+          (model: Model, columnId: string) => {
+            if (columnId == 'az_level') {
+              const node = this._bestAvailableNode(model);
+              return node ? node.az_level : 0;
+            } else {
+              return this.cellValue(model, columnId);
+            }
+          };
+        this.dataSource.filterPredicate = ((model: Model, filter: string) => {
+          const valuesToCheck = [model.company, model.name];
+          for (const col of this.getParamColumns()) {
+            valuesToCheck.push(model.params[col].toString());
+          }
+          return valuesToCheck.some((s) => s.toLocaleLowerCase().includes(filter));
+        });
+      },
     });
   }
 
