@@ -15,6 +15,7 @@ export class OverviewPageComponent {
   public filter: string = '';
   public tabs: TabData[];
   public models: Model[];
+  public checked: boolean;
 
   constructor(private _dataService: DataService) {}
 

@@ -18,6 +18,8 @@ export class ReservationTableComponent {
   public chosenNodes: any = {};
 
   private _paramsColumns: string[] = [];
+  private _filterUnavailable: boolean = false;
+  private _inputModels: Model[] = [];
 
   constructor(private _dataService: DataService,
               private _matSnackBar: MatSnackBar) { }
@@ -63,7 +65,7 @@ export class ReservationTableComponent {
   }
 
   public reserveEnabled(model: Model): boolean {
-    return model.nodes && model.nodes.filter((node) => this.nodeAvailable(node)).length > 0;
+    return this._bestAvailableNode(model) != undefined;
   }
 
   public async reserve(model: Model) {
@@ -88,13 +90,29 @@ export class ReservationTableComponent {
     }
   }
 
+  @Input() set filterUnavailable(filterUnavailable: boolean) {
+    this._filterUnavailable = filterUnavailable;
+    this._refresh();
+  }
+
   @Input() set filter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   @Input() set models(models: Model[]) {
-    this.dataSource.data = models.filter((model) => model.node_type_code == this.nodeCode);
+    this._inputModels = models;
+    this._refresh();
+  }
+
+  private _refresh() {
+    this.dataSource.data = this._inputModels.filter((model) => model.node_type_code == this.nodeCode);
+    if (this._filterUnavailable) {
+      this.dataSource.data = this.dataSource.data.filter((model) => this.reserveEnabled(model));
+    }
     this.dataSource.data.forEach((model) => {
+      if (this._filterUnavailable) {
+        model.nodes = model.nodes.filter((node) => this.nodeAvailable(node));
+      }
       model.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
       // Hack: add fake node to show 0/xxx in az_level column
       if (!model.nodes.length) {
@@ -125,8 +143,12 @@ export class ReservationTableComponent {
     });
   }
 
+  private _availableNodes(model: Model): Node[] {
+    return model.nodes.filter((node) => this.nodeAvailable(node));
+  }
+
   private _bestAvailableNode(model: Model): Node | undefined {
-    const availableNodes = model.nodes.filter((node) => this.nodeAvailable(node));
+    const availableNodes = this._availableNodes(model);
     if (availableNodes.length)
       return availableNodes[0];
     else

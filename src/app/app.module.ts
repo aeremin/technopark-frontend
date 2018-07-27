@@ -1,8 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { MatButtonModule, MatInputModule, MatSelectModule,
-  MatSnackBarModule, MatSortModule, MatTableModule, MatTabsModule } from '@angular/material';
+  MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule, MatTabsModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -21,12 +22,14 @@ import { ReservationTableComponent } from './reservation-table/reservation-table
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
     AppRoutingModule,
     HttpModule,
     HttpClientModule,
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
     MatSortModule,
     MatTableModule,

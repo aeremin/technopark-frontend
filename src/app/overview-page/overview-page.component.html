@@ -1,10 +1,16 @@
 <mat-form-field>
   <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Фильтр">
 </mat-form-field>
+<mat-slide-toggle [(ngModel)]="checked" color="primary">
+Скрыть недоступные модели и узлы
+</mat-slide-toggle>
 <mat-tab-group>
   <mat-tab  *ngFor="let tab of tabs" [label]="tab.nodeName">
-      <reservation-table-component [models]="models" [nodeCode]='tab.nodeCode' [filter]='filter'></reservation-table-component>
+      <reservation-table-component
+        [models]="models"
+        [nodeCode]='tab.nodeCode'
+        [filter]='filter'
+        [filterUnavailable]='checked'>
+      </reservation-table-component>
   </mat-tab>
 </mat-tab-group>
-
-
