@@ -110,6 +110,6 @@ export class DataService {
   }
 
   private url(path: string): string {
-    return 'https://technopark.alice.magellan2018.ru' + path;
+    return 'https://technopark-backend.alice.magellan2018.ru' + path;
   }
 }
