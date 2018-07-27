@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service';
+import { DataService, Model } from '../../services/data.service';
 
 interface TabData {
   nodeCode: string;
@@ -14,6 +14,7 @@ interface TabData {
 export class OverviewPageComponent {
   public filter: string = '';
   public tabs: TabData[];
+  public models: Model[];
 
   constructor(private _dataService: DataService) {}
 
@@ -23,6 +24,9 @@ export class OverviewPageComponent {
 
   public async ngOnInit() {
     await this._dataService.init();
+    this._dataService.readAllModelsObservable().subscribe({
+      next: (models) => this.models = models,
+    });
     this.tabs = [];
     this._dataService.nodeCodeToHumanReadable().forEach(
       (nodeName, nodeCode) => this.tabs.push({nodeCode, nodeName}));

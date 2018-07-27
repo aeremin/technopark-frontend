@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatSnackBar, MatSort, MatTableDataSource } from '@angular/material';
 
 import { DataService, Model, Node, ReservationException } from 'src/services/data.service';
@@ -8,7 +8,7 @@ import { DataService, Model, Node, ReservationException } from 'src/services/dat
   templateUrl: './reservation-table.component.html',
   styleUrls: ['./reservation-table.component.css'],
 })
-export class ReservationTableComponent implements OnInit {
+export class ReservationTableComponent {
   @Input()
   public nodeCode: string;
 
@@ -21,44 +21,6 @@ export class ReservationTableComponent implements OnInit {
 
   constructor(private _dataService: DataService,
               private _matSnackBar: MatSnackBar) { }
-
-  public async ngOnInit() {
-    await this._dataService.init();
-    this._dataService.readAllModelsObservable().subscribe({
-      next: (models) => {
-        this.dataSource.data = models.filter((model) => model.node_type_code == this.nodeCode);
-        this.dataSource.data.forEach((model) => {
-          model.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
-          // Hack: add fake node to show 0/xxx in az_level column
-          if (!model.nodes.length) {
-            model.nodes.push({
-              az_level: 0, date_created: '', name: '',
-              model_id: model.id, id: -1, status_code: 'fake',
-            });
-          }
-          this.chosenNodes[model.id] = (this._bestAvailableNode(model) || model.nodes[0]).id.toString();
-        });
-        this._paramsColumns = this._dataService.paramsForNodeCode(this.nodeCode).filter((c) => c != 'az_level');
-        this.dataSource.sort = this.sort;
-        this.dataSource.sortingDataAccessor =
-          (model: Model, columnId: string) => {
-            if (columnId == 'az_level') {
-              const node = this._bestAvailableNode(model);
-              return node ? node.az_level : 0;
-            } else {
-              return this.cellValue(model, columnId);
-            }
-          };
-        this.dataSource.filterPredicate = ((model: Model, filter: string) => {
-          const valuesToCheck = [model.company, model.name];
-          for (const col of this.getParamColumns()) {
-            valuesToCheck.push(model.params[col].toString());
-          }
-          return valuesToCheck.some((s) => s.toLocaleLowerCase().includes(filter));
-        });
-      },
-    });
-  }
 
   public humanReadableColumnName(columnCode: string): string {
     const columnCodeToName = new Map<string, string>([
@@ -97,7 +59,7 @@ export class ReservationTableComponent implements OnInit {
   }
 
   public nodeAvailable(node: Node): boolean {
-    return node.status_code ==  'free';
+    return node.status_code == 'free';
   }
 
   public reserveEnabled(model: Model): boolean {
@@ -115,9 +77,8 @@ export class ReservationTableComponent implements OnInit {
       if (this.nodeCode == 'shunter')
         reservedWord = reservedWord + 'ы';
       const nodeName = this._dataService.nodeCodeToHumanReadable().get(this.nodeCode);
-        this._matSnackBar.open(
-          `${nodeName} модели ${model.name} успешно ${reservedWord}.`, '', { duration: 2000 });
-      this.ngOnInit();
+      this._matSnackBar.open(
+        `${nodeName} модели ${model.name} успешно ${reservedWord}.`, '', { duration: 2000 });
     } catch (err) {
       if (err instanceof ReservationException)
         this._matSnackBar.open(`Ошибка: ${err.error}.`, '', { duration: 3000 });
@@ -129,6 +90,39 @@ export class ReservationTableComponent implements OnInit {
 
   @Input() set filter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  @Input() set models(models: Model[]) {
+    this.dataSource.data = models.filter((model) => model.node_type_code == this.nodeCode);
+    this.dataSource.data.forEach((model) => {
+      model.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
+      // Hack: add fake node to show 0/xxx in az_level column
+      if (!model.nodes.length) {
+        model.nodes.push({
+          az_level: 0, date_created: '', name: '',
+          model_id: model.id, id: -1, status_code: 'fake',
+        });
+      }
+      this.chosenNodes[model.id] = (this._bestAvailableNode(model) || model.nodes[0]).id.toString();
+    });
+    this._paramsColumns = this._dataService.paramsForNodeCode(this.nodeCode).filter((c) => c != 'az_level');
+    this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor =
+      (model: Model, columnId: string) => {
+        if (columnId == 'az_level') {
+          const node = this._bestAvailableNode(model);
+          return node ? node.az_level : 0;
+        } else {
+          return this.cellValue(model, columnId);
+        }
+      };
+    this.dataSource.filterPredicate = ((model: Model, filter: string) => {
+      const valuesToCheck = [model.company, model.name];
+      for (const col of this.getParamColumns()) {
+        valuesToCheck.push(model.params[col].toString());
+      }
+      return valuesToCheck.some((s) => s.toLocaleLowerCase().includes(filter));
+    });
   }
 
   private _bestAvailableNode(model: Model): Node | undefined {
