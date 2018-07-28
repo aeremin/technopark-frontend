@@ -105,6 +105,13 @@ export class ReservationTableComponent {
     this._refresh();
   }
 
+  public getClass(model: Model) {
+    if (model.nodes[0].status_code == 'reserved_by_you')
+      return 'mat-row ng-star-inserted reserved-by-you';
+    else
+      return 'mat-row ng-star-inserted';
+  }
+
   private _refresh() {
     let expandedModels: Model[] = [];
     this._inputModels.slice()

@@ -16,6 +16,11 @@ tr:hover
     background: rgba(0, 0, 0, 0.03);
 }
 
+.reserved-by-you
+{
+    background: #ffd740 !important;
+}
+
 /*
 #ffd740 - nice yellow
 */
