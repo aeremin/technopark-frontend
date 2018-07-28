@@ -51,7 +51,6 @@ interface MyReservedResponse {
   nodes: any;
 }
 
-
 export class ReservationException {
   constructor(public error: string) {}
 }
