@@ -39,7 +39,7 @@ export class ReservationTableComponent {
   public getAllColumns() {
     return ['company']
       .concat(this.getCommonColumns())
-      .concat(['az_level'])
+      .concat(['size', 'az_level'])
       .concat(this.getParamColumns())
       .concat('reserve');
   }
@@ -126,6 +126,10 @@ export class ReservationTableComponent {
       return 'mat-row ng-star-inserted';
   }
 
+  public sizeLetter(model: Model) {
+    return model.size.toLocaleUpperCase()[0];
+  }
+
   private _refresh() {
     let expandedModels: Model[] = [];
     this._inputModels.slice()
@@ -163,6 +167,8 @@ export class ReservationTableComponent {
         if (columnId == 'az_level') {
           const node = this._bestAvailableNode(model);
           return node ? node.az_level : 0;
+        } else if (columnId == 'size') {
+          return { small: 0, medium: 1, large: 2 }[model.size];
         } else {
           return this.cellValue(model, columnId);
         }
