@@ -51,8 +51,6 @@ export class InventionPageComponent implements OnInit {
 
   public technologySelected(value: string, technologyChoice: TechnologyChoice) {
     technologyChoice.technology = value;
-    console.log(JSON.stringify(this.dataSource.data));
-    console.log(JSON.stringify(technologyChoice));
   }
 
   public enableSlider(technologyChoice: TechnologyChoice): boolean {
