@@ -19,6 +19,7 @@ export class ReservationTableComponent {
 
   private _paramsColumns: string[] = [];
   private _filterUnavailable: boolean = false;
+  private _onlyBestNodes: boolean = false;
   private _inputModels: Model[] = [];
 
   constructor(private _dataService: DataService,
@@ -96,6 +97,11 @@ export class ReservationTableComponent {
     this._refresh();
   }
 
+  @Input() set onlyBestNodes(onlyBestNodes: boolean) {
+    this._onlyBestNodes = onlyBestNodes;
+    this._refresh();
+  }
+
   @Input() set filter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
@@ -126,6 +132,8 @@ export class ReservationTableComponent {
             model_id: ownedModel.id, id: -1, status_code: 'fake',
           });
         }
+        if (this._onlyBestNodes)
+          ownedModel.nodes = [ownedModel.nodes[0]];
         for (const node of ownedModel.nodes) {
           const expandedModel = clone(ownedModel);
           expandedModel.nodes = [clone(node)];

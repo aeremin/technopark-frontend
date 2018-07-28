@@ -2,15 +2,19 @@
   <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Фильтр">
 </mat-form-field>
 <mat-slide-toggle [(ngModel)]="checked" color="primary">
-Скрыть недоступные модели и узлы
+  Скрыть недоступные модели и узлы&nbsp;&nbsp;&nbsp;&nbsp;
+</mat-slide-toggle>
+<mat-slide-toggle [(ngModel)]="onlyBestNodes" color="primary">
+  Показывать только узел с наименьшим износом
 </mat-slide-toggle>
 <mat-tab-group>
-  <mat-tab  *ngFor="let tab of tabs" [label]="tab.nodeName">
+    <mat-tab *ngFor="let tab of tabs" [label]="tab.nodeName">
       <reservation-table-component
         [models]="models"
         [nodeCode]='tab.nodeCode'
         [filter]='filter'
-        [filterUnavailable]='checked'>
+        [filterUnavailable]='checked'
+        [onlyBestNodes]='onlyBestNodes'>
       </reservation-table-component>
-  </mat-tab>
-</mat-tab-group>
+    </mat-tab>
+  </mat-tab-group>

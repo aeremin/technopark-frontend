@@ -16,6 +16,7 @@ export class OverviewPageComponent {
   public tabs: TabData[];
   public models: Model[];
   public checked: boolean;
+  public onlyBestNodes: boolean;
 
   constructor(private _dataService: DataService) {}
 
