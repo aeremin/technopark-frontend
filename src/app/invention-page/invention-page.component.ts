@@ -75,4 +75,11 @@ export class InventionPageComponent implements OnInit {
       .map((technologyChoice) => this.getCost(technologyChoice, col))
       .reduce((a, b) => a + b);
   }
+
+  public isTechnologyEnabled(technologyChoice: TechnologyChoice, tech: Technology): boolean {
+    return !this.dataSource.data
+      .filter((otherChoice) => otherChoice.index != technologyChoice.index)
+      .map((otherChoice) => otherChoice.technology)
+      .includes(tech.code);
+  }
 }
