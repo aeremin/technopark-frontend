@@ -5,7 +5,6 @@ interface TechnologyChoice {
   index: number;
   technology: string | undefined;
   points: number;
-  costs: any;
 }
 
 interface Technology {
@@ -22,15 +21,15 @@ interface Technology {
 export class InventionPageComponent implements OnInit {
 
   public availableTechnologies: Technology[] = [
-    {code: 'first', name: 'Первая', costs: {m1: 10, m2: 1} },
-    {code: 'second', name: 'Вторая', costs: {m1: 5, m2: 3} },
+    {code: 'first', name: 'Первая', costs: {aluminium: 10, iron: 1} },
+    {code: 'second', name: 'Вторая', costs: {aluminium: 5, iron: 3} },
   ];
 
   public dataSource = new MatTableDataSource<TechnologyChoice>([
-    {index: 0, technology: undefined, points: 1, costs: {m1: 0, m2: 0}},
-    {index: 1, technology: undefined, points: 1, costs: {m1: 0, m2: 0}},
-    {index: 2, technology: undefined, points: 1, costs: {m1: 0, m2: 0}},
-    {index: 3, technology: undefined, points: 1, costs: {m1: 0, m2: 0}},
+    {index: 0, technology: undefined, points: 0},
+    {index: 1, technology: undefined, points: 0},
+    {index: 2, technology: undefined, points: 0},
+    {index: 3, technology: undefined, points: 0},
   ]);
 
   constructor() { }
@@ -43,7 +42,7 @@ export class InventionPageComponent implements OnInit {
   }
 
   public getCostsColumns() {
-    return ['m1', 'm2'];
+    return ['aluminium', 'iron'];
   }
 
   public humanReadableColumnName(columnCode: string) {
@@ -58,5 +57,15 @@ export class InventionPageComponent implements OnInit {
 
   public enableSlider(technologyChoice: TechnologyChoice): boolean {
     return technologyChoice.technology != undefined;
+  }
+
+  public getCost(technologyChoice: TechnologyChoice, col: string): number {
+    if (!this.enableSlider(technologyChoice)) return 0;
+
+    const technology = this.availableTechnologies.find((tech: Technology) => {
+      return tech.code == technologyChoice.technology;
+    });
+
+    return technologyChoice.points * technology.costs[col];
   }
 }

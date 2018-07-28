@@ -1,6 +1,6 @@
-<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="technology">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Технология </th>
+    <th mat-header-cell *matHeaderCellDef> Технология </th>
     <td mat-cell *matCellDef="let technologyChoice">
       <mat-form-field>
         <mat-select (selectionChange)="technologySelected($event.value, technologyChoice)">
@@ -17,17 +17,17 @@
   </ng-container>
 
   <ng-container matColumnDef="points">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Вклад </th>
+    <th mat-header-cell *matHeaderCellDef> Вклад </th>
     <td mat-cell *matCellDef="let technologyChoice">
       <mat-slider [disabled]="!enableSlider(technologyChoice)" color="primary"
-        min="0" max="10" step="1" value="0" tickInterval="1" thumbLabel></mat-slider>
+        min="0" max="10" step="1" tickInterval="1" thumbLabel [(ngModel)]="technologyChoice.points"></mat-slider>
     </td>
     <td mat-footer-cell align="right" *matFooterCellDef><b>Итого:</b></td>
   </ng-container>
 
   <ng-container *ngFor="let col of getCostsColumns()" [matColumnDef]="col">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ humanReadableColumnName(col) }} </th>
-    <td mat-cell *matCellDef="let model"> XXX </td>
+    <th mat-header-cell *matHeaderCellDef> {{ humanReadableColumnName(col) }} </th>
+    <td mat-cell *matCellDef="let technologyChoice"> {{ getCost(technologyChoice, col) }} </td>
     <td mat-footer-cell *matFooterCellDef></td>
   </ng-container>
 
