@@ -1,7 +1,7 @@
 <mat-form-field>
   <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Фильтр">
 </mat-form-field>
-<mat-slide-toggle [(ngModel)]="checked" color="primary">
+<mat-slide-toggle [(ngModel)]="filterUnavailable" color="primary">
   Скрыть недоступные модели и узлы&nbsp;&nbsp;&nbsp;&nbsp;
 </mat-slide-toggle>
 <mat-slide-toggle [(ngModel)]="onlyBestNodes" color="primary">
@@ -13,7 +13,7 @@
         [models]="models"
         [nodeCode]='tab.nodeCode'
         [filter]='filter'
-        [filterUnavailable]='checked'
+        [filterUnavailable]='filterUnavailable'
         [onlyBestNodes]='onlyBestNodes'>
       </reservation-table-component>
     </mat-tab>
