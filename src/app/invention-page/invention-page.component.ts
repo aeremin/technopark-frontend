@@ -3,8 +3,14 @@ import { MatTableDataSource } from '@angular/material';
 
 interface TechnologyChoice {
   index: number;
-  technology: string;
+  technology: string | undefined;
   points: number;
+  costs: any;
+}
+
+interface Technology {
+  code: string;
+  name: string;
   costs: any;
 }
 
@@ -15,13 +21,16 @@ interface TechnologyChoice {
 })
 export class InventionPageComponent implements OnInit {
 
-  public availableTechnologies = ['First', 'Second'];
+  public availableTechnologies: Technology[] = [
+    {code: 'first', name: 'Первая', costs: {m1: 10, m2: 1} },
+    {code: 'second', name: 'Вторая', costs: {m1: 5, m2: 3} },
+  ];
 
   public dataSource = new MatTableDataSource<TechnologyChoice>([
-    {index: 0, technology: 'None', points: 1, costs: {m1: 0, m2: 0}},
-    {index: 1, technology: 'None', points: 1, costs: {m1: 0, m2: 0}},
-    {index: 2, technology: 'None', points: 1, costs: {m1: 0, m2: 0}},
-    {index: 3, technology: 'None', points: 1, costs: {m1: 0, m2: 0}},
+    {index: 0, technology: undefined, points: 1, costs: {m1: 0, m2: 0}},
+    {index: 1, technology: undefined, points: 1, costs: {m1: 0, m2: 0}},
+    {index: 2, technology: undefined, points: 1, costs: {m1: 0, m2: 0}},
+    {index: 3, technology: undefined, points: 1, costs: {m1: 0, m2: 0}},
   ]);
 
   constructor() { }
@@ -39,5 +48,15 @@ export class InventionPageComponent implements OnInit {
 
   public humanReadableColumnName(columnCode: string) {
     return columnCode;
+  }
+
+  public technologySelected(value: string, technologyChoice: TechnologyChoice) {
+    technologyChoice.technology = value;
+    console.log(JSON.stringify(this.dataSource.data));
+    console.log(JSON.stringify(technologyChoice));
+  }
+
+  public enableSlider(technologyChoice: TechnologyChoice): boolean {
+    return technologyChoice.technology != undefined;
   }
 }

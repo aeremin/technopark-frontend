@@ -3,9 +3,12 @@
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Технология </th>
     <td mat-cell *matCellDef="let technologyChoice">
       <mat-form-field>
-        <mat-select>
-          <mat-option *ngFor="let tech of availableTechnologies" [value]="tech">
-            {{ tech }}
+        <mat-select (selectionChange)="technologySelected($event.value, technologyChoice)">
+          <mat-option>
+            Нет
+          </mat-option>
+          <mat-option *ngFor="let tech of availableTechnologies" [value]="tech.code">
+            {{ tech.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -16,7 +19,8 @@
   <ng-container matColumnDef="points">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Вклад </th>
     <td mat-cell *matCellDef="let technologyChoice">
-      <mat-slider color="primary" min="0" max="10" step="1" value="0" tickInterval="1" thumbLabel></mat-slider>
+      <mat-slider [disabled]="!enableSlider(technologyChoice)" color="primary"
+        min="0" max="10" step="1" value="0" tickInterval="1" thumbLabel></mat-slider>
     </td>
     <td mat-footer-cell align="right" *matFooterCellDef><b>Итого:</b></td>
   </ng-container>
