@@ -68,4 +68,10 @@ export class InventionPageComponent implements OnInit {
 
     return technologyChoice.points * technology.costs[col];
   }
+
+  public getTotalCost(col: string): number {
+    return this.dataSource.data
+      .map((technologyChoice) => this.getCost(technologyChoice, col))
+      .reduce((a, b) => a + b);
+  }
 }
