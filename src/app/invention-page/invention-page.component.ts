@@ -51,6 +51,9 @@ export class InventionPageComponent implements OnInit {
 
   public technologySelected(value: string, technologyChoice: TechnologyChoice) {
     technologyChoice.technology = value;
+    if (value == undefined) {
+      technologyChoice.points = 0;
+    }
   }
 
   public enableSlider(technologyChoice: TechnologyChoice): boolean {
