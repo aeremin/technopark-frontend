@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { MatSnackBar, MatSort, MatTableDataSource } from '@angular/material';
 
+import { clone } from 'lodash';
 import { DataService, Model, Node, ReservationException } from 'src/services/data.service';
 
 @Component({
@@ -15,7 +16,6 @@ export class ReservationTableComponent {
   public dataSource = new MatTableDataSource<Model>([]);
 
   @ViewChild(MatSort) public sort: MatSort;
-  public chosenNodes: any = {};
 
   private _paramsColumns: string[] = [];
   private _filterUnavailable: boolean = false;
@@ -70,7 +70,7 @@ export class ReservationTableComponent {
   }
 
   public async reserve(model: Model) {
-    const nodeId = this.chosenNodes[model.id];
+    const nodeId = model.nodes[0].id;
     console.log(`Reserving model with id ${model.id}, node id ${nodeId}`);
     try {
       await this._dataService.reserve(nodeId);
@@ -106,24 +106,31 @@ export class ReservationTableComponent {
   }
 
   private _refresh() {
-    this.dataSource.data = this._inputModels.filter((model) => model.node_type_code == this.nodeCode);
+    let expandedModels: Model[] = [];
+    this._inputModels.slice()
+      .filter((model) => model.node_type_code == this.nodeCode)
+      .forEach((model) => {
+        // Hack: add fake node to show 0/xxx in az_level column
+        const ownedModel = clone(model);
+        ownedModel.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
+        if (!ownedModel.nodes.length) {
+          ownedModel.nodes.push({
+            az_level: 0, date_created: '', name: '',
+            model_id: ownedModel.id, id: -1, status_code: 'fake',
+          });
+        }
+        for (const node of ownedModel.nodes) {
+          const expandedModel = clone(ownedModel);
+          expandedModel.nodes = [clone(node)];
+          expandedModels.push(expandedModel);
+        }
+      });
+
     if (this._filterUnavailable) {
-      this.dataSource.data = this.dataSource.data.filter((model) => this.reserveEnabled(model));
+      expandedModels = expandedModels.filter((model) => this.reserveEnabled(model));
     }
-    this.dataSource.data.forEach((model) => {
-      if (this._filterUnavailable) {
-        model.nodes = model.nodes.filter((node) => this.nodeAvailable(node));
-      }
-      model.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
-      // Hack: add fake node to show 0/xxx in az_level column
-      if (!model.nodes.length) {
-        model.nodes.push({
-          az_level: 0, date_created: '', name: '',
-          model_id: model.id, id: -1, status_code: 'fake',
-        });
-      }
-      this.chosenNodes[model.id] = (this._bestAvailableNode(model) || model.nodes[0]).id.toString();
-    });
+    this.dataSource.data = expandedModels;
+
     this._paramsColumns = this._dataService.paramsForNodeCode(this.nodeCode).filter((c) => c != 'az_level');
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor =

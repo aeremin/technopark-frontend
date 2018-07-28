@@ -8,15 +8,7 @@
     <ng-container matColumnDef="az_level">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Ур. АЗ</th>
       <td mat-cell *matCellDef="let model">
-        <div class="az_dropdown">
-          <mat-form-field>
-            <mat-select [disabled]="!nodePickerEnabled(model)" [(value)]="chosenNodes[model.id]">
-              <mat-option *ngFor="let node of model.nodes" value="{{node.id}}" [disabled]="!nodeAvailable(node)">
-                {{node.az_level.toFixed(0)}}/{{model.params.az_level.toFixed(0)}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+       {{model.nodes[0].az_level.toFixed(0)}}/{{model.params.az_level.toFixed(0)}}
       </td>
     </ng-container>
 
