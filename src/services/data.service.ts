@@ -25,6 +25,7 @@ export interface Model {
   size: string;
   description: string;
   company: string;
+  company_name: string;
   created: string;
   params: any;
   nodes: Node[];
@@ -128,7 +129,7 @@ export class DataService {
       ['kkg', 'Красный Крест Генетикс'],
     ]);
 
-    model.company = companyCodeToHumanReadableName.get(model.company);
+    model.company_name = companyCodeToHumanReadableName.get(model.company);
     model.node_type = this._nodeCodeToHumanReadable.get(model.node_type_code);
     return model;
   }

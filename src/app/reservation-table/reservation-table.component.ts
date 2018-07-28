@@ -37,7 +37,11 @@ export class ReservationTableComponent {
   }
 
   public getAllColumns() {
-    return this.getCommonColumns().concat(['az_level']).concat(this.getParamColumns()).concat('reserve');
+    return ['company']
+      .concat(this.getCommonColumns())
+      .concat(['az_level'])
+      .concat(this.getParamColumns())
+      .concat('reserve');
   }
 
   public getParamColumns() {
@@ -45,7 +49,11 @@ export class ReservationTableComponent {
   }
 
   public getCommonColumns() {
-    return ['company', 'name', 'level'];
+    return ['name', 'level'];
+  }
+
+  public getCompanyIcon(model: Model) {
+    return `assets/company_${model.company}.png`;
   }
 
   public cellValue(model: Model, columnId: string): string | number {
@@ -160,7 +168,7 @@ export class ReservationTableComponent {
         }
       };
     this.dataSource.filterPredicate = ((model: Model, filter: string) => {
-      const valuesToCheck = [model.company, model.name];
+      const valuesToCheck = [model.company_name, model.name];
       for (const col of this.getParamColumns()) {
         valuesToCheck.push(model.params[col].toString());
       }

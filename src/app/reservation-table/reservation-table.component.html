@@ -1,4 +1,11 @@
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  <ng-container matColumnDef="company">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Компания </th>
+    <td mat-cell *matCellDef="let model">
+      <img [src]="getCompanyIcon(model)">
+    </td>
+  </ng-container>
+
   <ng-container *ngFor="let col of getCommonColumns()" [matColumnDef]="col">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ humanReadableColumnName(col) }} </th>
     <td mat-cell *matCellDef="let model"> {{ cellValue(model, col) }} </td>
