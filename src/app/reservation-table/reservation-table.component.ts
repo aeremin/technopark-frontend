@@ -50,10 +50,11 @@ export class ReservationTableComponent {
   public cellValue(model: Model, columnId: string): string | number {
     if (model.hasOwnProperty(columnId))
       return model[columnId];
-    let p = model.params[columnId];
+    const p = model.params[columnId];
     if (typeof p == 'number')
-      p = p.toFixed(0);
-    return p;
+      return Number(p.toFixed(0));
+    else
+      return p;
   }
 
   public nodePickerEnabled(model: Model): boolean {
