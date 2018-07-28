@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved' | 'fake';
+export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved'
+  | 'fake' // "Ghost" node attached to model to show the model without any nodes
+  | 'reserved_by_you' // Node which was reserved by current user
+  ;
 
 export interface Node {
   id: number;
@@ -35,6 +38,20 @@ interface ParamTranslationEntry {
   param_short_name: string;
 }
 
+interface FlightInfo {
+  id: number;
+  departure: string;
+  dock: number;
+  status: string; // TODO: enum
+}
+
+interface MyReservedResponse {
+  result: 'ok' | 'fail';
+  flight: FlightInfo;
+  nodes: any;
+}
+
+
 export class ReservationException {
   constructor(public error: string) {}
 }
@@ -46,6 +63,10 @@ export class DataService {
   private _nodeCodeToParamCodes = new Map<string, string[]>();
 
   private _readAllSubject: BehaviorSubject<Model[]>;
+
+  // TODO: Add login screen and pass user here.
+  // tslint:disable-next-line:variable-name
+  private userId = 4;
 
   constructor(private _http: Http) {}
 
@@ -60,12 +81,9 @@ export class DataService {
     return this._readAllSubject;
   }
 
-  // tslint:disable-next-line:variable-name
-  public async reserve(node_id: number): Promise<void> {
-    // TODO: Add login screen and pass user here.
-    // tslint:disable-next-line:variable-name
-    const user_id = 4;
-    const response = await this._http.post(this.url('/node/reserve'), {node_id, user_id, password: ''}).toPromise();
+  public async reserve(nodeId: number): Promise<void> {
+    const response = await this._http.post(this.url('/node/reserve'),
+      {node_id: nodeId, user_id: this.userId, password: ''}).toPromise();
     const result: {status: string, errors?: string}  = response.json();
     console.log(result);
     if (result.status != 'ok')
@@ -127,6 +145,23 @@ export class DataService {
   private async readAllModels(): Promise<Model[]> {
     const response = await this._http.post(this.url('/model/read_all'), {}).toPromise();
     const models: Model[] = response.json();
-    return models.map((m) => this.makeHumanReadable(m));
+
+    const reserved = await this.getMyReserved();
+
+    return models
+      .map((m) => this.makeHumanReadable(m))
+      .map((m) => {
+        m.nodes = m.nodes.map((node) => {
+          if (reserved.nodes[m.node_type_code] == node.id)
+            node.status_code = 'reserved_by_you';
+          return node;
+        });
+        return m;
+      });
+  }
+
+  private async getMyReserved(): Promise<MyReservedResponse> {
+    const response = await this._http.post(this.url('/node/get_my_reserved'), {user_id: this.userId}).toPromise();
+    return response.json();
   }
 }

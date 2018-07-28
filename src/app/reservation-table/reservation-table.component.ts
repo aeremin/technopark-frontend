@@ -127,7 +127,9 @@ export class ReservationTableComponent {
       });
 
     if (this._filterUnavailable) {
-      expandedModels = expandedModels.filter((model) => this.reserveEnabled(model));
+      expandedModels = expandedModels.filter(
+        (model) => this.reserveEnabled(model) || model.nodes[0].status_code == 'reserved_by_you',
+      );
     }
     this.dataSource.data = expandedModels;
 
