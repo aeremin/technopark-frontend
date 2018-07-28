@@ -15,8 +15,8 @@ export class OverviewPageComponent {
   public filter: string = '';
   public tabs: TabData[];
   public models: Model[];
-  public filterUnavailable: boolean;
-  public onlyBestNodes: boolean;
+  public filterUnavailable: boolean = true;
+  public onlyBestNodes: boolean = true;
 
   constructor(private _dataService: DataService) {}
 
