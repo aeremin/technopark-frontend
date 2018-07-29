@@ -37,7 +37,9 @@
   <ng-container *ngFor="let col of getCostsColumns()" [matColumnDef]="col">
     <th mat-header-cell *matHeaderCellDef> {{ humanReadableColumnName(col) }} </th>
     <td mat-cell *matCellDef="let technologyChoice"> {{ getCost(technologyChoice, col) }} </td>
-    <td mat-footer-cell *matFooterCellDef><b>{{ getTotalCost(col) }}</b></td>
+    <td mat-footer-cell *matFooterCellDef>
+      <b>{{ getTotalCost(col) }}</b>
+    </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="getAllColumns()"></tr>
