@@ -14,6 +14,9 @@ export class ReservationTableComponent {
   @Input()
   public nodeCode: string;
 
+  @Input()
+  public showReservationColumn: boolean = false;
+
   public dataSource = new MatTableDataSource<Model>([]);
 
   @ViewChild(MatSort) public sort: MatSort;
@@ -43,7 +46,7 @@ export class ReservationTableComponent {
       .concat(this.getCommonColumns())
       .concat(['size', 'az_level'])
       .concat(this.getParamColumns())
-      .concat('reserve');
+      .concat(this.showReservationColumn ? ['reserve'] : []);
   }
 
   public getParamColumns() {

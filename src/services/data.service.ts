@@ -95,7 +95,7 @@ export class DataService {
   }
 
   public paramsForNodeCode(nodeCode: string): string[] {
-    return this._nodeCodeToParamCodes.get(nodeCode);
+    return this._nodeCodeToParamCodes.get(nodeCode) || [];
   }
 
   public paramsCodeToHumanReadable(nodeCode: string): string {

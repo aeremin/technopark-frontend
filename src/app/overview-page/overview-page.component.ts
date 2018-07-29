@@ -18,6 +18,9 @@ export class OverviewPageComponent {
   public filterUnavailable: boolean = true;
   public onlyBestNodes: boolean = true;
 
+  // TODO: Set to false if not SuperCargo user or guest
+  public showReservationColumn: boolean = true;
+
   constructor(private _dataService: DataService) {}
 
   public applyFilter(filterValue: string) {

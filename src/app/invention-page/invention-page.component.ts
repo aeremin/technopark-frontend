@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { DataService } from '../../services/data.service';
+import { DataService, Model } from '../../services/data.service';
 
 interface TechnologyChoice {
   index: number;
@@ -40,7 +40,8 @@ export class InventionPageComponent implements OnInit {
   ]);
 
   public size: string = 'medium';
-  public nodeCode: string;
+  public nodeCode: string = 'fuel_tank';
+  public modelName: string;
 
   constructor(private _dataService: DataService) { }
 
@@ -49,7 +50,15 @@ export class InventionPageComponent implements OnInit {
     this.modelTypeOptions = [];
     this._dataService.nodeCodeToHumanReadable().forEach(
       (nodeName, nodeCode) => this.modelTypeOptions.push({nodeCode, nodeName}));
-    this.nodeCode = this.modelTypeOptions[0].nodeCode;
+  }
+
+  // TODO: Calculate base on technologies
+  public getModels(): Model[] {
+    return [{
+      id: 0, company: 'mst', company_name: '', created: '', description: '', level: 0,
+      name: this.modelName, node_type: '', node_type_code: this.nodeCode, nodes: [],
+      params: { az_level: 100 }, size: this.size,
+    }];
   }
 
   public getAllColumns() {

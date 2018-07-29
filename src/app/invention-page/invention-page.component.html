@@ -14,6 +14,12 @@
   </mat-select>
 </mat-form-field>
 
+<mat-form-field>
+  <input matInput placeholder="Название" [(ngModel)]="modelName">
+</mat-form-field>
+
+<h3 align="center">Выбор используемых технологий</h3>
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="technology">
     <th mat-header-cell *matHeaderCellDef> Технология </th>
@@ -24,7 +30,7 @@
             Нет
           </mat-option>
           <mat-option *ngFor="let tech of availableTechnologies"
-             [value]="tech.code" [disabled]="!isTechnologyEnabled(technologyChoice, tech)">
+            [value]="tech.code" [disabled]="!isTechnologyEnabled(technologyChoice, tech)">
             {{ tech.name }}
           </mat-option>
         </mat-select>
@@ -54,3 +60,11 @@
   <tr mat-row *matRowDef="let technologyChoice; columns: getAllColumns();"></tr>
   <tr mat-footer-row *matFooterRowDef="getAllColumns()"></tr>
 </table>
+
+
+<h3 align="center">Предпросмотр модели</h3>
+<reservation-table-component
+  [models]="getModels()"
+  [nodeCode]='nodeCode'
+  [showReservationColumn]='false'>
+</reservation-table-component>
