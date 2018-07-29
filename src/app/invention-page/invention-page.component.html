@@ -1,3 +1,11 @@
+<mat-form-field>
+  <mat-select placeholder="Размер узла" [(ngModel)]="size">
+    <mat-option value="small">Малый</mat-option>
+    <mat-option value="medium">Средний</mat-option>
+    <mat-option value="large">Большой</mat-option>
+  </mat-select>
+</mat-form-field>
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="technology">
     <th mat-header-cell *matHeaderCellDef> Технология </th>

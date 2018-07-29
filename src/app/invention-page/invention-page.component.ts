@@ -33,6 +33,8 @@ export class InventionPageComponent implements OnInit {
     {index: 3, technology: undefined, points: 0},
   ]);
 
+  public size: string = 'medium';
+
   constructor(private _dataService: DataService) { }
 
   public async ngOnInit() {
