@@ -2,17 +2,19 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { MatButtonModule, MatInputModule, MatSelectModule,
-  MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule, MatTabsModule, MatSliderModule } from '@angular/material';
+import { MatButtonModule, MatDialogModule, MatIconModule,
+  MatInputModule, MatSelectModule, MatSliderModule, MatSlideToggleModule,
+  MatSnackBarModule, MatSortModule, MatTableModule, MatTabsModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from 'src/app/core/app.routing.module';
 import { DataService } from 'src/services/data.service';
 import { AppComponent } from './app.component';
-import { OverviewPageComponent } from './overview-page/overview-page.component';
-import { ReservationTableComponent } from './reservation-table/reservation-table.component';
 import { InventionPageComponent } from './invention-page/invention-page.component';
+import { OverviewPageComponent } from './overview-page/overview-page.component';
+import { ReservationPasswordEnterComponent } from './reservation-password-enter/reservation-password-enter.component';
+import { ReservationTableComponent } from './reservation-table/reservation-table.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,7 @@ import { InventionPageComponent } from './invention-page/invention-page.componen
     OverviewPageComponent,
     ReservationTableComponent,
     InventionPageComponent,
+    ReservationPasswordEnterComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,6 +32,8 @@ import { InventionPageComponent } from './invention-page/invention-page.componen
     HttpModule,
     HttpClientModule,
     MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
     MatSliderModule,
@@ -41,6 +46,7 @@ import { InventionPageComponent } from './invention-page/invention-page.componen
   providers: [
     DataService,
   ],
+  entryComponents: [ReservationPasswordEnterComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

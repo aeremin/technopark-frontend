@@ -14,6 +14,7 @@ export interface Node {
   az_level: number;
   status_code: NodeStatus;
   date_created: string;
+  is_premium: number;
 }
 
 export interface Model {
@@ -78,9 +79,9 @@ export class DataService {
     return this._readAllSubject;
   }
 
-  public async reserve(nodeId: number): Promise<void> {
+  public async reserve(nodeId: number, password: string): Promise<void> {
     const response = await this._http.post(this.url('/node/reserve'),
-      {node_id: nodeId, user_id: this.userId, password: ''}).toPromise();
+      {node_id: nodeId, user_id: this.userId, password}).toPromise();
     const result: {status: string, errors?: string}  = response.json();
     console.log(result);
     if (result.status != 'ok')

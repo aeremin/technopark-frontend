@@ -31,7 +31,9 @@
   <ng-container matColumnDef="reserve">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let model">
-      <button color="accent" mat-raised-button [disabled]="!reserveEnabled(model)" (click)="reserve(model)">&#x2713;</button>
+      <button color="accent" mat-raised-button [disabled]="!reserveEnabled(model)" (click)="reserve(model)">
+        <mat-icon> {{ getReserveIconName(model) }} </mat-icon>
+      </button>
     </td>
   </ng-container>
 
