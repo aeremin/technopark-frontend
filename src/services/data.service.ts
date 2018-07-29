@@ -31,14 +31,6 @@ export interface Model {
   nodes: Node[];
 }
 
-interface ParamTranslationEntry {
-  node_code: string;
-  node_name: string;
-  param_code: string;
-  param_name: string;
-  param_short_name: string;
-}
-
 interface FlightInfo {
   id: number;
   departure: string;
@@ -62,6 +54,8 @@ export class DataService {
   private _paramCodeToHumanReadable = new Map<string, string>();
   private _nodeCodeToParamCodes = new Map<string, string[]>();
 
+  private _resourceCodeToHumanReadable = new Map<string, string>();
+
   private _readAllSubject: BehaviorSubject<Model[]>;
 
   // TODO: Add login screen and pass user here.
@@ -71,7 +65,10 @@ export class DataService {
   constructor(private _http: Http) {}
 
   public async init(): Promise<void> {
-    await this.queryParamNames();
+    await Promise.all([
+      this.queryParamNames(),
+      this.queryResourceNames(),
+    ]);
     const models = await this.readAllModels();
     this._readAllSubject = new BehaviorSubject(models);
     setInterval(() => this.reReadAllModels(), 60000);
@@ -104,11 +101,25 @@ export class DataService {
     return this._paramCodeToHumanReadable.get(nodeCode) || nodeCode;
   }
 
+  public resourceCodeToHumanReadable(resourceCode: string): string {
+    return this._resourceCodeToHumanReadable.get(resourceCode) || resourceCode;
+  }
+
+  public resouceCodes(): string[] {
+    return Array.from(this._resourceCodeToHumanReadable.keys());
+  }
+
   private async queryParamNames(): Promise<void> {
     if (this._nodeCodeToHumanReadable.size > 0 && this._paramCodeToHumanReadable.size > 0)
       return;
-
-    const response = await this._http.get(this.url('/get-params'), {}).toPromise();
+    const response = await this._http.get(this.url('/get-params')).toPromise();
+    interface ParamTranslationEntry {
+      node_code: string;
+      node_name: string;
+      param_code: string;
+      param_name: string;
+      param_short_name: string;
+    }
     const entries: ParamTranslationEntry[] = response.json();
     entries.forEach((e) => {
       this._nodeCodeToHumanReadable.set(e.node_code, e.node_name);
@@ -117,6 +128,21 @@ export class DataService {
         this._nodeCodeToParamCodes.set(e.node_code, []);
       if (!this._nodeCodeToParamCodes.get(e.node_code).includes(e.param_code))
         this._nodeCodeToParamCodes.get(e.node_code).push(e.param_code);
+    });
+  }
+
+  private async queryResourceNames(): Promise<void> {
+    const response = await this._http.get(this.url('/economics/resources')).toPromise();
+    interface ResourceNamesEntry {
+      code: string;
+      name: string;
+      is_active: string;
+    }
+    const entries: ResourceNamesEntry[] = response.json();
+    entries.forEach((e) => {
+      if (e.is_active) {
+        this._resourceCodeToHumanReadable.set(e.code, e.name);
+      }
     });
   }
 

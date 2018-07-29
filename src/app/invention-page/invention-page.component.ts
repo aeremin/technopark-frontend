@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import { DataService } from '../../services/data.service';
 
 interface TechnologyChoice {
   index: number;
@@ -32,9 +33,10 @@ export class InventionPageComponent implements OnInit {
     {index: 3, technology: undefined, points: 0},
   ]);
 
-  constructor() { }
+  constructor(private _dataService: DataService) { }
 
-  public ngOnInit() {
+  public async ngOnInit() {
+    await this._dataService.init();
   }
 
   public getAllColumns() {
@@ -42,11 +44,11 @@ export class InventionPageComponent implements OnInit {
   }
 
   public getCostsColumns() {
-    return ['aluminium', 'iron'];
+    return this._dataService.resouceCodes();
   }
 
   public humanReadableColumnName(columnCode: string) {
-    return columnCode;
+    return this._dataService.resourceCodeToHumanReadable(columnCode);
   }
 
   public technologySelected(value: string, technologyChoice: TechnologyChoice) {
@@ -67,7 +69,7 @@ export class InventionPageComponent implements OnInit {
       return tech.code == technologyChoice.technology;
     });
 
-    return technologyChoice.points * technology.costs[col];
+    return technologyChoice.points * (technology.costs[col] || 0);
   }
 
   public getTotalCost(col: string): number {
