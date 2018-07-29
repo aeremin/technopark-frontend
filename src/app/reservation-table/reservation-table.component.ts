@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { MatSnackBar, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar, MatSort, MatTableDataSource } from '@angular/material';
 
 import { clone } from 'lodash';
 import { DataService, Model, Node, ReservationException } from 'src/services/data.service';
