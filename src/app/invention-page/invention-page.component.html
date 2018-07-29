@@ -1,5 +1,13 @@
 <mat-form-field>
-  <mat-select placeholder="Размер узла" [(ngModel)]="size">
+  <mat-select placeholder="Тип модели" [(ngModel)]="nodeCode">
+    <mat-option *ngFor="let option of modelTypeOptions" [value]="option.nodeCode">
+      {{ option.nodeName }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-select placeholder="Размер модели" [(ngModel)]="size">
     <mat-option value="small">Малый</mat-option>
     <mat-option value="medium">Средний</mat-option>
     <mat-option value="large">Большой</mat-option>

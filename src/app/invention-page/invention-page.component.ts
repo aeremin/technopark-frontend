@@ -14,12 +14,18 @@ interface Technology {
   costs: any;
 }
 
+interface ModelChoice {
+  nodeCode: string;
+  nodeName: string;
+}
+
 @Component({
   selector: 'app-invention-page',
   templateUrl: './invention-page.component.html',
   styleUrls: ['./invention-page.component.css'],
 })
 export class InventionPageComponent implements OnInit {
+  public modelTypeOptions: ModelChoice[];
 
   public availableTechnologies: Technology[] = [
     {code: 'first', name: 'Первая', costs: {aluminium: 10, iron: 1} },
@@ -34,11 +40,16 @@ export class InventionPageComponent implements OnInit {
   ]);
 
   public size: string = 'medium';
+  public nodeCode: string;
 
   constructor(private _dataService: DataService) { }
 
   public async ngOnInit() {
     await this._dataService.init();
+    this.modelTypeOptions = [];
+    this._dataService.nodeCodeToHumanReadable().forEach(
+      (nodeName, nodeCode) => this.modelTypeOptions.push({nodeCode, nodeName}));
+    this.nodeCode = this.modelTypeOptions[0].nodeCode;
   }
 
   public getAllColumns() {
