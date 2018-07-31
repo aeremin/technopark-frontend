@@ -1,1 +1,22 @@
-<router-outlet></router-outlet>
+<div class="whole-page-container">
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="snav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <h1 class="toolbar-app-name">{{ toolbarHeader }}</h1>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #snav>
+      <mat-nav-list>
+        <!-- TODO: move to .ts, show pages according to user role -->
+        <a mat-list-item routerLink="/">Технопарк</a>
+        <a mat-list-item routerLink="/invention">Создание модели</a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
