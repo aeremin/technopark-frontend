@@ -16,6 +16,7 @@ import { InventionPageComponent } from './invention-page/invention-page.componen
 import { OverviewPageComponent } from './overview-page/overview-page.component';
 import { ReservationPasswordEnterComponent } from './reservation-password-enter/reservation-password-enter.component';
 import { ReservationTableComponent } from './reservation-table/reservation-table.component';
+import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { ReservationTableComponent } from './reservation-table/reservation-table
     ReservationTableComponent,
     InventionPageComponent,
     ReservationPasswordEnterComponent,
+    ScheduleDashboardComponent,
   ],
   imports: [
     BrowserModule,
