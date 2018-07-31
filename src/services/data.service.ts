@@ -61,7 +61,7 @@ interface MyReservedResponse {
 }
 
 export class ReservationException {
-  constructor(public error: string) {}
+  constructor(public error: string) { }
 }
 
 @Injectable()
@@ -80,7 +80,7 @@ export class DataService {
   // tslint:disable-next-line:variable-name
   private userId = 4;
 
-  constructor(private _http: Http) {}
+  constructor(private _http: Http) { }
 
   public async init(): Promise<void> {
     await Promise.all([
@@ -106,8 +106,8 @@ export class DataService {
 
   public async reserve(nodeId: number, password: string): Promise<void> {
     const response = await this._http.post(this.url('/node/reserve'),
-      {node_id: nodeId, user_id: this.userId, password}).toPromise();
-    const result: {status: string, errors?: string}  = response.json();
+      { node_id: nodeId, user_id: this.userId, password }).toPromise();
+    const result: { status: string, errors?: string } = response.json();
     console.log(result);
     if (result.status != 'ok')
       throw new ReservationException(result.errors);
@@ -213,7 +213,7 @@ export class DataService {
   }
 
   private async getMyReserved(): Promise<MyReservedResponse> {
-    const response = await this._http.post(this.url('/node/get_my_reserved'), {user_id: this.userId}).toPromise();
+    const response = await this._http.post(this.url('/node/get_my_reserved'), { user_id: this.userId }).toPromise();
     return response.json();
   }
 
