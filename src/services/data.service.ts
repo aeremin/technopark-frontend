@@ -39,6 +39,21 @@ interface FlightInfo {
   status: string; // TODO: enum
 }
 
+interface CrewEntry {
+  role: 'supercargo' | 'pilot' | 'navigator' | 'radist' | 'engineer' | '_other';
+  name: string;
+}
+
+interface FullFlightInfo extends FlightInfo {
+  crew: CrewEntry[];
+}
+
+interface MyReservedResponse {
+  result: 'ok' | 'fail';
+  flight: FlightInfo;
+  nodes: any;
+}
+
 interface MyReservedResponse {
   result: 'ok' | 'fail';
   flight: FlightInfo;
@@ -59,6 +74,8 @@ export class DataService {
 
   private _readAllSubject: BehaviorSubject<Model[]>;
 
+  private _flightsInfoSubject: BehaviorSubject<FullFlightInfo[]>;
+
   // TODO: Add login screen and pass user here.
   // tslint:disable-next-line:variable-name
   private userId = 4;
@@ -73,10 +90,18 @@ export class DataService {
     const models = await this.readAllModels();
     this._readAllSubject = new BehaviorSubject(models);
     setInterval(() => this.reReadAllModels(), 60000);
+
+    const flights = await this.getFlightsInfo();
+    this._flightsInfoSubject = new BehaviorSubject(flights);
+    setInterval(() => this.reGetFlightsInfo(), 60000);
   }
 
   public readAllModelsObservable(): Observable<Model[]> {
     return this._readAllSubject;
+  }
+
+  public getFlightsInfoObservable(): Observable<FullFlightInfo[]> {
+    return this._flightsInfoSubject;
   }
 
   public async reserve(nodeId: number, password: string): Promise<void> {
@@ -190,5 +215,20 @@ export class DataService {
   private async getMyReserved(): Promise<MyReservedResponse> {
     const response = await this._http.post(this.url('/node/get_my_reserved'), {user_id: this.userId}).toPromise();
     return response.json();
+  }
+
+  private async reGetFlightsInfo(): Promise<void> {
+    this._flightsInfoSubject.next(await this.getFlightsInfo());
+  }
+
+  private async getFlightsInfo(): Promise<FullFlightInfo[]> {
+    const response = await this._http.get(this.url('/mcc/dashboard')).toPromise();
+    const flights: FullFlightInfo[] = [];
+    for (const key in response.json()) {
+      if (response.json().hasOwnProperty(key)) {
+        flights.push(response.json()[key]);
+      }
+    }
+    return flights;
   }
 }
