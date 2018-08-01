@@ -1,3 +1,15 @@
-<p>
-  schedule-dashboard works!
-</p>
+<mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Вылет {{flight.id}} из дока {{flight.dock}}</mat-card-title>
+      <mat-card-subtitle>Время вылета: {{ flight.departure }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list>
+        <mat-list-item *ngFor="let name of crewNames">
+          <mat-icon matListIcon>account_circle</mat-icon>
+            {{ name }}
+        </mat-list-item>
+      </mat-list>
+      <p>Пассажиры: Мик Джаггер, Пол МакКартни, Майкл Джексон, Дженнис Джоплин, Ума Турман, Фредди Меркьюри</p>
+    </mat-card-content>
+  </mat-card>

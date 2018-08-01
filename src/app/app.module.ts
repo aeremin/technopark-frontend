@@ -2,10 +2,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { MatButtonModule, MatDialogModule, MatIconModule,
-  MatInputModule, MatListModule, MatSelectModule, MatSidenavModule,
-  MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatSortModule,
-  MatTableModule, MatTabsModule, MatToolbarModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatDialogModule,
+  MatIconModule, MatInputModule, MatListModule, MatSelectModule,
+  MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule,
+  MatSortModule, MatTableModule, MatTabsModule, MatToolbarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -35,6 +35,7 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
     HttpModule,
     HttpClientModule,
     MatButtonModule,
+    MatCardModule,
     MatDialogModule,
     MatIconModule,
     MatInputModule,

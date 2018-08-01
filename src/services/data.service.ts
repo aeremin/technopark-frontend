@@ -32,19 +32,19 @@ export interface Model {
   nodes: Node[];
 }
 
-interface FlightInfo {
+export interface FlightInfo {
   id: number;
   departure: string;
   dock: number;
   status: string; // TODO: enum
 }
 
-interface CrewEntry {
+export interface CrewEntry {
   role: 'supercargo' | 'pilot' | 'navigator' | 'radist' | 'engineer' | '_other';
   name: string;
 }
 
-interface FullFlightInfo extends FlightInfo {
+export interface FullFlightInfo extends FlightInfo {
   crew: CrewEntry[];
 }
 
