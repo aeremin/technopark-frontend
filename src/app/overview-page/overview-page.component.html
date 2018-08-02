@@ -9,13 +9,15 @@
 </mat-slide-toggle>
 <mat-tab-group>
     <mat-tab *ngFor="let tab of tabs" [label]="tab.nodeName">
-      <reservation-table-component
-        [models]="models"
-        [nodeCode]='tab.nodeCode'
-        [filter]='filter'
-        [filterUnavailable]='filterUnavailable'
-        [onlyBestNodes]='onlyBestNodes'
-        [showReservationColumn]='showReservationColumn'>
-      </reservation-table-component>
+      <p>
+        <reservation-table-component
+          [models]="models"
+          [nodeCode]='tab.nodeCode'
+          [filter]='filter'
+          [filterUnavailable]='filterUnavailable'
+          [onlyBestNodes]='onlyBestNodes'
+          [showReservationColumn]='showReservationColumn'>
+        </reservation-table-component>
+      </p>
     </mat-tab>
   </mat-tab-group>
