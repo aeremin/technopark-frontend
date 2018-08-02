@@ -17,10 +17,3 @@ h1.toolbar-app-name {
      causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
   flex: 1;
 }
-
-.mat-sidenav-content {
-  margin-top: 1em;
-  margin-left: 1em;
-  margin-right: 1em;
-}
-

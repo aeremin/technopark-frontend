@@ -9,7 +9,7 @@ import { FullFlightInfo } from '../../services/data.service';
 export class ScheduleCardComponent {
   public crewNames: string[] = [];
   public roles = ['supercargo', 'pilot', 'navigator', 'radist', 'engineer'];
-  
+
   private _flight: FullFlightInfo = {id: 0, departure: '', dock: 0, crew: [], status: 'prepare'};
 
   @Input()
