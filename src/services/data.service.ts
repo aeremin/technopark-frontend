@@ -42,6 +42,7 @@ export interface FlightInfo {
 export interface CrewEntry {
   role: 'supercargo' | 'pilot' | 'navigator' | 'radist' | 'engineer' | '_other';
   name: string;
+  user_id: number;
 }
 
 export interface FullFlightInfo extends FlightInfo {

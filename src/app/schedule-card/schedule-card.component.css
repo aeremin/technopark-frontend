@@ -1,0 +1,8 @@
+.mat-list .mat-list-item {
+    height: 2.2em; /* default is 72px */
+  }
+  
+  .mat-card {
+    width: 17em;
+    padding: 12px;
+  }
