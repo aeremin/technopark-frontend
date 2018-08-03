@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { DataService, User } from '../../services/data.service';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material';
+import { DataService, User, FullFlightInfo } from '../../services/data.service';
 
 @Component({
   selector: 'app-flight-edit-dialog',
@@ -23,13 +24,26 @@ export class FlightEditDialogComponent {
   public roles = ['supercargo', 'pilot', 'navigator', 'radist', 'engineer'];
   public users: User[] = [];
 
-  public crew: any = {};
+  public crew: any = {other: []};
 
-  constructor(private _dataService: DataService) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private _dataService: DataService) {
+      const flight: FullFlightInfo = data.flight;
+      // TODO: Support flight == undefined (new flight creation)
+      for (const crewMember of flight.crew) {
+        if (crewMember.role == '_other')
+          this.crew.other.push(crewMember.user_id);
+        else
+          this.crew[crewMember.role] = crewMember.user_id;
+      }
+      this.dock = flight.dock;
+      this.departureTime = flight.departure.split(' ')[1];
+      this.departureDate = new Date(flight.departure.split(' ')[0]);
+    }
 
   public async ngOnInit() {
     this.users = await this._dataService.getActiveUsers();
-    console.log(JSON.stringify(this.users));
   }
 
   public save() {
@@ -49,5 +63,7 @@ export class FlightEditDialogComponent {
       dock: this.dock,
       crew: this.crew,
     }));
+
+    // TODO: Submit some requests to server
   }
 }

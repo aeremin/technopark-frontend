@@ -41,6 +41,8 @@ export class ScheduleCardComponent {
   }
 
   public edit() {
-    this._matDialog.open(FlightEditDialogComponent);
+    this._matDialog.open(FlightEditDialogComponent, {
+      data: { flight: this.flight },
+    });
   }
 }

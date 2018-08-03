@@ -22,7 +22,7 @@
 
 <mat-form-field class="fullwidth" *ngFor="let role of roles">
   <mat-select [(value)]="crew[role]" [placeholder]="role">
-    <mat-option *ngFor="let user of users" [value]="user">
+    <mat-option *ngFor="let user of users" [value]="user.id">
       {{ user.name }} ({{ user.id }})
     </mat-option>
   </mat-select>
@@ -30,7 +30,7 @@
 
 <mat-form-field class="fullwidth">
   <mat-select multiple [(value)]="crew['other']" placeholder="Пассажиры">
-    <mat-option *ngFor="let user of users" [value]="user">
+    <mat-option *ngFor="let user of users" [value]="user.id">
       {{ user.name }} ({{ user.id }})
     </mat-option>
   </mat-select>
