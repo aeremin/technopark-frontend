@@ -30,4 +30,9 @@ export class ScheduleCardComponent {
     else
       return undefined;
   }
+
+  public isAdminMode() {
+    // TODO: Check if admin is logged in
+    return true;
+  }
 }
