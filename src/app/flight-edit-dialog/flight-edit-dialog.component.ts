@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DataService, User } from '../../services/data.service';
 
 @Component({
   selector: 'app-flight-edit-dialog',
@@ -19,7 +20,17 @@ export class FlightEditDialogComponent {
   public docks = [1, 2, 3, 4, 5];
   public dock: number;
 
-  constructor() { }
+  public roles = ['supercargo', 'pilot', 'navigator', 'radist', 'engineer'];
+  public users: User[] = [];
+
+  public crew: any = {};
+
+  constructor(private _dataService: DataService) { }
+
+  public async ngOnInit() {
+    this.users = await this._dataService.getActiveUsers();
+    console.log(JSON.stringify(this.users));
+  }
 
   public save() {
     const d = new Date(this.departureDate);
@@ -36,6 +47,7 @@ export class FlightEditDialogComponent {
     console.log(JSON.stringify({
       departure: dateFormatted,
       dock: this.dock,
+      crew: this.crew,
     }));
   }
 }

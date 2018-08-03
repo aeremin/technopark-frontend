@@ -61,6 +61,11 @@ interface MyReservedResponse {
   nodes: any;
 }
 
+export interface User {
+  id: number;
+  name: string;
+}
+
 export class ReservationException {
   constructor(public error: string) { }
 }
@@ -136,6 +141,10 @@ export class DataService {
     return Array.from(this._resourceCodeToHumanReadable.keys());
   }
 
+  public async getActiveUsers(): Promise<User[]> {
+    return (await this._http.get(this.url('/users/list')).toPromise()).json();
+  }
+
   private async queryParamNames(): Promise<void> {
     if (this._nodeCodeToHumanReadable.size > 0 && this._paramCodeToHumanReadable.size > 0)
       return;
@@ -188,7 +197,7 @@ export class DataService {
   }
 
   private url(path: string): string {
-    return 'https://technopark-backend.alice.magellan2018.ru' + path;
+    return 'http://35.234.72.203:8888' + path;
   }
 
   private async reReadAllModels(): Promise<void> {

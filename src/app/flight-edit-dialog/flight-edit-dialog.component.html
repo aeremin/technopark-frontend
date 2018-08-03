@@ -1,6 +1,5 @@
 <mat-form-field>
-  <input [(ngModel)]="departureDate" readonly matInput 
-    [matDatepicker]="picker" placeholder="Дата вылета">
+  <input [(ngModel)]="departureDate" readonly matInput [matDatepicker]="picker" placeholder="Дата вылета">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
 </mat-form-field>
@@ -21,6 +20,22 @@
   </mat-select>
 </mat-form-field>
 
-<button color="accent" mat-raised-button (click)="save()">
+<mat-form-field class="fullwidth" *ngFor="let role of roles">
+  <mat-select [(value)]="crew[role]" [placeholder]="role">
+    <mat-option *ngFor="let user of users" [value]="user">
+      {{ user.name }} ({{ user.id }})
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field class="fullwidth">
+  <mat-select multiple [(value)]="crew['other']" placeholder="Пассажиры">
+    <mat-option *ngFor="let user of users" [value]="user">
+      {{ user.name }} ({{ user.id }})
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<button color="primary" mat-raised-button (click)="save()">
   Сохранить
 </button>
