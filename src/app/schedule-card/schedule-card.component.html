@@ -2,7 +2,7 @@
   <mat-card-header>
     <mat-card-title>Вылет {{flight.id}} из дока {{flight.dock}}</mat-card-title>
     <mat-card-subtitle>Время вылета: {{ flight.departure }}</mat-card-subtitle>
-    <button *ngIf="isAdminMode()" mat-icon-button>
+    <button *ngIf="isAdminMode()" (click)="edit()" mat-icon-button>
       <mat-icon>edit</mat-icon>
     </button>
   </mat-card-header>

@@ -1,0 +1,26 @@
+<mat-form-field>
+  <input [(ngModel)]="departureDate" readonly matInput 
+    [matDatepicker]="picker" placeholder="Дата вылета">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-select [(value)]="departureTime" placeholder="Время вылета">
+    <mat-option *ngFor="let time of departureTimes" [value]="time">
+      {{ time }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-select [(value)]="dock" placeholder="Номер дока">
+    <mat-option *ngFor="let d of docks" [value]="d">
+      {{ d }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<button color="accent" mat-raised-button (click)="save()">
+  Сохранить
+</button>

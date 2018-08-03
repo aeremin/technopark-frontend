@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { FullFlightInfo } from '../../services/data.service';
+import { FlightEditDialogComponent } from '../flight-edit-dialog/flight-edit-dialog.component';
 
 @Component({
   selector: 'schedule-card',
@@ -12,6 +14,8 @@ export class ScheduleCardComponent {
 
   @Input()
   public flight: FullFlightInfo;
+
+  constructor(private _matDialog: MatDialog) {}
 
   public getCrew(role: string) {
     const crewMember = this.flight.crew.find((m) => m.role == role);
@@ -34,5 +38,9 @@ export class ScheduleCardComponent {
   public isAdminMode() {
     // TODO: Check if admin is logged in
     return true;
+  }
+
+  public edit() {
+    this._matDialog.open(FlightEditDialogComponent);
   }
 }
