@@ -10,21 +10,11 @@ export class ScheduleCardComponent {
   public crewNames: string[] = [];
   public roles = ['supercargo', 'pilot', 'navigator', 'radist', 'engineer'];
 
-  private _flight: FullFlightInfo = {id: 0, departure: '', dock: 0, crew: [], status: 'prepare'};
-
   @Input()
-  public set flight(flight: FullFlightInfo) {
-    console.log(JSON.stringify(flight));
-    this._flight = flight;
-    this.crewNames = flight.crew.map((v) => v.name);
-  }
-
-  public get flight() {
-    return this._flight;
-  }
+  public flight: FullFlightInfo;
 
   public getCrew(role: string) {
-    const crewMember = this._flight.crew.find((m) => m.role == role);
+    const crewMember = this.flight.crew.find((m) => m.role == role);
     if (crewMember != undefined)
       return crewMember.name;
     else
@@ -32,7 +22,7 @@ export class ScheduleCardComponent {
   }
 
   public getOtherCrew() {
-    const otherCrew = this._flight.crew
+    const otherCrew = this.flight.crew
       .filter((crewMember) => crewMember.role == '_other')
       .map((crewMember) => crewMember.name);
     if (otherCrew.length)
