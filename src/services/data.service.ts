@@ -70,6 +70,10 @@ export class ReservationException {
   constructor(public error: string) { }
 }
 
+export class FlightCreationException {
+  constructor(public error: string) { }
+}
+
 @Injectable()
 export class DataService {
   private _nodeCodeToHumanReadable = new Map<string, string>();
@@ -143,6 +147,27 @@ export class DataService {
 
   public async getActiveUsers(): Promise<User[]> {
     return (await this._http.get(this.url('/users/list')).toPromise()).json();
+  }
+
+  // tslint:disable-next-line:variable-name
+  public async setAllCrew(flight_id: number,
+                          crew: Array<{ role: string, user_id: number }>): Promise<void> {
+    const response = await this._http.post(this.url('/mcc/set_all_crew'),
+      { flight_id, crew }).toPromise();
+    console.log(JSON.stringify(response.json()));
+    await this.reGetFlightsInfo();
+  }
+
+  // Returns id of created flight
+  // tslint:disable-next-line:variable-name
+  public async createFlight(departure: string, dock: number): Promise<number> {
+    const response = await this._http.post(this.url('/mcc/add_flight'),
+      { departure, dock }).toPromise();
+    const result: { status: string, errors?: string, flight?: any } = response.json();
+    if (result.status != 'ok')
+      throw new FlightCreationException(result.errors);
+    await this.reGetFlightsInfo();
+    return result.flight.flight_id;
   }
 
   private async queryParamNames(): Promise<void> {

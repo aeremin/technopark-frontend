@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
-import { DataService, User, FullFlightInfo } from '../../services/data.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { DataService, FullFlightInfo, User } from '../../services/data.service';
 
 @Component({
   selector: 'app-flight-edit-dialog',
@@ -24,29 +24,36 @@ export class FlightEditDialogComponent {
   public roles = ['supercargo', 'pilot', 'navigator', 'radist', 'engineer'];
   public users: User[] = [];
 
-  public crew: any = {other: []};
+  public crew: any = { other: [] };
+
+  private _originalFlight: FullFlightInfo;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private _dataService: DataService) {
-      const flight: FullFlightInfo = data.flight;
-      // TODO: Support flight == undefined (new flight creation)
-      for (const crewMember of flight.crew) {
-        if (crewMember.role == '_other')
-          this.crew.other.push(crewMember.user_id);
-        else
-          this.crew[crewMember.role] = crewMember.user_id;
-      }
-      this.dock = flight.dock;
-      this.departureTime = flight.departure.split(' ')[1];
-      this.departureDate = new Date(flight.departure.split(' ')[0]);
+    @Inject(MAT_DIALOG_DATA) data: any,
+    private _dataService: DataService,
+    private _dialogRef: MatDialogRef<FlightEditDialogComponent>) {
+    this._originalFlight = data.flight;
+    // TODO: Support flight == undefined (new flight creation)
+    for (const crewMember of this._originalFlight.crew) {
+      if (crewMember.role == '_other')
+        this.crew.other.push(crewMember.user_id);
+      else
+        this.crew[crewMember.role] = crewMember.user_id;
     }
+    this.dock = this._originalFlight.dock;
+    this.departureTime = this._originalFlight.departure.split(' ')[1];
+    this.departureDate = new Date(this._originalFlight.departure.split(' ')[0]);
+  }
 
   public async ngOnInit() {
     this.users = await this._dataService.getActiveUsers();
   }
 
-  public save() {
+  public enableDateAndDockEditing(): boolean {
+    return this._originalFlight == undefined;
+  }
+
+  public async save() {
     const d = new Date(this.departureDate);
     const dateFormatted =
       d.getFullYear().toString() +
@@ -58,12 +65,29 @@ export class FlightEditDialogComponent {
       (d.getDate().toString().length == 2 ? d.getDate().toString() : '0' + d.getDate().toString())
       + ' ' + this.departureTime;
 
-    console.log(JSON.stringify({
-      departure: dateFormatted,
-      dock: this.dock,
-      crew: this.crew,
-    }));
+    try {
+      let flightId: number;
+      if (this.enableDateAndDockEditing()) {
+        flightId = await this._dataService.createFlight(dateFormatted, this.dock);
+      } else {
+        flightId = this._originalFlight.id;
+      }
 
-    // TODO: Submit some requests to server
+      const crew = [];
+      for (const role in this.crew) {
+        if (this.crew.hasOwnProperty(role)) {
+          if (role == 'other') {
+            crew.push(...(this.crew[role].map((id) => ({ role: '_other', user_id: id }))));
+          } else {
+            crew.push({ role, user_id: this.crew[role] });
+          }
+        }
+      }
+      await this._dataService.setAllCrew(flightId, crew);
+    } catch (err) {
+      // TODO: show error to user?
+      console.error(err);
+    }
+    this._dialogRef.close();
   }
 }
