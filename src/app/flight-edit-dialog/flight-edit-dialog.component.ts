@@ -75,7 +75,7 @@ export class FlightEditDialogComponent {
 
       const crew = [];
       for (const role in this.crew) {
-        if (this.crew.hasOwnProperty(role)) {
+        if (this.crew.hasOwnProperty(role) && this.crew[role]) {
           if (role == 'other') {
             crew.push(...(this.crew[role].map((id) => ({ role: '_other', user_id: id }))));
           } else {

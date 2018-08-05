@@ -22,6 +22,9 @@
 
 <mat-form-field class="fullwidth" *ngFor="let role of roles">
   <mat-select [(value)]="crew[role]" [placeholder]="role">
+    <mat-option [value]="undefined">
+      (неизвестно)
+    </mat-option>    
     <mat-option *ngFor="let user of users" [value]="user.id">
       {{ user.name }} ({{ user.id }})
     </mat-option>
