@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { MatDialog, MatSnackBar, MatSort, MatTableDataSource } from '@angular/material';
 
 import { clone } from 'lodash';
-import { DataService, Model, Node, ReservationException } from 'src/services/data.service';
+import { BackendException, DataService, Model, Node } from 'src/services/data.service';
 import { ReservationPasswordEnterComponent } from '../reservation-password-enter/reservation-password-enter.component';
 
 @Component({
@@ -109,7 +109,7 @@ export class ReservationTableComponent {
       this._matSnackBar.open(
         `${nodeName} модели ${model.name} успешно ${reservedWord}.`, '', { duration: 2000 });
     } catch (err) {
-      if (err instanceof ReservationException)
+      if (err instanceof BackendException)
         this._matSnackBar.open(`Ошибка: ${err.error}.`, '', { duration: 3000 });
       else
         this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });

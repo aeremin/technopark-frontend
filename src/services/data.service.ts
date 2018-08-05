@@ -66,11 +66,7 @@ export interface User {
   name: string;
 }
 
-export class ReservationException {
-  constructor(public error: string) { }
-}
-
-export class FlightCreationException {
+export class BackendException {
   constructor(public error: string) { }
 }
 
@@ -120,7 +116,7 @@ export class DataService {
     const result: { status: string, errors?: string } = response.json();
     console.log(result);
     if (result.status != 'ok')
-      throw new ReservationException(result.errors);
+      throw new BackendException(result.errors);
 
     this.reReadAllModels();
   }
@@ -154,7 +150,9 @@ export class DataService {
                           crew: Array<{ role: string, user_id: number }>): Promise<void> {
     const response = await this._http.post(this.url('/mcc/set_all_crew'),
       { flight_id, crew }).toPromise();
-    console.log(JSON.stringify(response.json()));
+    const result: { status: string, errors?: string, flight?: any } = response.json();
+    if (result.status != 'ok')
+      throw new BackendException(result.errors);
     await this.reGetFlightsInfo();
   }
 
@@ -165,7 +163,7 @@ export class DataService {
       { departure, dock }).toPromise();
     const result: { status: string, errors?: string, flight?: any } = response.json();
     if (result.status != 'ok')
-      throw new FlightCreationException(result.errors);
+      throw new BackendException(result.errors);
     await this.reGetFlightsInfo();
     return result.flight.flight_id;
   }
