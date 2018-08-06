@@ -168,6 +168,11 @@ export class DataService {
     return result.flight.flight_id;
   }
 
+  public async genericRequest(method: string): Promise<any[]> {
+    const response = await this._http.get(this.url(method)).toPromise();
+    return response.json();
+  }
+
   private async queryParamNames(): Promise<void> {
     if (this._nodeCodeToHumanReadable.size > 0 && this._paramCodeToHumanReadable.size > 0)
       return;

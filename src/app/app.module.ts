@@ -14,6 +14,7 @@ import { AppRoutingModule } from 'src/app/core/app.routing.module';
 import { DataService } from 'src/services/data.service';
 import { AppComponent } from './app.component';
 import { FlightEditDialogComponent } from './flight-edit-dialog/flight-edit-dialog.component';
+import { GamemasterGenericTableComponent } from './gamemaster-generic-table/gamemaster-generic-table.component';
 import { InventionPageComponent } from './invention-page/invention-page.component';
 import { OverviewPageComponent } from './overview-page/overview-page.component';
 import { ReservationPasswordEnterComponent } from './reservation-password-enter/reservation-password-enter.component';
@@ -31,6 +32,7 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
     ScheduleDashboardComponent,
     ScheduleCardComponent,
     FlightEditDialogComponent,
+    GamemasterGenericTableComponent,
   ],
   imports: [
     BrowserModule,

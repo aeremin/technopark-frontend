@@ -1,0 +1,21 @@
+<mat-form-field>
+  <mat-select [(value)]="method" (selectionChange)="refresh()" placeholder="Адрес">
+    <mat-option *ngFor="let m of methods" [value]="m">
+      {{ m }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<button mat-icon-button color="primary" (click)="refresh()">
+  <mat-icon>refresh</mat-icon>
+</button>
+
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  <ng-container *ngFor="let col of getKeys()" [matColumnDef]="col">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ col }} </th>
+    <td mat-cell *matCellDef="let row"> {{ row[col] }} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="getKeys()"></tr>
+  <tr mat-row *matRowDef="let row; columns: getKeys();"></tr>
+</table>
