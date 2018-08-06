@@ -225,7 +225,7 @@ export class DataService {
   }
 
   private url(path: string): string {
-    return 'http://35.234.72.203:8888' + path;
+    return 'https://technopark-backend.alice.magellan2018.ru' + path;
   }
 
   private async reReadAllModels(): Promise<void> {
