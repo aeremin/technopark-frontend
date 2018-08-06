@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { DataService, FullFlightInfo, User } from '../../services/data.service';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { BackendException, DataService, FullFlightInfo, User } from '../../services/data.service';
 
 @Component({
   selector: 'app-flight-edit-dialog',
@@ -31,7 +31,8 @@ export class FlightEditDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) data: any,
     private _dataService: DataService,
-    private _dialogRef: MatDialogRef<FlightEditDialogComponent>) {
+    private _dialogRef: MatDialogRef<FlightEditDialogComponent>,
+    private _matSnackBar: MatSnackBar) {
     this._originalFlight = data.flight;
     if (this._originalFlight != undefined) {
       for (const crewMember of this._originalFlight.crew) {
@@ -91,9 +92,13 @@ export class FlightEditDialogComponent {
         }
       }
       await this._dataService.setAllCrew(flightId, crew);
+      this._matSnackBar.open('Вылет успешно сохранен', '', { duration: 2000 });
     } catch (err) {
-      // TODO: show error to user?
-      console.error(err);
+      if (err instanceof BackendException)
+        this._matSnackBar.open(`Ошибка: ${err.error}.`, '', { duration: 3000 });
+      else
+        this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });
+      console.log(err);
     }
     this._dialogRef.close();
   }
