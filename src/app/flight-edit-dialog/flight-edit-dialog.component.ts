@@ -33,16 +33,17 @@ export class FlightEditDialogComponent {
     private _dataService: DataService,
     private _dialogRef: MatDialogRef<FlightEditDialogComponent>) {
     this._originalFlight = data.flight;
-    // TODO: Support flight == undefined (new flight creation)
-    for (const crewMember of this._originalFlight.crew) {
-      if (crewMember.role == '_other')
-        this.crew.other.push(crewMember.user_id);
-      else
-        this.crew[crewMember.role] = crewMember.user_id;
+    if (this._originalFlight != undefined) {
+      for (const crewMember of this._originalFlight.crew) {
+        if (crewMember.role == '_other')
+          this.crew.other.push(crewMember.user_id);
+        else
+          this.crew[crewMember.role] = crewMember.user_id;
+      }
+      this.dock = this._originalFlight.dock;
+      this.departureTime = this._originalFlight.departure.split(' ')[1];
+      this.departureDate = new Date(this._originalFlight.departure.split(' ')[0]);
     }
-    this.dock = this._originalFlight.dock;
-    this.departureTime = this._originalFlight.departure.split(' ')[1];
-    this.departureDate = new Date(this._originalFlight.departure.split(' ')[0]);
   }
 
   public async ngOnInit() {
@@ -51,6 +52,12 @@ export class FlightEditDialogComponent {
 
   public enableDateAndDockEditing(): boolean {
     return this._originalFlight == undefined;
+  }
+
+  public canSave() {
+    return this.departureDate != undefined &&
+           this.departureTime != undefined &&
+           this.dock != undefined;
   }
 
   public async save() {

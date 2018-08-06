@@ -39,6 +39,6 @@
   </mat-select>
 </mat-form-field>
 
-<button color="primary" mat-raised-button (click)="save()">
+<button color="primary" mat-raised-button (click)="save()" [disabled]="!canSave()">
   Сохранить
 </button>

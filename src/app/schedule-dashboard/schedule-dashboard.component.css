@@ -5,3 +5,11 @@
     align-content: space-around;
     align-items: stretch;
   }
+
+.new-flight {
+    z-index: 2;
+    position: fixed;
+    bottom: 2em;
+    right: 2em;
+  }
+  
