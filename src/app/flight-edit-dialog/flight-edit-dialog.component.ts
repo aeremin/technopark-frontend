@@ -2,19 +2,27 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { BackendException, DataService, FullFlightInfo, User } from '../../services/data.service';
 
+function getOffsetDate(): Date {
+  const today = new Date();
+  today.setFullYear(2349);
+  return today;
+}
+
 @Component({
   selector: 'app-flight-edit-dialog',
   templateUrl: './flight-edit-dialog.component.html',
   styleUrls: ['./flight-edit-dialog.component.css'],
 })
 export class FlightEditDialogComponent {
-  public startDate = new Date(2435, 8, 1);
+  public startDate = getOffsetDate();
   public departureDate: any;
-  // TODO: Use real departure times
   public departureTimes = [
+    '10:00:00',
     '12:00:00',
-    '15:00:00',
-    '18:00:00',
+    '15:30:00',
+    '17:30:00',
+    '20:30:00',
+    '22:30:00',
   ];
   public departureTime: string;
 

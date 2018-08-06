@@ -262,6 +262,7 @@ export class DataService {
         flights.push(response.json()[key]);
       }
     }
+    flights.sort((a, b) => a.departure < b.departure ? -1 : 1);
     return flights;
   }
 }
