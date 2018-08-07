@@ -1,3 +1,4 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, Input, ViewChild } from '@angular/core';
 import { MatDialog, MatSnackBar, MatSort, MatTableDataSource } from '@angular/material';
 
@@ -9,6 +10,13 @@ import { ReservationPasswordEnterComponent } from '../reservation-password-enter
   selector: 'reservation-table-component',
   templateUrl: './reservation-table.component.html',
   styleUrls: ['./reservation-table.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class ReservationTableComponent {
   @Input()
@@ -21,10 +29,13 @@ export class ReservationTableComponent {
 
   @ViewChild(MatSort) public sort: MatSort;
 
+  public expandedModel: Model;
+
   private _paramsColumns: string[] = [];
   private _filterUnavailable: boolean = false;
   private _onlyBestNodes: boolean = false;
   private _inputModels: Model[] = [];
+  private _hackUniqueId = -1;
 
   constructor(private _dataService: DataService,
               private _matSnackBar: MatSnackBar,
@@ -140,11 +151,25 @@ export class ReservationTableComponent {
     if (model.nodes[0].status_code == 'reserved_by_you')
       return 'mat-row ng-star-inserted reserved-by-you';
     else
-      return 'mat-row ng-star-inserted';
+      return 'mat-row ng-star-inserted not-reserved-by-you';
   }
 
   public sizeLetter(model: Model) {
     return model.size.toLocaleUpperCase()[0];
+  }
+
+  public detailExpand(model: Model, expandedModel: Model): string {
+    return (this._nodeId(model) == this._nodeId(expandedModel)) ? 'expanded' : 'collapsed';
+  }
+
+  public onRowClicked(model: Model) {
+    if (model.node_type_code == 'hull')
+      this.expandedModel = model;
+  }
+
+  private _nodeId(model: Model) {
+    if (!model) return undefined;
+    return model.nodes[0].id;
   }
 
   private _refresh() {
@@ -158,7 +183,7 @@ export class ReservationTableComponent {
         if (!ownedModel.nodes.length) {
           ownedModel.nodes.push({
             az_level: 0, date_created: '', name: '',
-            model_id: ownedModel.id, id: -1, status_code: 'fake',
+            model_id: ownedModel.id, id: --this._hackUniqueId, status_code: 'fake',
             is_premium: 0,
           });
         }
