@@ -1,11 +1,15 @@
 .mat-list .mat-list-item {
     height: 2.2em; /* default is 72px */
   }
-  
+
   .mat-card {
     padding: 12px;
     height: 88%;
     width: 17em;
     flex: 1 0 17em;
     margin: 0.5rem .25em;
+  }
+
+  img {
+    margin-right: 0.7em;
   }

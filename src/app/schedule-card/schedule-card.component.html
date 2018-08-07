@@ -9,7 +9,7 @@
   <mat-card-content>
     <mat-list>
       <mat-list-item *ngFor="let role of roles">
-        <mat-icon matListIcon>account_circle</mat-icon>
+        <img [src]="'assets/'+role + '.png'" width="25px">
         {{ getCrew(role) }}
       </mat-list-item>
     </mat-list>
