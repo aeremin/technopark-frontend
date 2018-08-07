@@ -1,5 +1,6 @@
 <mat-card class="example-card">
   <mat-card-header>
+    <div mat-card-avatar><img *ngIf="flight.company"  [src]="getCompanyIcon()"></div>
     <mat-card-title>Вылет {{flight.id}} из дока {{flight.dock}}</mat-card-title>
     <mat-card-subtitle>Время вылета: {{ flight.departure }}</mat-card-subtitle>
     <button *ngIf="isAdminMode()" (click)="edit()" mat-icon-button>
@@ -8,8 +9,6 @@
   </mat-card-header>
   <mat-card-content>
     <p>Корабль: {{ flight.ship || "(неизвестно)" }}</p>
-    <p>Компания: {{ getCompanyName() }}</p>
-
     <mat-list>Экипаж:
       <mat-list-item *ngFor="let role of roles">
         <img [src]="'assets/'+role + '.png'" width="25px">
