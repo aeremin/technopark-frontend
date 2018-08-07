@@ -35,5 +35,9 @@ export class OverviewPageComponent {
     this.tabs = [];
     this._dataService.nodeCodeToHumanReadable().forEach(
       (nodeName, nodeCode) => this.tabs.push({nodeCode, nodeName}));
+
+    // hull should be first tab
+    const weightFn = (nodeCode) => nodeCode == 'hull' ? 0 : 1;
+    this.tabs.sort((a, b) => weightFn(a.nodeCode) - weightFn(b.nodeCode));
   }
 }
