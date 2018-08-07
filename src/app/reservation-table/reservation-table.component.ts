@@ -97,7 +97,8 @@ export class ReservationTableComponent {
     return this._isPremium(model) ? 'lock' : 'done';
   }
 
-  public async reserve(model: Model) {
+  public async reserve(model: Model, event: any) {
+    event.stopPropagation();
     const nodeId = model.nodes[0].id;
     console.log(`Reserving model with id ${model.id}, node id ${nodeId}`);
     let password = '';
