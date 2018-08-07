@@ -76,7 +76,7 @@ export class ReservationTableComponent {
       return model[columnId];
 
     const p = model.params[columnId] == undefined
-       ? (model.nodes[0] as any).slots[columnId] || 0
+       ? (((model.nodes[0] as any).slots ? (model.nodes[0] as any).slots[columnId] || 0 : undefined ))
        :  model.params[columnId];
     if (typeof p == 'number')
       return Number(p.toFixed(0));
@@ -178,6 +178,7 @@ export class ReservationTableComponent {
   public getHullPerks(model: Model): string[] {
     if (model.node_type_code != 'hull') return [];
     const perks: string = (model.nodes[0] as any).perks;
+    if (!perks) return [];
     return perks.split('<br>');
   }
 
