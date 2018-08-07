@@ -74,7 +74,10 @@ export class ReservationTableComponent {
   public cellValue(model: Model, columnId: string): string | number {
     if (model.hasOwnProperty(columnId))
       return model[columnId];
-    const p = model.params[columnId];
+
+    const p = model.params[columnId] == undefined
+       ? (model.nodes[0] as any).slots[columnId] || 0
+       :  model.params[columnId];
     if (typeof p == 'number')
       return Number(p.toFixed(0));
     else
@@ -219,6 +222,9 @@ export class ReservationTableComponent {
     this.dataSource.data = expandedModels;
 
     this._paramsColumns = this._dataService.paramsForNodeCode(this.nodeCode).filter((c) => c != 'az_level');
+    if (this.nodeCode == 'hull') {
+      this._paramsColumns.push('con2', 'con3', 'con4', 'inv', 'sum2', 'sum3', 'sum4', 'sum5');
+    }
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor =
       (model: Model, columnId: string) => {
