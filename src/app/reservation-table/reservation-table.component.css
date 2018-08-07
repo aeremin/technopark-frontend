@@ -21,6 +21,17 @@ tr:hover
     background: #ffd740 !important;
 }
 
+.reserved-by-you-details
+{
+    background: #ffd740 !important;
+    height: 0;
+}
+
+.not-reserved-by-you-details
+{
+    height: 0;
+}
+
 .reserved-by-you td
 {
     border-bottom-width: 0;
@@ -29,11 +40,6 @@ tr:hover
 .not-reserved-by-you td
 {
     border-bottom-width: 0;
-}
-
-
-tr.model-detail-row {
-    height: 0;
 }
 
 .model-detail {

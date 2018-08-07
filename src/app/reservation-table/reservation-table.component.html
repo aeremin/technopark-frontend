@@ -50,5 +50,5 @@
       [class]="getClass(model)"
       (click)="onRowClicked(model)">
   </tr>
-  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="model-detail-row"></tr>
+  <tr mat-row *matRowDef="let model; columns: ['expandedDetail']" [class]="getClass(model)+'-details'"></tr>
 </table>
