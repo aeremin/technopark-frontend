@@ -40,7 +40,9 @@
   <ng-container matColumnDef="expandedDetail">
     <td mat-cell *matCellDef="let model" [attr.colspan]="getAllColumns().length">
       <div class="model-detail" [@detailExpand]="detailExpand(model, expandedModel)">
-          <p>Lorem Ipsum Lorem Ipsum Lorem Ipsum </p>
+        <ul>
+          <li *ngFor="let perk of getHullPerks(model)">{{ perk }}</li>
+        </ul>
       </div>
     </td>
   </ng-container>

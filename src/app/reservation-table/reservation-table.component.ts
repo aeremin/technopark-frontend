@@ -172,6 +172,12 @@ export class ReservationTableComponent {
       this.expandedModel = model;
   }
 
+  public getHullPerks(model: Model): string[] {
+    if (model.node_type_code != 'hull') return [];
+    const perks: string = (model.nodes[0] as any).perks;
+    return perks.split('<br>');
+  }
+
   private _isSameNode(model: Model, expandedModel: Model) {
     return this._nodeId(model) == this._nodeId(expandedModel) && this._nodeId(model) != -1;
   }
