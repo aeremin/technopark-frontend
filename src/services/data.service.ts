@@ -262,9 +262,6 @@ export class DataService {
       }
     }
     flights.sort((a, b) => a.departure < b.departure ? -1 : 1);
-
-    console.log(JSON.stringify(flights));
-
     return flights;
   }
 }
