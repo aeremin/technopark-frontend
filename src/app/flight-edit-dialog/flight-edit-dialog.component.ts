@@ -61,6 +61,7 @@ export class FlightEditDialogComponent {
       this.dock = this._originalFlight.dock;
       this.departureTime = this._originalFlight.departure.split(' ')[1];
       this.departureDate = new Date(this._originalFlight.departure.split(' ')[0]);
+      this.company = this._originalFlight.company;
     }
   }
 
