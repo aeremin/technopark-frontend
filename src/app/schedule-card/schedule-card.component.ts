@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { FullFlightInfo } from '../../services/data.service';
+import { companyCodeToHumanReadableName, FullFlightInfo } from '../../services/data.service';
 import { FlightEditDialogComponent } from '../flight-edit-dialog/flight-edit-dialog.component';
 
 @Component({
@@ -44,5 +44,12 @@ export class ScheduleCardComponent {
     this._matDialog.open(FlightEditDialogComponent, {
       data: { flight: this.flight },
     });
+  }
+
+  public getCompanyName() {
+    if (!this.flight.company)
+      return '(неизвестно)';
+
+    return companyCodeToHumanReadableName.get(this.flight.company);
   }
 }

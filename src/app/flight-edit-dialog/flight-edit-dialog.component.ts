@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { BackendException, DataService, FullFlightInfo, User } from '../../services/data.service';
+import { BackendException, companyCodeToHumanReadableName, DataService,
+  FullFlightInfo, User } from '../../services/data.service';
 
 function getOffsetDate(): Date {
   const today = new Date();
@@ -28,6 +29,14 @@ export class FlightEditDialogComponent {
 
   public docks = [1, 2, 3, 4, 5];
   public dock: number;
+
+  public companies =  (() => {
+    const result: Array<{code: string, name: string}> = [];
+    companyCodeToHumanReadableName.forEach((v, k) => result.push({code: k, name: v}));
+    return result;
+  })();
+
+  public company: string;
 
   public roles = ['supercargo', 'pilot', 'navigator', 'radist', 'engineer'];
   public users: User[] = [];
@@ -84,7 +93,7 @@ export class FlightEditDialogComponent {
     try {
       let flightId: number;
       if (this.enableDateAndDockEditing()) {
-        flightId = await this._dataService.createFlight(dateFormatted, this.dock);
+        flightId = await this._dataService.createFlight(dateFormatted, this.dock, this.company);
       } else {
         flightId = this._originalFlight.id;
       }

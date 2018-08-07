@@ -20,11 +20,19 @@
   </mat-select>
 </mat-form-field>
 
+<mat-form-field>
+  <mat-select [disabled]="!enableDateAndDockEditing()" [(value)]="company" placeholder="Компания">
+    <mat-option *ngFor="let c of companies" [value]="c.code">
+      {{ c.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
 <mat-form-field class="fullwidth" *ngFor="let role of roles">
   <mat-select [(value)]="crew[role]" [placeholder]="role">
     <mat-option [value]="undefined">
       (неизвестно)
-    </mat-option>    
+    </mat-option>
     <mat-option *ngFor="let user of users" [value]="user.id">
       {{ user.name }} ({{ user.id }})
     </mat-option>

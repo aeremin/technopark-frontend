@@ -37,6 +37,7 @@ export interface FlightInfo {
   departure: string;
   dock: number;
   status: string; // TODO: enum
+  company?: string;
 }
 
 export interface CrewEntry {
@@ -47,6 +48,7 @@ export interface CrewEntry {
 
 export interface FullFlightInfo extends FlightInfo {
   crew: CrewEntry[];
+  ship?: string;
 }
 
 interface MyReservedResponse {
@@ -158,9 +160,9 @@ export class DataService {
 
   // Returns id of created flight
   // tslint:disable-next-line:variable-name
-  public async createFlight(departure: string, dock: number): Promise<number> {
+  public async createFlight(departure: string, dock: number, company: string): Promise<number> {
     const response = await this._http.post(this.url('/mcc/add_flight'),
-      { departure, dock }).toPromise();
+      { departure, dock, company }).toPromise();
     const result: { status: string, errors?: string, flight?: any } = response.json();
     if (result.status != 'ok')
       throw new BackendException(result.errors);
@@ -211,14 +213,6 @@ export class DataService {
   }
 
   private makeHumanReadable(model: Model): Model {
-    const companyCodeToHumanReadableName = new Map<string, string>([
-      ['gd', 'Гугл Дисней'],
-      ['mat', 'Мицубиси АвтоВАЗ Технолоджи'],
-      ['mst', 'МарсСтройТрест'],
-      ['pre', 'Пони Роскосмос Экспресс'],
-      ['kkg', 'Красный Крест Генетикс'],
-    ]);
-
     model.company_name = companyCodeToHumanReadableName.get(model.company);
     model.node_type = this._nodeCodeToHumanReadable.get(model.node_type_code);
     return model;
@@ -268,6 +262,21 @@ export class DataService {
       }
     }
     flights.sort((a, b) => a.departure < b.departure ? -1 : 1);
+
+    console.log(JSON.stringify(flights));
+
     return flights;
   }
+}
+
+export const companyCodeToHumanReadableName = new Map<string, string>([
+  ['gd', 'Гугл Дисней'],
+  ['mat', 'Мицубиси АвтоВАЗ Технолоджи'],
+  ['mst', 'МарсСтройТрест'],
+  ['pre', 'Пони Роскосмос Экспресс'],
+  ['kkg', 'Красный Крест Генетикс'],
+]);
+
+export function companyCodes(): string[] {
+  return Array.from(companyCodeToHumanReadableName.keys());
 }
