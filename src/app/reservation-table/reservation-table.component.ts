@@ -35,7 +35,6 @@ export class ReservationTableComponent {
   private _filterUnavailable: boolean = false;
   private _onlyBestNodes: boolean = false;
   private _inputModels: Model[] = [];
-  private _hackUniqueId = -1;
 
   constructor(private _dataService: DataService,
               private _matSnackBar: MatSnackBar,
@@ -159,12 +158,21 @@ export class ReservationTableComponent {
   }
 
   public detailExpand(model: Model, expandedModel: Model): string {
-    return (this._nodeId(model) == this._nodeId(expandedModel)) ? 'expanded' : 'collapsed';
+    return this._isSameNode(model, expandedModel) ? 'expanded' : 'collapsed';
   }
 
   public onRowClicked(model: Model) {
-    if (model.node_type_code == 'hull')
+    if (model.node_type_code != 'hull')
+      return;
+
+    if (this._isSameNode(model, this.expandedModel))
+      this.expandedModel = undefined;
+    else
       this.expandedModel = model;
+  }
+
+  private _isSameNode(model: Model, expandedModel: Model) {
+    return this._nodeId(model) == this._nodeId(expandedModel) && this._nodeId(model) != -1;
   }
 
   private _nodeId(model: Model) {
@@ -183,7 +191,7 @@ export class ReservationTableComponent {
         if (!ownedModel.nodes.length) {
           ownedModel.nodes.push({
             az_level: 0, date_created: '', name: '',
-            model_id: ownedModel.id, id: --this._hackUniqueId, status_code: 'fake',
+            model_id: ownedModel.id, id: -1, status_code: 'fake',
             is_premium: 0,
           });
         }
