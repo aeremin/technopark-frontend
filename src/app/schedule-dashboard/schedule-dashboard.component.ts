@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { GameMasterGuardService } from 'src/services/gamemaster.guard.service';
 import { DataService, FullFlightInfo } from '../../services/data.service';
 import { FlightEditDialogComponent } from '../flight-edit-dialog/flight-edit-dialog.component';
 
@@ -11,6 +12,7 @@ import { FlightEditDialogComponent } from '../flight-edit-dialog/flight-edit-dia
 export class ScheduleDashboardComponent implements OnInit {
   public flights: FullFlightInfo[] = [];
   constructor(private _dataService: DataService,
+              private _gameMasterGuardService: GameMasterGuardService,
               private _matDialog: MatDialog) { }
 
   public async ngOnInit() {
@@ -18,6 +20,10 @@ export class ScheduleDashboardComponent implements OnInit {
     this._dataService.getFlightsInfoObservable().subscribe((flightsInfo: FullFlightInfo[]) => {
       this.flights = flightsInfo;
     });
+  }
+
+  public isAdminMode() {
+    return this._gameMasterGuardService.canActivate();
   }
 
   public async newFlight() {

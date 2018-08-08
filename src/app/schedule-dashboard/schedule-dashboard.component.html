@@ -2,9 +2,9 @@
   <schedule-card *ngFor="let flight of flights" [flight]="flight"></schedule-card>
 </div>
 
-<button mat-fab color="primary" 
-  class="new-flight" 
-  matTooltip="Новый вылет" 
+<button *ngIf="isAdminMode()" mat-fab color="primary"
+  class="new-flight"
+  matTooltip="Новый вылет"
   (click)="newFlight()">
   <mat-icon>add</mat-icon>
 </button>
