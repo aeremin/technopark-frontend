@@ -11,11 +11,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from 'src/app/core/app.routing.module';
+import { AuthService } from 'src/services/auth.service';
 import { DataService } from 'src/services/data.service';
 import { AppComponent } from './app.component';
 import { FlightEditDialogComponent } from './flight-edit-dialog/flight-edit-dialog.component';
 import { GamemasterGenericTableComponent } from './gamemaster-generic-table/gamemaster-generic-table.component';
 import { InventionPageComponent } from './invention-page/invention-page.component';
+import { LoginPageComponent } from './login-page/login-page.component';
 import { OverviewPageComponent } from './overview-page/overview-page.component';
 import { ReservationPasswordEnterComponent } from './reservation-password-enter/reservation-password-enter.component';
 import { ReservationTableComponent } from './reservation-table/reservation-table.component';
@@ -33,6 +35,7 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
     ScheduleCardComponent,
     FlightEditDialogComponent,
     GamemasterGenericTableComponent,
+    LoginPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,6 +63,7 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
     MatToolbarModule,
   ],
   providers: [
+    AuthService,
     DataService,
   ],
   entryComponents: [
