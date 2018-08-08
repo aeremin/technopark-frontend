@@ -68,7 +68,7 @@ export class ReservationTableComponent {
   }
 
   public getCompanyIcon(model: Model) {
-    return `assets/company_${model.company}.png`;
+    return `assets/company_${model.company}_40.png`;
   }
 
   public cellValue(model: Model, columnId: string): string | number {

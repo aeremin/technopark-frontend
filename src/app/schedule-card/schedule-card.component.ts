@@ -47,6 +47,6 @@ export class ScheduleCardComponent {
   }
 
   public getCompanyIcon() {
-    return `assets/company_${this.flight.company}.png`;
+    return `assets/company_${this.flight.company || 'ideolog'}_40.png`;
   }
 }
