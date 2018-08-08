@@ -45,7 +45,6 @@ export class AuthService {
       this.getRequestOptionsWithCredentials(loginOrUserId, password)).toPromise();
     this._account = response.json().account;
     this.accountSubject.next(this._account);
-    console.log(JSON.stringify(this._account));
   }
 
   public async logout() {
