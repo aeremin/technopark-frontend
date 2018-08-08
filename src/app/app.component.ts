@@ -21,20 +21,26 @@ export class AppComponent {
   @ViewChild('snav') public sideNav: MatSidenav;
 
   public menuItems: MenuItem[] = [];
+  public canLogout: boolean;
 
-  constructor(router: Router,
-              authService: AuthService,
+  constructor(private _router: Router,
+              private _authService: AuthService,
               private _corpTopManagerGuardService: CorpTopManagerGuardService,
               private _gameMasterGuardService: GameMasterGuardService,
               private _loggedGuardService: LoggedGuardService) {
     // TODO: Also change this.toolbarHeader?
-    router.events.subscribe(() => {
+    _router.events.subscribe(() => {
       if (this.sideNav)
         this.sideNav.close();
     });
 
-    authService.accountSubject.subscribe(() => this._updateMenuItems());
+    this._authService.accountSubject.subscribe(() => this._updateMenuItems());
     this._updateMenuItems();
+  }
+
+  public logout() {
+    this._authService.logout();
+    this._router.navigate(['']);
   }
 
   private _updateMenuItems() {
@@ -50,5 +56,7 @@ export class AppComponent {
     if (this._gameMasterGuardService.canActivate()) {
       this.menuItems.push({title: 'Универсальные мастерские таблички', link: '/generic_table'});
     }
+
+    this.canLogout = this._loggedGuardService.canActivate();
   }
 }
