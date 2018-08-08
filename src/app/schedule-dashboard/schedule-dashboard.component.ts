@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { FlightEditDialogComponent } from 'src/app/flight-edit-dialog/flight-edit-dialog.component';
 import { DataService, FullFlightInfo } from '../../services/data.service';
+import { FlightEditDialogComponent } from '../flight-edit-dialog/flight-edit-dialog.component';
 
 @Component({
   selector: 'app-schedule-dashboard',

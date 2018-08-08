@@ -10,10 +10,14 @@ import { MatButtonModule, MatCardModule, MatDatepickerModule,
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { AppRoutingModule } from 'src/app/core/app.routing.module';
-import { AuthService } from 'src/services/auth.service';
-import { DataService } from 'src/services/data.service';
+import { CorpTopManagerGuardService } from 'src/services/corp.topmanager.guard.service';
+import { AuthService } from '../services/auth.service';
+import { CorpGuardService } from '../services/corp.guard.service';
+import { DataService } from '../services/data.service';
+import { GameMasterGuardService } from '../services/gamemaster.guard.service';
+import { LoggedGuardService } from '../services/logged.guard.service';
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './core/app.routing.module';
 import { FlightEditDialogComponent } from './flight-edit-dialog/flight-edit-dialog.component';
 import { GamemasterGenericTableComponent } from './gamemaster-generic-table/gamemaster-generic-table.component';
 import { InventionPageComponent } from './invention-page/invention-page.component';
@@ -65,6 +69,10 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
   providers: [
     AuthService,
     DataService,
+    CorpGuardService,
+    CorpTopManagerGuardService,
+    GameMasterGuardService,
+    LoggedGuardService,
   ],
   entryComponents: [
     ReservationPasswordEnterComponent,

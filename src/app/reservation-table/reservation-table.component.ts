@@ -3,7 +3,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { MatDialog, MatSnackBar, MatSort, MatTableDataSource } from '@angular/material';
 
 import { clone } from 'lodash';
-import { BackendException, DataService, Model, Node } from 'src/services/data.service';
+import { BackendException, DataService, Model, Node } from '../../services/data.service';
 import { ReservationPasswordEnterComponent } from '../reservation-password-enter/reservation-password-enter.component';
 
 @Component({

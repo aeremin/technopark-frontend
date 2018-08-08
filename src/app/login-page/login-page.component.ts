@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 
-import { AuthService } from 'src/services/auth.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +21,7 @@ export class LoginPageComponent {
   public async login(): Promise<void> {
     try {
       await this._authService.login(this.username, this.password);
-      // this._router.navigate(['history']);
+      this._router.navigate(['schedule']);
     } catch (err) {
       console.warn(JSON.stringify(err));
       if (err.status == 404) {
