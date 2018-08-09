@@ -41,7 +41,8 @@ export class OverviewPageComponent {
     const weightFn = (nodeCode) => nodeCode == 'hull' ? 0 : 1;
     this.tabs.sort((a, b) => weightFn(a.nodeCode) - weightFn(b.nodeCode));
 
-    // TODO: Check instead if user is assigned to flight as supercargo
-    this.showReservationColumn = this._loggedGuardService.canActivate();
+    this._dataService.isAssignedSupercargoObservable().subscribe({
+      next: (isAssignedSupercargo) => this.showReservationColumn = isAssignedSupercargo,
+    });
   }
 }

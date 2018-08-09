@@ -37,7 +37,7 @@ export interface FlightInfo {
   id: number;
   departure: string;
   dock: number;
-  status: string; // TODO: enum
+  status: string;
   company?: string;
 }
 
@@ -77,6 +77,8 @@ export class DataService {
 
   private _readAllSubject: BehaviorSubject<Model[]>;
 
+  private _isAssignedSupercargoSubject = new BehaviorSubject<boolean>(false);
+
   private _flightsInfoSubject: BehaviorSubject<FullFlightInfo[]>;
 
   constructor(private _authService: AuthService,
@@ -98,6 +100,10 @@ export class DataService {
 
   public readAllModelsObservable(): Observable<Model[]> {
     return this._readAllSubject;
+  }
+
+  public isAssignedSupercargoObservable(): Observable<boolean> {
+    return this._isAssignedSupercargoSubject;
   }
 
   public getFlightsInfoObservable(): Observable<FullFlightInfo[]> {
@@ -237,11 +243,17 @@ export class DataService {
   }
 
   private async getMyReserved(): Promise<MyReservedResponse> {
-    if (!this._authService.getAccount())
+    if (!this._authService.getAccount()) {
+      this._isAssignedSupercargoSubject.next(false);
       return undefined;
+    }
     const response = await this._http.post(this.url('/node/get_my_reserved'),
       { user_id: this._authService.getAccount()._id }).toPromise();
-    return response.json();
+
+    const result: MyReservedResponse =  response.json();
+    this._isAssignedSupercargoSubject.next(result.result == 'ok');
+
+    return result;
   }
 
   private async reGetFlightsInfo(): Promise<void> {
