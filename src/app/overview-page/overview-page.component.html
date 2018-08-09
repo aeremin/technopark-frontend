@@ -5,7 +5,7 @@
   Скрыть недоступные модели и узлы&nbsp;&nbsp;&nbsp;&nbsp;
 </mat-slide-toggle>
 <mat-slide-toggle [(ngModel)]="onlyBestNodes" color="primary">
-  Показывать только узел с наименьшим износом
+  Показывать только узел с наименьшим износом (не затрагивает корпуса)
 </mat-slide-toggle>
 <mat-tab-group>
     <mat-tab *ngFor="let tab of tabs" [label]="tab.nodeName">

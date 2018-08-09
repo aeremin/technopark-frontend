@@ -137,6 +137,9 @@ export class ReservationTableComponent {
   }
 
   @Input() set onlyBestNodes(onlyBestNodes: boolean) {
+    // Don't filter hulls this way as their nodes aren't equivalent
+    if (this.nodeCode == 'hull')
+      onlyBestNodes = false;
     this._onlyBestNodes = onlyBestNodes;
     this._refresh();
   }
