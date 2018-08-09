@@ -100,6 +100,8 @@ export class FlightEditDialogComponent {
         flightId = this._originalFlight.id;
       }
 
+      this._dataService.assignFlight(flightId, this.company);
+
       const crew = [];
       for (const role in this.crew) {
         if (this.crew.hasOwnProperty(role) && this.crew[role]) {

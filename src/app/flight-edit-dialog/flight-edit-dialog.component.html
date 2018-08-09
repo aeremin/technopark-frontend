@@ -21,7 +21,7 @@
 </mat-form-field>
 
 <mat-form-field>
-  <mat-select [disabled]="!enableDateAndDockEditing()" [(value)]="company" placeholder="Компания">
+  <mat-select [(value)]="company" placeholder="Компания">
     <mat-option *ngFor="let c of companies" [value]="c.code">
       {{ c.name }}
     </mat-option>

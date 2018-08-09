@@ -156,6 +156,11 @@ export class DataService {
     await this.reGetFlightsInfo();
   }
 
+  // tslint:disable-next-line:variable-name
+  public async assignFlight(flight_id: number, company: string): Promise<void> {
+    await this._http.post(this.url('/mcc/assign_flight'), { flight_id, company }).toPromise();
+  }
+
   // Returns id of created flight
   // tslint:disable-next-line:variable-name
   public async createFlight(departure: string, dock: number, company: string): Promise<number> {
