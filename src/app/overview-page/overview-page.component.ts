@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService, Model } from '../../services/data.service';
+import { LoggedGuardService } from '../../services/logged.guard.service';
 
 interface TabData {
   nodeCode: string;
@@ -18,10 +19,10 @@ export class OverviewPageComponent {
   public filterUnavailable: boolean = true;
   public onlyBestNodes: boolean = true;
 
-  // TODO: Set to false if not SuperCargo user or guest
-  public showReservationColumn: boolean = true;
+  public showReservationColumn: boolean = false;
 
-  constructor(private _dataService: DataService) {}
+  constructor(private _dataService: DataService,
+              private _loggedGuardService: LoggedGuardService) {}
 
   public applyFilter(filterValue: string) {
     this.filter = filterValue.trim().toLowerCase();
@@ -39,5 +40,8 @@ export class OverviewPageComponent {
     // hull should be first tab
     const weightFn = (nodeCode) => nodeCode == 'hull' ? 0 : 1;
     this.tabs.sort((a, b) => weightFn(a.nodeCode) - weightFn(b.nodeCode));
+
+    // TODO: Check instead if user is assigned to flight as supercargo
+    this.showReservationColumn = this._loggedGuardService.canActivate();
   }
 }

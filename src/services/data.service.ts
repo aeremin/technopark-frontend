@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { AuthService } from 'src/services/auth.service';
 
 export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved'
   | 'fake' // "Ghost" node attached to model to show the model without any nodes
@@ -57,12 +58,6 @@ interface MyReservedResponse {
   nodes: any;
 }
 
-interface MyReservedResponse {
-  result: 'ok' | 'fail';
-  flight: FlightInfo;
-  nodes: any;
-}
-
 export interface User {
   id: number;
   name: string;
@@ -84,11 +79,8 @@ export class DataService {
 
   private _flightsInfoSubject: BehaviorSubject<FullFlightInfo[]>;
 
-  // TODO: Add login screen and pass user here.
-  // tslint:disable-next-line:variable-name
-  private userId = 4;
-
-  constructor(private _http: Http) { }
+  constructor(private _authService: AuthService,
+              private _http: Http) { }
 
   public async init(): Promise<void> {
     await Promise.all([
@@ -114,7 +106,7 @@ export class DataService {
 
   public async reserve(nodeId: number, password: string): Promise<void> {
     const response = await this._http.post(this.url('/node/reserve'),
-      { node_id: nodeId, user_id: this.userId, password }).toPromise();
+      { node_id: nodeId, user_id: this._authService.getAccount()._id, password }).toPromise();
     const result: { status: string, errors?: string } = response.json();
     console.log(result);
     if (result.status != 'ok')
@@ -236,7 +228,7 @@ export class DataService {
       .map((m) => this.makeHumanReadable(m))
       .map((m) => {
         m.nodes = m.nodes.map((node) => {
-          if (reserved.nodes[m.node_type_code] == node.id)
+          if (reserved && reserved.nodes && reserved.nodes[m.node_type_code] == node.id)
             node.status_code = 'reserved_by_you';
           return node;
         });
@@ -245,7 +237,10 @@ export class DataService {
   }
 
   private async getMyReserved(): Promise<MyReservedResponse> {
-    const response = await this._http.post(this.url('/node/get_my_reserved'), { user_id: this.userId }).toPromise();
+    if (!this._authService.getAccount())
+      return undefined;
+    const response = await this._http.post(this.url('/node/get_my_reserved'),
+      { user_id: this._authService.getAccount()._id }).toPromise();
     return response.json();
   }
 

@@ -9,7 +9,6 @@
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #snav>
       <mat-nav-list>
-        <!-- TODO: move to .ts, show pages according to user role -->
         <a *ngFor="let item of menuItems" mat-list-item [routerLink]="item.link"> {{ item.title }} </a>
         <a *ngIf="canLogout" mat-list-item (click)="logout()"> Выход из системы </a>
       </mat-nav-list>
