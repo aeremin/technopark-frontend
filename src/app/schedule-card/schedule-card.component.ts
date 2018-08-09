@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { GameMasterGuardService } from 'src/services/gamemaster.guard.service';
+import { AuthService } from '../../services/auth.service';
 import { FullFlightInfo } from '../../services/data.service';
 import { FlightEditDialogComponent } from '../flight-edit-dialog/flight-edit-dialog.component';
 import { kFlightDepartureTimes } from '../util';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'schedule-card',
