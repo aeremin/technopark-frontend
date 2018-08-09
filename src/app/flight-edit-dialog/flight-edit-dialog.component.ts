@@ -76,7 +76,8 @@ export class FlightEditDialogComponent {
   public canSave() {
     return this.departureDate != undefined &&
            this.departureTime != undefined &&
-           this.dock != undefined;
+           this.dock != undefined &&
+           this.company != undefined;
   }
 
   public async save() {
