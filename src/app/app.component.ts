@@ -5,6 +5,7 @@ import { CorpTopManagerGuardService } from 'src/services/corp.topmanager.guard.s
 import { GameMasterGuardService } from 'src/services/gamemaster.guard.service';
 import { LoggedGuardService } from 'src/services/logged.guard.service';
 import { AuthService } from '../services/auth.service';
+import { CorpGuardService } from '../services/corp.guard.service';
 
 interface MenuItem {
   link: string;
@@ -25,6 +26,7 @@ export class AppComponent {
 
   constructor(private _router: Router,
               private _authService: AuthService,
+              private _corpGuardService: CorpGuardService,
               private _corpTopManagerGuardService: CorpTopManagerGuardService,
               private _gameMasterGuardService: GameMasterGuardService,
               private _loggedGuardService: LoggedGuardService) {
@@ -49,6 +51,9 @@ export class AppComponent {
       this.menuItems.push({title: 'Авторизация', link: '/'});
     }
     this.menuItems.push({title: 'Технопарк', link: '/overview'});
+    if (this._corpGuardService.canActivate()) {
+      this.menuItems.push({title: 'Экономический обзор', link: '/economics'});
+    }
     if (this._corpTopManagerGuardService.canActivate()) {
       this.menuItems.push({title: 'Создание модели', link: '/invention'});
     }
