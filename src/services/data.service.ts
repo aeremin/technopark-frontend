@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
+import * as moment from 'moment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from 'src/services/auth.service';
 
@@ -273,7 +274,20 @@ export class DataService {
         flights.push(response.json()[key]);
       }
     }
-    flights.sort((a, b) => a.departure < b.departure ? -1 : 1);
+
+    const compareDatesFn = (a: string, b: string) => {
+      const aParsed = moment(a, 'DD.MM.YYYY hh:mm');
+      const bParsed = moment(b, 'DD.MM.YYYY hh:mm');
+      if (aParsed < bParsed) return -1;
+      if (aParsed > bParsed) return  1;
+      return 0;
+    };
+
+    const compareDocksFn = (a: number, b: number) => {
+      return a - b;
+    };
+
+    flights.sort((a, b) => compareDatesFn(a.departure, b.departure) || compareDocksFn(a.dock, b.dock));
     return flights;
   }
 }
