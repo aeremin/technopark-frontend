@@ -4,6 +4,7 @@ import { GameMasterGuardService } from 'src/services/gamemaster.guard.service';
 import { FullFlightInfo } from '../../services/data.service';
 import { FlightEditDialogComponent } from '../flight-edit-dialog/flight-edit-dialog.component';
 import { kFlightDepartureTimes } from '../util';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'schedule-card',
@@ -11,13 +12,13 @@ import { kFlightDepartureTimes } from '../util';
   styleUrls: ['./schedule-card.component.css'],
 })
 export class ScheduleCardComponent {
-  public crewNames: string[] = [];
   public roles = ['supercargo', 'pilot', 'navigator', 'radist', 'engineer'];
 
   @Input()
   public flight: FullFlightInfo;
 
   constructor(private _gameMasterGuardService: GameMasterGuardService,
+              private _authService: AuthService,
               private _matDialog: MatDialog) {}
 
   public getCrew(role: string) {
@@ -52,5 +53,13 @@ export class ScheduleCardComponent {
     const company = this.flight.departure.split(' ')[1] == kFlightDepartureTimes[kFlightDepartureTimes.length - 1]
       ? 'ideolog' : this.flight.company;
     return `assets/company_${company}_40.png`;
+  }
+
+  public isMyFlight(): boolean {
+    return this._authService.getAccount() && this._flightIncludes(Number(this._authService.getAccount()._id));
+  }
+
+  private _flightIncludes(id: number): boolean {
+    return this.flight.crew.some((crewMember) => crewMember.user_id == id);
   }
 }

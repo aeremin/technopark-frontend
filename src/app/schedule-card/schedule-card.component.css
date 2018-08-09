@@ -10,6 +10,10 @@
     margin: 0.5rem .25em;
   }
 
+  .mat-card.highlighted {
+    background: #ffd640a6 !important;
+  }
+
   img {
     margin-right: 0.7em;
   }
