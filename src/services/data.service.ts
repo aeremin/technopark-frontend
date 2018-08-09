@@ -76,7 +76,7 @@ export class DataService {
 
   private _resourceCodeToHumanReadable = new Map<string, string>();
 
-  private _readAllSubject: BehaviorSubject<Model[]>;
+  private _readAllModelsSubject: BehaviorSubject<Model[]>;
 
   private _isAssignedSupercargoSubject = new BehaviorSubject<boolean>(false);
 
@@ -91,7 +91,7 @@ export class DataService {
       this.queryResourceNames(),
     ]);
     const models = await this.readAllModels();
-    this._readAllSubject = new BehaviorSubject(models);
+    this._readAllModelsSubject = new BehaviorSubject(models);
     setInterval(() => this.reReadAllModels(), 60000);
 
     const flights = await this.getFlightsInfo();
@@ -100,7 +100,7 @@ export class DataService {
   }
 
   public readAllModelsObservable(): Observable<Model[]> {
-    return this._readAllSubject;
+    return this._readAllModelsSubject;
   }
 
   public isAssignedSupercargoObservable(): Observable<boolean> {
@@ -227,7 +227,7 @@ export class DataService {
   }
 
   private async reReadAllModels(): Promise<void> {
-    this._readAllSubject.next(await this.readAllModels());
+    this._readAllModelsSubject.next(await this.readAllModels());
   }
 
   private async readAllModels(): Promise<Model[]> {
