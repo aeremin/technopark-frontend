@@ -1,3 +1,25 @@
-<p>
-  economics-page works!
-</p>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <ng-container matColumnDef="section">
+    <th mat-header-cell *matHeaderCellDef> Категория </th>
+    <td mat-cell *matCellDef="let pump">{{ pump.section }}</td>
+    <td mat-footer-cell *matFooterCellDef></td>
+  </ng-container>
+
+  <ng-container matColumnDef="comment">
+    <th mat-header-cell *matHeaderCellDef> Комментарий </th>
+    <td mat-cell *matCellDef="let pump">{{ pump.comment }}</td>
+    <td mat-footer-cell *matFooterCellDef></td>
+  </ng-container>
+
+  <ng-container *ngFor="let col of getCostsColumns()" [matColumnDef]="col">
+    <th mat-header-cell *matHeaderCellDef> {{ humanReadableColumnName(col) }} </th>
+    <td mat-cell *matCellDef="let pump"> {{ getCost(pump, col) }} </td>
+    <td mat-footer-cell *matFooterCellDef>
+      <b>{{ getTotalCost(col) }}</b>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="getAllColumns()"></tr>
+  <tr mat-row *matRowDef="let pump; columns: getAllColumns();"></tr>
+  <tr mat-footer-row *matFooterRowDef="getAllColumns()"></tr>
+</table>

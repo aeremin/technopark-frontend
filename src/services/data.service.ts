@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AuthService } from 'src/services/auth.service';
+import { AuthService, Company } from 'src/services/auth.service';
 
 export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved'
   | 'fake' // "Ghost" node attached to model to show the model without any nodes
@@ -64,6 +64,18 @@ export interface User {
   name: string;
 }
 
+export interface EconomicPump {
+  id: number;
+  company: Company;
+  date_begin: string;
+  date_end?: string;
+  section: string;
+  entity_id?: string;
+  comment: string;
+  is_income: number;
+  resources: any;
+}
+
 export class BackendException {
   constructor(public error: string) { }
 }
@@ -77,6 +89,8 @@ export class DataService {
   private _resourceCodeToHumanReadable = new Map<string, string>();
 
   private _readAllModelsSubject: BehaviorSubject<Model[]>;
+
+  private _economicPumpsSubject: BehaviorSubject<EconomicPump[]>;
 
   private _isAssignedSupercargoSubject = new BehaviorSubject<boolean>(false);
 
@@ -97,6 +111,10 @@ export class DataService {
     const flights = await this.getFlightsInfo();
     this._flightsInfoSubject = new BehaviorSubject(flights);
     setInterval(() => this.reGetFlightsInfo(), 60000);
+
+    const economicPumps = await this.getEconomicPumps();
+    this._economicPumpsSubject = new BehaviorSubject(economicPumps);
+    setInterval(() => this.reGetEconomicPumps(), 60000);
   }
 
   public readAllModelsObservable(): Observable<Model[]> {
@@ -109,6 +127,10 @@ export class DataService {
 
   public getFlightsInfoObservable(): Observable<FullFlightInfo[]> {
     return this._flightsInfoSubject;
+  }
+
+  public getEconomicPumpsObservable(): Observable<EconomicPump[]> {
+    return this._economicPumpsSubject;
   }
 
   public async reserve(nodeId: number, password: string): Promise<void> {
@@ -256,7 +278,7 @@ export class DataService {
     const response = await this._http.post(this.url('/node/get_my_reserved'),
       { user_id: this._authService.getAccount()._id }).toPromise();
 
-    const result: MyReservedResponse =  response.json();
+    const result: MyReservedResponse = response.json();
     this._isAssignedSupercargoSubject.next(result.result == 'ok');
 
     return result;
@@ -279,7 +301,7 @@ export class DataService {
       const aParsed = moment(a, 'DD.MM.YYYY hh:mm');
       const bParsed = moment(b, 'DD.MM.YYYY hh:mm');
       if (aParsed < bParsed) return -1;
-      if (aParsed > bParsed) return  1;
+      if (aParsed > bParsed) return 1;
       return 0;
     };
 
@@ -289,6 +311,26 @@ export class DataService {
 
     flights.sort((a, b) => compareDatesFn(a.departure, b.departure) || compareDocksFn(a.dock, b.dock));
     return flights;
+  }
+
+  private async reGetEconomicPumps(): Promise<void> {
+    this._economicPumpsSubject.next(await this.getEconomicPumps());
+  }
+
+  private async getEconomicPumps(): Promise<EconomicPump[]> {
+    if (!(this._authService.getAccount() && this._authService.getAccount().companyAccess &&
+      this._authService.getAccount().companyAccess.length == 1))
+      return [];
+    const response = await this._http.post(this.url('/economics/read_pumps'), {
+      company: this._authService.getAccount().companyAccess[0].companyName,
+    }).toPromise();
+    const pumps: EconomicPump[] = [];
+    for (const key in response.json()) {
+      if (response.json().hasOwnProperty(key)) {
+        pumps.push(response.json()[key]);
+      }
+    }
+    return pumps;
   }
 }
 
