@@ -38,7 +38,7 @@ export interface FlightInfo {
   departure: string;
   dock: number;
   status: string;
-  company?: string;
+  company: string;
 }
 
 export interface CrewEntry {

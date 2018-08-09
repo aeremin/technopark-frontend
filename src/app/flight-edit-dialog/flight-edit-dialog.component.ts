@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { kFlightDepartureTimes } from 'src/app/util';
 import { BackendException, companyCodeToHumanReadableName, DataService,
   FullFlightInfo, User } from '../../services/data.service';
 
@@ -17,14 +18,8 @@ function getOffsetDate(): Date {
 export class FlightEditDialogComponent {
   public startDate = getOffsetDate();
   public departureDate: any;
-  public departureTimes = [
-    '10:00:00',
-    '12:00:00',
-    '15:30:00',
-    '17:30:00',
-    '20:30:00',
-    '22:30:00',
-  ];
+  public departureTimes = kFlightDepartureTimes;
+
   public departureTime: string;
 
   public docks = [1, 2, 3, 4, 5];

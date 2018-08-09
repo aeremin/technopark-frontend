@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 import { GameMasterGuardService } from 'src/services/gamemaster.guard.service';
 import { FullFlightInfo } from '../../services/data.service';
 import { FlightEditDialogComponent } from '../flight-edit-dialog/flight-edit-dialog.component';
+import { kFlightDepartureTimes } from '../util';
 
 @Component({
   selector: 'schedule-card',
@@ -48,6 +49,8 @@ export class ScheduleCardComponent {
   }
 
   public getCompanyIcon() {
-    return `assets/company_${this.flight.company || 'ideolog'}_40.png`;
+    const company = this.flight.departure.split(' ')[1] == kFlightDepartureTimes[kFlightDepartureTimes.length - 1]
+      ? 'ideolog' : this.flight.company;
+    return `assets/company_${company}_40.png`;
   }
 }
