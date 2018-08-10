@@ -318,11 +318,11 @@ export class DataService {
   }
 
   private async getEconomicPumps(): Promise<EconomicPump[]> {
-    if (!(this._authService.getAccount() && this._authService.getAccount().companyAccess &&
-      this._authService.getAccount().companyAccess.length == 1))
+    if (!this._authService.getCompany())
       return [];
+
     const response = await this._http.post(this.url('/economics/read_pumps'), {
-      company: this._authService.getAccount().companyAccess[0].companyName,
+      company: this._authService.getCompany(),
     }).toPromise();
     const pumps: EconomicPump[] = [];
     for (const key in response.json()) {

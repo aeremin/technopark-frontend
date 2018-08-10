@@ -56,6 +56,15 @@ export class AuthService {
     return this._account;
   }
 
+  public getCompany(): Company {
+    if (!(this.getAccount() && this.getAccount().companyAccess &&
+      this.getAccount().companyAccess.length == 1))
+      return undefined;
+
+    return this.getAccount().companyAccess[0].companyName;
+
+  }
+
   private getRequestOptionsWithCredentials(userId: string, password: string): RequestOptionsArgs {
     return {
       headers: new Headers({
