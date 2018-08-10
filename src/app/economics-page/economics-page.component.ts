@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { MatSnackBar, MatTableDataSource } from '@angular/material';
 import { combineLatest } from 'rxjs';
 import { AuthService } from 'src/services/auth.service';
-import { DataService, EconomicPump, Model, Node } from 'src/services/data.service';
+import { CorpTopManagerGuardService } from 'src/services/corp.topmanager.guard.service';
+import { BackendException, DataService, EconomicPump, Model, Node } from 'src/services/data.service';
 import { getCost, getTotalCost } from '../util';
 
 @Component({
@@ -15,7 +16,9 @@ export class EconomicsPageComponent implements OnInit {
   public dataSource = new MatTableDataSource<EconomicPump>();
 
   constructor(private _dataService: DataService,
-              private _authService: AuthService) { }
+              private _authService: AuthService,
+              private _corpTopManagerGuardService: CorpTopManagerGuardService,
+              private _matSnackBar: MatSnackBar) { }
 
   public ngOnInit() {
     combineLatest(this._dataService.getEconomicPumpsObservable(),
@@ -25,7 +28,9 @@ export class EconomicsPageComponent implements OnInit {
   }
 
   public getAllColumns() {
-    return ['section', 'comment'].concat(this.getCostsColumns());
+    return ['section', 'comment']
+      .concat(this.getCostsColumns())
+      .concat(this._corpTopManagerGuardService.canActivate() ? ['button'] : []);
   }
 
   public getCostsColumns() {
@@ -45,7 +50,42 @@ export class EconomicsPageComponent implements OnInit {
   }
 
   public commentClass(pump: EconomicPump): string {
-    return pump.section == 'nodes' ? 'padded-text' : 'normal-text';
+    return this._isNodePump(pump) ? 'padded-text' : 'normal-text';
+  }
+
+  public hasButton(pump: EconomicPump): boolean {
+    return pump.section != 'mines';
+  }
+
+  public onButton(pump: EconomicPump) {
+    if (this._isNodePump(pump)) {
+      // TODO: Send request to server
+      console.log('Deleting node');
+    } else {
+      // TODO: Password?
+      try {
+        this._dataService.createNode(Number(pump.entity_id));
+        this._matSnackBar.open('Узел создан успешно', '', { duration: 2000 });
+      } catch (err) {
+        if (err instanceof BackendException)
+          this._matSnackBar.open(`Ошибка: ${err.error}.`, '', { duration: 3000 });
+        else
+          this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });
+        console.log(err);
+      }
+    }
+  }
+
+  public getButtonIcon(pump: EconomicPump): string {
+    return this._isNodePump(pump) ? 'delete_forever' : 'add_library';
+  }
+
+  public getButtonTooltip(pump: EconomicPump): string {
+    return this._isNodePump(pump) ? 'Списать узел' : 'Создать узел';
+  }
+
+  private _isNodePump(pump: EconomicPump): boolean {
+    return pump.section == 'nodes';
   }
 
   private _updateData(pumps: EconomicPump[], models: Model[]) {
@@ -66,9 +106,9 @@ export class EconomicsPageComponent implements OnInit {
       pumpsReordered.push(this._dummyModelPump(model));
       for (const node of model.nodes) {
         if (nodeIdToPump.has(node.id))
-        pumpsReordered.push(nodeIdToPump.get(node.id));
+          pumpsReordered.push(nodeIdToPump.get(node.id));
         else
-        pumpsReordered.push(this._dummyNodePump(model, node));
+          pumpsReordered.push(this._dummyNodePump(model, node));
       }
     }
 

@@ -6,7 +6,7 @@ import { MatButtonModule, MatCardModule, MatDatepickerModule,
   MatDialogModule, MatIconModule, MatInputModule, MatListModule,
   MatNativeDateModule, MatSelectModule, MatSidenavModule, MatSliderModule,
   MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatTableModule,
-  MatTabsModule, MatToolbarModule } from '@angular/material';
+  MatTabsModule, MatToolbarModule, MatTooltipModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -18,6 +18,7 @@ import { GameMasterGuardService } from '../services/gamemaster.guard.service';
 import { LoggedGuardService } from '../services/logged.guard.service';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './core/app.routing.module';
+import { EconomicsPageComponent } from './economics-page/economics-page.component';
 import { FlightEditDialogComponent } from './flight-edit-dialog/flight-edit-dialog.component';
 import { GamemasterGenericTableComponent } from './gamemaster-generic-table/gamemaster-generic-table.component';
 import { InventionPageComponent } from './invention-page/invention-page.component';
@@ -27,7 +28,6 @@ import { ReservationPasswordEnterComponent } from './reservation-password-enter/
 import { ReservationTableComponent } from './reservation-table/reservation-table.component';
 import { ScheduleCardComponent } from './schedule-card/schedule-card.component';
 import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashboard.component';
-import { EconomicsPageComponent } from './economics-page/economics-page.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +67,7 @@ import { EconomicsPageComponent } from './economics-page/economics-page.componen
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
+    MatTooltipModule,
   ],
   providers: [
     AuthService,

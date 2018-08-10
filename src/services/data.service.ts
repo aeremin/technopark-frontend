@@ -201,6 +201,13 @@ export class DataService {
     return response.json();
   }
 
+  // tslint:disable-next-line:variable-name
+  public async createNode(model_id: number) {
+    await this._http.post(this.url('/node/create'), { model_id, password: '' }).toPromise();
+    await this.reGetEconomicPumps();
+    await this.reReadAllModels();
+  }
+
   private async queryParamNames(): Promise<void> {
     if (this._nodeCodeToHumanReadable.size > 0 && this._paramCodeToHumanReadable.size > 0)
       return;
