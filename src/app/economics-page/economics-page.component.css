@@ -3,6 +3,18 @@ table
     width: 100%;
 }
 
-.padded-text {
+.padded-text-0 {
+  padding-left: 0em;
+}
+
+.padded-text-1 {
   padding-left: 2em;
+}
+
+.padded-text-2 {
+  padding-left: 4em;
+}
+
+.padded-text-3 {
+  padding-left: 6em;
 }

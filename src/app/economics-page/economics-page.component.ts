@@ -32,7 +32,7 @@ export class EconomicsPageComponent implements OnInit {
   }
 
   public getAllColumns() {
-    return ['section', 'comment']
+    return ['comment']
       .concat(this.getCostsColumns())
       .concat(this._corpTopManagerGuardService.canActivate() ? ['button'] : []);
   }
@@ -45,8 +45,9 @@ export class EconomicsPageComponent implements OnInit {
     return this._dataService.resourceCodeToHumanReadable(columnCode);
   }
 
-  public getCost(pump: EconomicPumpExtended, col: string): number {
-    return getCost(pump, col);
+  public getCost(pump: EconomicPumpExtended, col: string): string {
+    if (pump.section == 'meta') return '';
+    return getCost(pump, col).toString();
   }
 
   public getTotalCost(col: string): number {
@@ -54,7 +55,13 @@ export class EconomicsPageComponent implements OnInit {
   }
 
   public commentClass(pump: EconomicPumpExtended): string {
-    return this._isNodePump(pump) ? 'padded-text' : 'normal-text';
+    const indent: number = {
+      mines: 1,
+      models: 1,
+      nodes: 2,
+      meta: 0,
+    }[pump.section] || 0;
+    return `padded-text-${indent}`;
   }
 
   public sectionToHumanReadable(section: string) {
@@ -66,7 +73,7 @@ export class EconomicsPageComponent implements OnInit {
   }
 
   public hasButton(pump: EconomicPumpExtended): boolean {
-    return pump.section != 'mines';
+    return pump.section == 'nodes' || pump.section == 'models';
   }
 
   public async onButton(pump: EconomicPumpExtended) {
@@ -109,25 +116,36 @@ export class EconomicsPageComponent implements OnInit {
       return;
     }
     const companyModels = models.filter((model) => model.company == this._authService.getCompany());
+    const modelTypeToModel = new Map<string, Model[]>();
+    companyModels.forEach((model) => {
+      if (modelTypeToModel.has(model.node_type_code))
+        modelTypeToModel.get(model.node_type_code).push(model);
+      else
+        modelTypeToModel.set(model.node_type_code, [model]);
+    });
 
     const nodeIdToPump = new Map<number, EconomicPump>();
     pumps
       .filter((pump) => pump.section == 'nodes')
       .forEach((pump) => nodeIdToPump.set(Number(pump.entity_id), pump));
 
-    const pumpsReordered: EconomicPumpExtended[] = pumps
+    const pumpsReordered = [this._dummyCategoryPump('Шахты')];
+    pumpsReordered.push(...pumps
       .filter((pump) => pump.section == 'mines')
-      .map((pump) => ({...pump, isDeletable: false }));
+      .map((pump) => ({ ...pump, isDeletable: false })));
 
-    for (const model of companyModels) {
-      pumpsReordered.push(this._dummyModelPump(model));
-      for (const node of model.nodes) {
-        if (nodeIdToPump.has(node.id))
-          pumpsReordered.push({...nodeIdToPump.get(node.id), isDeletable: node.status_code == 'free'});
-        else
-          pumpsReordered.push(this._dummyNodePump(model, node));
+    modelTypeToModel.forEach((modelsPerType, modelTypeCode) => {
+      pumpsReordered.push(this._dummyCategoryPump(this._dataService.nodeCodeToHumanReadable().get(modelTypeCode)));
+      for (const model of modelsPerType) {
+        pumpsReordered.push(this._dummyModelPump(model));
+        for (const node of model.nodes) {
+          if (nodeIdToPump.has(node.id))
+            pumpsReordered.push({ ...nodeIdToPump.get(node.id), isDeletable: node.status_code == 'free' });
+          else
+            pumpsReordered.push(this._dummyNodePump(model, node));
+        }
       }
-    }
+    });
 
     const otherPumps = pumps.filter((pump) => pump.section != 'nodes' && pump.section != 'mines');
     if (otherPumps.length) console.log(JSON.stringify(otherPumps));
@@ -161,6 +179,20 @@ export class EconomicsPageComponent implements OnInit {
       is_income: 0,
       resources: {},
       section: 'models',
+      isDeletable: false,
+    };
+  }
+
+  private _dummyCategoryPump(category: string): EconomicPumpExtended {
+    return {
+      comment: category,
+      company: this._authService.getCompany(),
+      date_begin: '',
+      date_end: '',
+      id: 0,
+      is_income: 0,
+      resources: {},
+      section: 'meta',
       isDeletable: false,
     };
   }
