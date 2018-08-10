@@ -141,7 +141,7 @@ export class DataService {
     if (result.status != 'ok')
       throw new BackendException(result.errors);
 
-    this.reReadAllModels();
+    await this.reReadAllModels();
   }
 
   public nodeCodeToHumanReadable(): Map<string, string> {

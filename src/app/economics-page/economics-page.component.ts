@@ -69,14 +69,14 @@ export class EconomicsPageComponent implements OnInit {
     return pump.section != 'mines';
   }
 
-  public onButton(pump: EconomicPumpExtended) {
+  public async onButton(pump: EconomicPumpExtended) {
     if (this._isNodePump(pump)) {
       // TODO: Send request to server
       console.log('Deleting node');
     } else {
       // TODO: Password?
       try {
-        this._dataService.createNode(Number(pump.entity_id));
+        await this._dataService.createNode(Number(pump.entity_id));
         this._matSnackBar.open('Узел создан успешно', '', { duration: 2000 });
       } catch (err) {
         if (err instanceof BackendException)
