@@ -26,7 +26,8 @@
   <ng-container matColumnDef="button">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let pump">
-      <button *ngIf="hasButton(pump)" color="accent" mat-raised-button (click)="onButton(pump)" [matTooltip]="getButtonTooltip(pump)">
+      <button *ngIf="hasButton(pump)" color="accent" mat-raised-button (click)="onButton(pump)" [matTooltip]="getButtonTooltip(pump)"
+      [disabled]="disableButton(pump)">
         <mat-icon> {{ getButtonIcon(pump) }} </mat-icon>
       </button>
     </td>

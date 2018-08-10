@@ -6,6 +6,10 @@ import { CorpTopManagerGuardService } from 'src/services/corp.topmanager.guard.s
 import { BackendException, DataService, EconomicPump, Model, Node } from 'src/services/data.service';
 import { getCost, getTotalCost } from '../util';
 
+interface EconomicPumpExtended extends EconomicPump {
+  isDeletable: boolean;
+}
+
 @Component({
   selector: 'app-economics-page',
   templateUrl: './economics-page.component.html',
@@ -13,7 +17,7 @@ import { getCost, getTotalCost } from '../util';
 })
 export class EconomicsPageComponent implements OnInit {
 
-  public dataSource = new MatTableDataSource<EconomicPump>();
+  public dataSource = new MatTableDataSource<EconomicPumpExtended>();
 
   constructor(private _dataService: DataService,
               private _authService: AuthService,
@@ -41,7 +45,7 @@ export class EconomicsPageComponent implements OnInit {
     return this._dataService.resourceCodeToHumanReadable(columnCode);
   }
 
-  public getCost(pump: EconomicPump, col: string): number {
+  public getCost(pump: EconomicPumpExtended, col: string): number {
     return getCost(pump, col);
   }
 
@@ -49,15 +53,15 @@ export class EconomicsPageComponent implements OnInit {
     return getTotalCost(this.dataSource.data, col);
   }
 
-  public commentClass(pump: EconomicPump): string {
+  public commentClass(pump: EconomicPumpExtended): string {
     return this._isNodePump(pump) ? 'padded-text' : 'normal-text';
   }
 
-  public hasButton(pump: EconomicPump): boolean {
+  public hasButton(pump: EconomicPumpExtended): boolean {
     return pump.section != 'mines';
   }
 
-  public onButton(pump: EconomicPump) {
+  public onButton(pump: EconomicPumpExtended) {
     if (this._isNodePump(pump)) {
       // TODO: Send request to server
       console.log('Deleting node');
@@ -75,16 +79,19 @@ export class EconomicsPageComponent implements OnInit {
       }
     }
   }
+  public disableButton(pump: EconomicPumpExtended): boolean {
+    return this._isNodePump(pump) && !pump.isDeletable;
+  }
 
-  public getButtonIcon(pump: EconomicPump): string {
+  public getButtonIcon(pump: EconomicPumpExtended): string {
     return this._isNodePump(pump) ? 'delete_forever' : 'add_library';
   }
 
-  public getButtonTooltip(pump: EconomicPump): string {
+  public getButtonTooltip(pump: EconomicPumpExtended): string {
     return this._isNodePump(pump) ? 'Списать узел' : 'Создать узел';
   }
 
-  private _isNodePump(pump: EconomicPump): boolean {
+  private _isNodePump(pump: EconomicPumpExtended): boolean {
     return pump.section == 'nodes';
   }
 
@@ -100,13 +107,15 @@ export class EconomicsPageComponent implements OnInit {
       .filter((pump) => pump.section == 'nodes')
       .forEach((pump) => nodeIdToPump.set(Number(pump.entity_id), pump));
 
-    const pumpsReordered = pumps.filter((pump) => pump.section == 'mines');
+    const pumpsReordered: EconomicPumpExtended[] = pumps
+      .filter((pump) => pump.section == 'mines')
+      .map((pump) => ({...pump, isDeletable: false }));
 
     for (const model of companyModels) {
       pumpsReordered.push(this._dummyModelPump(model));
       for (const node of model.nodes) {
         if (nodeIdToPump.has(node.id))
-          pumpsReordered.push(nodeIdToPump.get(node.id));
+          pumpsReordered.push({...nodeIdToPump.get(node.id), isDeletable: node.status_code == 'free'});
         else
           pumpsReordered.push(this._dummyNodePump(model, node));
       }
@@ -118,8 +127,9 @@ export class EconomicsPageComponent implements OnInit {
     this.dataSource.data = pumpsReordered;
   }
 
-  private _dummyNodePump(model: Model, node: Node): EconomicPump {
+  private _dummyNodePump(model: Model, node: Node): EconomicPumpExtended {
     return {
+      isDeletable: node.status_code == 'free',
       comment: `Поддержка узла ${node.id} модели ${model.name}`,
       company: this._authService.getCompany(),
       date_begin: '',
@@ -132,7 +142,7 @@ export class EconomicsPageComponent implements OnInit {
     };
   }
 
-  private _dummyModelPump(model: Model): EconomicPump {
+  private _dummyModelPump(model: Model): EconomicPumpExtended {
     return {
       comment: `Поддержка модели ${model.name}`,
       company: this._authService.getCompany(),
@@ -143,6 +153,7 @@ export class EconomicsPageComponent implements OnInit {
       is_income: 0,
       resources: {},
       section: 'models',
+      isDeletable: false,
     };
   }
 
