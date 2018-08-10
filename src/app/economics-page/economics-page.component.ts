@@ -3,6 +3,7 @@ import { MatTableDataSource } from '@angular/material';
 import { combineLatest } from 'rxjs';
 import { AuthService } from 'src/services/auth.service';
 import { DataService, EconomicPump, Model, Node } from 'src/services/data.service';
+import { getCost, getTotalCost } from '../util';
 
 @Component({
   selector: 'app-economics-page',
@@ -36,13 +37,11 @@ export class EconomicsPageComponent implements OnInit {
   }
 
   public getCost(pump: EconomicPump, col: string): number {
-    return (pump.resources[col] || 0) * (pump.is_income ? 1 : -1);
+    return getCost(pump, col);
   }
 
   public getTotalCost(col: string): number {
-    return this.dataSource.data
-      .map((pump) => this.getCost(pump, col))
-      .reduce((a, b) => a + b, 0);
+    return getTotalCost(this.dataSource.data, col);
   }
 
   public commentClass(pump: EconomicPump): string {
