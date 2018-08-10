@@ -7,7 +7,11 @@
 
   <ng-container matColumnDef="comment">
     <th mat-header-cell *matHeaderCellDef> Комментарий </th>
-    <td mat-cell *matCellDef="let pump">{{ pump.comment }}</td>
+    <td mat-cell *matCellDef="let pump">
+      <div [class]="commentClass(pump)">
+        {{ pump.comment }}
+      </div>
+    </td>
     <td mat-footer-cell *matFooterCellDef></td>
   </ng-container>
 

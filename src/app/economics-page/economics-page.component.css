@@ -2,3 +2,7 @@ table
 {
     width: 100%;
 }
+
+.padded-text {
+  padding-left: 2em;
+}

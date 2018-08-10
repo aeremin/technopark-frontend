@@ -244,7 +244,8 @@ export class ReservationTableComponent {
     this.dataSource.filterPredicate = ((model: Model, filter: string) => {
       const valuesToCheck = [model.company_name, model.name];
       for (const col of this.getParamColumns()) {
-        valuesToCheck.push(model.params[col].toString());
+        if (model.params[col])
+          valuesToCheck.push(model.params[col].toString());
       }
       return valuesToCheck.some((s) => s.toLocaleLowerCase().includes(filter));
     });
