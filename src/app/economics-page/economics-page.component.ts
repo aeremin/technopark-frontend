@@ -57,6 +57,14 @@ export class EconomicsPageComponent implements OnInit {
     return this._isNodePump(pump) ? 'padded-text' : 'normal-text';
   }
 
+  public sectionToHumanReadable(section: string) {
+    return {
+      mines: 'Шахты',
+      models: 'Модели',
+      nodes: 'Узлы',
+    }[section] || section;
+  }
+
   public hasButton(pump: EconomicPumpExtended): boolean {
     return pump.section != 'mines';
   }
