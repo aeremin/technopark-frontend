@@ -38,18 +38,25 @@ export class AuthService {
   public accountSubject = new Subject<Account>();
   private _account: Account;
 
-  constructor(private _http: Http) { }
+  constructor(private _http: Http) {
+    const savedAccount = localStorage.getItem('account');
+    if (savedAccount) {
+      this._account = JSON.parse(savedAccount);
+    }
+  }
 
   public async login(loginOrUserId: string, password: string): Promise<void> {
     const response = await this._http.get('https://api.alice.magellan2018.ru/account',
       this.getRequestOptionsWithCredentials(loginOrUserId, password)).toPromise();
     this._account = response.json().account;
+    localStorage.setItem('account', JSON.stringify(this._account));
     this.accountSubject.next(this._account);
   }
 
   public async logout() {
     this._account = null;
     this.accountSubject.next(this._account);
+    localStorage.removeItem('account');
   }
 
   public getAccount(): Account {
