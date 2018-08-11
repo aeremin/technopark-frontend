@@ -17,6 +17,7 @@ const routes: Routes = [
   {path : 'invention', component : InventionPageComponent, canActivate: [CorpTopManagerGuardService]},
   {path : 'schedule', component : ScheduleDashboardComponent},
   {path : 'generic_table', component : GamemasterGenericTableComponent, canActivate: [GameMasterGuardService]},
+  {path : 'raspberry', component : ScheduleDashboardComponent},
 ];
 
 @NgModule({
