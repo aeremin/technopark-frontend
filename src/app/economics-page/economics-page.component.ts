@@ -89,7 +89,6 @@ export class EconomicsPageComponent implements OnInit {
       // TODO: Send request to server
       console.log('Deleting node');
     } else {
-      // TODO: Password?
       try {
         await this._dataService.createNode(Number(pump.entity_id));
         this._matSnackBar.open('Узел создан успешно', '', { duration: 2000 });
