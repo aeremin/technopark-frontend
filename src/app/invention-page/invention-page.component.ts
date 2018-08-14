@@ -140,7 +140,8 @@ export class InventionPageComponent implements OnInit {
   }
 
   public readyToCreateModel(): boolean {
-    return JSON.stringify(this._calculatePoints()) != '{}' && this.modelName != '';
+    return JSON.stringify(this._calculatePoints()) != '{}' &&
+      this.modelName && this.modelName != '';
   }
 
   public async onDevelopModel() {
