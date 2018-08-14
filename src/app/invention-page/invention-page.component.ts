@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import { AuthService } from '../../services/auth.service';
 import { DataService, Model, Technology } from '../../services/data.service';
 
 class TechnologyChoice {
@@ -45,8 +46,10 @@ export class InventionPageComponent implements OnInit {
   public modelName: string;
 
   private _nodeCode: string = 'fuel_tank';
+  private _resultingModelParams: any = {az_level: 0};
 
-  constructor(private _dataService: DataService) { }
+  constructor(private _dataService: DataService,
+              private _authService: AuthService) { }
 
   public set nodeCode(code: string) {
     this.dataSource.data.forEach((choice) => choice.technology = undefined);
@@ -66,12 +69,36 @@ export class InventionPageComponent implements OnInit {
       (nodeName, nodeCode) => this.modelTypeOptions.push({nodeCode, nodeName}));
   }
 
-  // TODO: Calculate base on technologies
+  public async refreshParams() {
+    const points: any = {};
+    let hasTechnology = false;
+    this.dataSource.data.forEach((techChoice) => {
+      if (techChoice.technology != undefined) {
+        points[techChoice.technology.toString()] = techChoice.points;
+        hasTechnology = true;
+      }
+    });
+    const params = hasTechnology
+      ? await this._dataService.previewModelParams(this.nodeCode, this.size, points)
+      : {az_level: 0};
+    this._resultingModelParams = params;
+  }
+
   public getModels(): Model[] {
     return [{
-      id: 0, company: 'mst', company_name: '', created: '', description: '', level: 0,
-      name: this.modelName, node_type: '', node_type_code: this._nodeCode, nodes: [],
-      params: { az_level: 100 }, size: this.size,
+      id: 0,
+      company: this._authService.getCompany(),
+      company_name: '',
+      created: '',
+      description: '',
+      level: 0,
+      name: this.modelName,
+      node_type: '',
+      node_type_code:
+      this._nodeCode,
+      nodes: [],
+      params: this._resultingModelParams,
+      size: this.size,
     }];
   }
 

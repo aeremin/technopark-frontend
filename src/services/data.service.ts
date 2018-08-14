@@ -235,6 +235,16 @@ export class DataService {
     return techs;
   }
 
+  // tslint:disable-next-line:variable-name
+  public async previewModelParams(node_type_code: string, size: string, tech_balls: any): Promise<any> {
+    const company = this._authService.getCompany();
+    const response = await this._http.post(
+      this.url('/tech/preview_model_params'),
+        { node_type_code, company, size, tech_balls }).toPromise();
+
+    return response.json();
+  }
+
   private async queryParamNames(): Promise<void> {
     if (this._nodeCodeToHumanReadable.size > 0 && this._paramCodeToHumanReadable.size > 0)
       return;
