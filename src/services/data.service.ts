@@ -280,7 +280,6 @@ export class DataService {
     if (result.status != 'ok')
       throw new BackendException(result.errors);
     await this.reReadAllModels();
-    console.log(JSON.stringify(response.json()));
   }
 
   // tslint:disable-next-line:variable-name
@@ -292,7 +291,6 @@ export class DataService {
     if (result.status != 'ok')
       throw new BackendException(result.errors);
     await this.reReadAllModels();
-    console.log(JSON.stringify(response.json()));
   }
 
   private async queryParamNames(): Promise<void> {
