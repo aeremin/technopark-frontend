@@ -152,6 +152,7 @@ export class EconomicsPageComponent implements OnInit {
       }
     });
 
+    console.log(JSON.stringify(pumps));
     const otherPumps = pumps.filter((pump) => pump.section != 'nodes' && pump.section != 'mines');
     if (otherPumps.length) console.log(JSON.stringify(otherPumps));
 
