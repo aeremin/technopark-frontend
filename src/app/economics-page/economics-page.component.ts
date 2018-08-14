@@ -134,6 +134,11 @@ export class EconomicsPageComponent implements OnInit {
       .filter((pump) => pump.section == 'nodes')
       .forEach((pump) => nodeIdToPump.set(Number(pump.entity_id), pump));
 
+    const modelIdToPump = new Map<number, EconomicPump>();
+    pumps
+      .filter((pump) => pump.section == 'models')
+      .forEach((pump) => modelIdToPump.set(Number(pump.entity_id), pump));
+
     const pumpsReordered = [this._dummyCategoryPump('Шахты')];
     pumpsReordered.push(...pumps
       .filter((pump) => pump.section == 'mines')
@@ -142,7 +147,10 @@ export class EconomicsPageComponent implements OnInit {
     modelTypeToModel.forEach((modelsPerType, modelTypeCode) => {
       pumpsReordered.push(this._dummyCategoryPump(this._dataService.nodeCodeToHumanReadable().get(modelTypeCode)));
       for (const model of modelsPerType) {
-        pumpsReordered.push(this._dummyModelPump(model));
+        if (modelIdToPump.has(model.id))
+          pumpsReordered.push({ ...modelIdToPump.get(model.id), isDeletable: false });
+        else
+          pumpsReordered.push(this._dummyModelPump(model));
         for (const node of model.nodes) {
           if (nodeIdToPump.has(node.id))
             pumpsReordered.push({ ...nodeIdToPump.get(node.id), isDeletable: node.status_code == 'free' });
@@ -151,10 +159,6 @@ export class EconomicsPageComponent implements OnInit {
         }
       }
     });
-
-    console.log(JSON.stringify(pumps));
-    const otherPumps = pumps.filter((pump) => pump.section != 'nodes' && pump.section != 'mines');
-    if (otherPumps.length) console.log(JSON.stringify(otherPumps));
 
     this.dataSource.data = pumpsReordered;
   }
