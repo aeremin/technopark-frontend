@@ -16,6 +16,9 @@ interface LuggageLine {
 export class LuggageTabComponent {
   public dataSource = new MatTableDataSource<LuggageLine>([]);
 
+  @Input()
+  public flightId: number;
+
   constructor(private _dataService: DataService) {
     this.luggage = [];
   }
@@ -36,6 +39,14 @@ export class LuggageTabComponent {
 
   public getAllColumns(): string[] {
     return ['name', 'amount', 'buttons'];
+  }
+
+  public onAdd(luggageLine: LuggageLine) {
+    this._dataService.loadLuggage(this.flightId, luggageLine.code);
+  }
+
+  public onRemove(luggageLine: LuggageLine) {
+    this._dataService.unloadLuggage(this.flightId, luggageLine.code);
   }
 
   private _luggageCodeToHumanReadable(code: LuggageCode): string {

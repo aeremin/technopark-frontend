@@ -118,7 +118,7 @@ export class DataService {
 
   private _economicPumpsSubject: BehaviorSubject<EconomicPump[]>;
 
-  private _isAssignedSupercargoSubject = new BehaviorSubject<boolean>(false);
+  private _isAssignedSupercargoSubject = new BehaviorSubject<number>(undefined);
 
   private _flightsInfoSubject: BehaviorSubject<FullFlightInfo[]>;
 
@@ -147,7 +147,7 @@ export class DataService {
     return this._readModelsInfoSubject;
   }
 
-  public isAssignedSupercargoObservable(): Observable<boolean> {
+  public isAssignedSupercargoObservable(): Observable<number> {
     return this._isAssignedSupercargoSubject;
   }
 
@@ -263,13 +263,30 @@ export class DataService {
   public async developModel(node_type_code: string, size: string, tech_balls: any, name: string,
                             description: string = '', password: string = '') {
     const company = this._authService.getCompany();
-    console.log(JSON.stringify({ node_type_code, company, size, tech_balls, description, password, name }));
     const response = await this._http.post(
       this.url('/tech/develop_model'),
       { node_type_code, company, size, tech_balls, description, password, name }).toPromise();
 
     console.log(JSON.stringify(response.json()));
     return response.json();
+  }
+
+  // tslint:disable-next-line:variable-name
+  public async loadLuggage(flight_id: number, code: LuggageCode) {
+    const response = await this._http.post(
+      this.url('/technopark/load_luggage'),
+      { flight_id, code, company: 'mst', planet_id: 'aaa' }).toPromise();
+    await this.reReadAllModels();
+    console.log(JSON.stringify(response.json()));
+  }
+
+  // tslint:disable-next-line:variable-name
+  public async unloadLuggage(flight_id: number, code: LuggageCode) {
+    const response = await this._http.post(
+      this.url('/technopark/unload_luggage'),
+      { flight_id, code, company: 'mst', planet_id: 'aaa' }).toPromise();
+    await this.reReadAllModels();
+    console.log(JSON.stringify(response.json()));
   }
 
   private async queryParamNames(): Promise<void> {
@@ -345,14 +362,14 @@ export class DataService {
 
   private async getMyReserved(): Promise<MyReservedResponse> {
     if (!this._authService.getAccount()) {
-      this._isAssignedSupercargoSubject.next(false);
+      this._isAssignedSupercargoSubject.next(undefined);
       return undefined;
     }
     const response = await this._http.post(this.url('/node/get_my_reserved'),
       { user_id: this._authService.getAccount()._id }).toPromise();
 
     const result: MyReservedResponse = response.json();
-    this._isAssignedSupercargoSubject.next(result.result == 'ok');
+    this._isAssignedSupercargoSubject.next(result.result == 'ok' ? result.flight.id : undefined);
 
     return result;
   }

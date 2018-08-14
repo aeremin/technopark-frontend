@@ -16,11 +16,11 @@
           [filter]='filter'
           [filterUnavailable]='filterUnavailable'
           [onlyBestNodes]='onlyBestNodes'
-          [showReservationColumn]='showReservationColumn'>
+          [showReservationColumn]='flightId != undefined'>
         </reservation-table-component>
       </p>
     </mat-tab>
-    <mat-tab *ngIf="showReservationColumn" label="Грузы">
-      <luggage-tab [luggage]="modelsInfo.luggage"></luggage-tab>
+    <mat-tab *ngIf="flightId != undefined" label="Грузы">
+      <luggage-tab [luggage]="modelsInfo.luggage" [flightId]="flightId"></luggage-tab>
     </mat-tab>
   </mat-tab-group>

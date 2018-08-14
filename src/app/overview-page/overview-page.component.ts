@@ -19,7 +19,7 @@ export class OverviewPageComponent {
   public filterUnavailable: boolean = true;
   public onlyBestNodes: boolean = true;
 
-  public showReservationColumn: boolean = false;
+  public flightId: number;
 
   constructor(private _dataService: DataService,
               private _loggedGuardService: LoggedGuardService) {}
@@ -42,7 +42,7 @@ export class OverviewPageComponent {
     this.tabs.sort((a, b) => weightFn(a.nodeCode) - weightFn(b.nodeCode));
 
     this._dataService.isAssignedSupercargoObservable().subscribe({
-      next: (isAssignedSupercargo) => this.showReservationColumn = isAssignedSupercargo,
+      next: (flightId) => this.flightId = flightId,
     });
   }
 }
