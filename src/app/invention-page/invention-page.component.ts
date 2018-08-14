@@ -143,6 +143,11 @@ export class InventionPageComponent implements OnInit {
     return JSON.stringify(this._calculatePoints()) != '{}' && this.modelName != '';
   }
 
+  public async onDevelopModel() {
+    this._dataService.developModel(this._nodeCode, this.size, this._calculatePoints(),
+      this.modelName);
+  }
+
   private _calculatePoints() {
     const points: any = {};
     this.dataSource.data.forEach((techChoice) => {

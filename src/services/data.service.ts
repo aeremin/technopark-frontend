@@ -245,6 +245,19 @@ export class DataService {
     return response.json();
   }
 
+  // tslint:disable-next-line:variable-name
+  public async developModel(node_type_code: string, size: string, tech_balls: any, name: string,
+                            description: string = '', password: string = '') {
+    const company = this._authService.getCompany();
+    console.log(JSON.stringify({ node_type_code, company, size, tech_balls, description, password, name }));
+    const response = await this._http.post(
+      this.url('/tech/develop_model'),
+      { node_type_code, company, size, tech_balls, description, password, name }).toPromise();
+
+    console.log(JSON.stringify(response.json()));
+    return response.json();
+  }
+
   private async queryParamNames(): Promise<void> {
     if (this._nodeCodeToHumanReadable.size > 0 && this._paramCodeToHumanReadable.size > 0)
       return;
