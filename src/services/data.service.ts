@@ -103,6 +103,21 @@ export interface ModelsInfo {
   luggage: Luggage[];
 }
 
+export interface DevelopModelResponseParams {
+  node_type_code: string;
+  company: Company;
+  size: string;
+  tech_balls: any;
+  description: string;
+  password: string;
+  name: string;
+}
+
+export interface DevelopModelResponse {
+  status: string;
+  params: DevelopModelResponseParams;
+}
+
 export class BackendException {
   constructor(public error: string) { }
 }
@@ -231,8 +246,7 @@ export class DataService {
   // tslint:disable-next-line:variable-name
   public async createNode(model_id: number) {
     await this._http.post(this.url('/node/create'), { model_id, password: '' }).toPromise();
-    await this.reGetEconomicPumps();
-    await this.reReadAllModels();
+    await this._updateModelsAndPumps();
   }
 
   // tslint:disable-next-line:variable-name
@@ -262,7 +276,7 @@ export class DataService {
 
   // tslint:disable-next-line:variable-name
   public async developModel(node_type_code: string, size: string, tech_balls: any, name: string,
-                            description: string = '', password: string = '') {
+                            description: string = '', password: string = ''): Promise<DevelopModelResponse> {
     const company = this._authService.getCompany();
     const response = await this._http.post(
       this.url('/tech/develop_model'),
@@ -335,6 +349,11 @@ export class DataService {
     model.company_name = kCompanyCodeToHumanReadableName.get(model.company);
     model.node_type = this._nodeCodeToHumanReadable.get(model.node_type_code);
     return model;
+  }
+
+  private async _updateModelsAndPumps() {
+    await this.reGetEconomicPumps();
+    await this.reReadAllModels();
   }
 
   private url(path: string): string {

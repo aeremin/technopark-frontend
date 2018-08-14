@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatSnackBar } from '@angular/material';
 import { AuthService } from '../../services/auth.service';
-import { DataService, Model, Technology } from '../../services/data.service';
+import { DataService, Model, Technology, BackendException } from '../../services/data.service';
 
 class TechnologyChoice {
   public points: number = 0;
@@ -49,7 +49,8 @@ export class InventionPageComponent implements OnInit {
   private _resultingModelParams: any = {az_level: 0};
 
   constructor(private _dataService: DataService,
-              private _authService: AuthService) { }
+              private _authService: AuthService,
+              private _matSnackBar: MatSnackBar) { }
 
   public set nodeCode(code: string) {
     this.dataSource.data.forEach((choice) => choice.technology = undefined);
@@ -145,8 +146,20 @@ export class InventionPageComponent implements OnInit {
   }
 
   public async onDevelopModel() {
-    this._dataService.developModel(this._nodeCode, this.size, this._calculatePoints(),
-      this.modelName);
+    try {
+      const response = await this._dataService.developModel(this._nodeCode, this.size, this._calculatePoints(),
+        this.modelName);
+
+      this._matSnackBar.open(
+        `Модель и ее первый узел созданы успешно. Пароль для фрахта: ${response.params.password}`,
+        '', { duration: 10000 });
+    } catch (err) {
+      if (err instanceof BackendException)
+        this._matSnackBar.open(`Ошибка: ${err.error}.`, '', { duration: 3000 });
+      else
+        this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });
+      console.log(err);
+    }
   }
 
   private _calculatePoints() {
