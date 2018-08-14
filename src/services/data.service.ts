@@ -276,6 +276,9 @@ export class DataService {
     const response = await this._http.post(
       this.url('/technopark/load_luggage'),
       { flight_id, code, company: 'mst', planet_id: 'aaa' }).toPromise();
+    const result = response.json();
+    if (result.status != 'ok')
+      throw new BackendException(result.errors);
     await this.reReadAllModels();
     console.log(JSON.stringify(response.json()));
   }
@@ -285,6 +288,9 @@ export class DataService {
     const response = await this._http.post(
       this.url('/technopark/unload_luggage'),
       { flight_id, code, company: 'mst', planet_id: 'aaa' }).toPromise();
+    const result = response.json();
+    if (result.status != 'ok')
+      throw new BackendException(result.errors);
     await this.reReadAllModels();
     console.log(JSON.stringify(response.json()));
   }
