@@ -1,5 +1,7 @@
 import { EconomicPump } from 'src/services/data.service';
 
+export type Company = 'gd' | 'pre' | 'kkg' | 'mat' | 'mst';
+
 export const kFlightDepartureTimes = [
   '10:00',
   '12:00',
@@ -19,7 +21,7 @@ export function getTotalCost(pumps: EconomicPump[], resource: string): number {
     .reduce((a, b) => a + b, 0);
 }
 
-export const kCompanyCodeToHumanReadableName = new Map<string, string>([
+export const kCompanyCodeToHumanReadableName = new Map<Company, string>([
   ['gd', 'Гугл Дисней'],
   ['mat', 'Мицубиси АвтоВАЗ Технолоджи'],
   ['mst', 'МарсСтройТрест'],

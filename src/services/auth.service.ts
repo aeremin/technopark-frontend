@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptionsArgs } from '@angular/http';
 import { Subject } from 'rxjs';
+import { Company } from 'src/app/util';
 
 export interface Professions {
   isPilot: boolean;
@@ -17,8 +18,6 @@ export interface Professions {
   isManager: boolean;
   isGameMaster?: boolean;
 }
-
-export type Company = 'gd' | 'pre' | 'kkg' | 'mat' | 'mst';
 
 export interface CompanyAccess {
   isTopManager: boolean;

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { kCompanyCodeToHumanReadableName } from 'src/app/util';
-import { AuthService, Company } from 'src/services/auth.service';
+import { Company, kCompanyCodeToHumanReadableName } from 'src/app/util';
+import { AuthService } from 'src/services/auth.service';
 
 export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved'
   | 'fake' // "Ghost" node attached to model to show the model without any nodes
@@ -28,7 +28,7 @@ export interface Model {
   level: number;
   size: string;
   description: string;
-  company: string;
+  company: Company;
   company_name: string;
   created: string;
   params: any;
@@ -273,10 +273,10 @@ export class DataService {
   }
 
   // tslint:disable-next-line:variable-name
-  public async loadLuggage(flight_id: number, code: LuggageCode) {
+  public async loadLuggage(flight_id: number, code: LuggageCode, company?: Company) {
     const response = await this._http.post(
       this.url('/technopark/load_luggage'),
-      { flight_id, code, company: 'mst', planet_id: 'aaa' }).toPromise();
+      { flight_id, code, company, planet_id: 'aaa' }).toPromise();
     const result = response.json();
     if (result.status != 'ok')
       throw new BackendException(result.errors);
@@ -284,10 +284,10 @@ export class DataService {
   }
 
   // tslint:disable-next-line:variable-name
-  public async unloadLuggage(flight_id: number, code: LuggageCode) {
+  public async unloadLuggage(flight_id: number, code: LuggageCode, company?: Company) {
     const response = await this._http.post(
       this.url('/technopark/unload_luggage'),
-      { flight_id, code, company: 'mst', planet_id: 'aaa' }).toPromise();
+      { flight_id, code, company, planet_id: 'aaa' }).toPromise();
     const result = response.json();
     if (result.status != 'ok')
       throw new BackendException(result.errors);
