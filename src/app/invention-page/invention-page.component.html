@@ -62,12 +62,13 @@
   <tr mat-footer-row *matFooterRowDef="getAllColumns()"></tr>
 </table>
 
-
-<h3 align="center">Предпросмотр модели</h3>
-<p>
-  <reservation-table-component
-    [models]="getModels()"
-    [nodeCode]='nodeCode'
-    [showReservationColumn]='false'>
-  </reservation-table-component>
-</p>
+<div *ngIf="readyToCreateModel()">
+  <h3 align="center">Предпросмотр модели</h3>
+  <p>
+    <reservation-table-component
+      [models]="getModels()"
+      [nodeCode]='nodeCode'
+      [showReservationColumn]='false'>
+    </reservation-table-component>
+  </p>
+</div>

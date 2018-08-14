@@ -70,18 +70,8 @@ export class InventionPageComponent implements OnInit {
   }
 
   public async refreshParams() {
-    const points: any = {};
-    let hasTechnology = false;
-    this.dataSource.data.forEach((techChoice) => {
-      if (techChoice.technology != undefined) {
-        points[techChoice.technology.toString()] = techChoice.points;
-        hasTechnology = true;
-      }
-    });
-    const params = hasTechnology
-      ? await this._dataService.previewModelParams(this.nodeCode, this.size, points)
-      : {az_level: 0};
-    this._resultingModelParams = params;
+    this._resultingModelParams = 
+      await this._dataService.previewModelParams(this.nodeCode, this.size, this._calculatePoints());
   }
 
   public getModels(): Model[] {
@@ -139,5 +129,19 @@ export class InventionPageComponent implements OnInit {
       .filter((otherChoice) => otherChoice.index != technologyChoice.index)
       .map((otherChoice) => otherChoice.technology)
       .includes(tech.id);
+  }
+
+  public readyToCreateModel(): boolean {
+    return JSON.stringify(this._calculatePoints()) != '{}' && this.modelName != '';
+  }
+
+  private _calculatePoints() {
+    const points: any = {};
+    this.dataSource.data.forEach((techChoice) => {
+      if (techChoice.technology != undefined && techChoice.points > 0) {
+        points[techChoice.technology.toString()] = techChoice.points;
+      }
+    });
+    return points;
   }
 }
