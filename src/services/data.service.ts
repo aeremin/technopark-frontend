@@ -284,10 +284,10 @@ export class DataService {
     const result = response.json();
     if (result.status != 'ok')
       throw new BackendException(result.errors);
-    
+
     // Don't need to await - pump data on another screen anyway
     this._updateModelsAndPumps();
-    
+
     return result;
   }
 

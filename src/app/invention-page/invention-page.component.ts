@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource, MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatTableDataSource } from '@angular/material';
 import { AuthService } from '../../services/auth.service';
-import { DataService, Model, Technology, BackendException } from '../../services/data.service';
+import { BackendException, DataService, Model, Technology } from '../../services/data.service';
 
 class TechnologyChoice {
   public points: number = 0;
