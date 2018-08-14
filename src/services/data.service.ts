@@ -160,8 +160,8 @@ export class DataService {
     this._economicPumpsSubject = new BehaviorSubject(economicPumps);
     setInterval(() => this.reGetEconomicPumps(), 60000);
 
-    const companyInconmy = await this.getCompanyIncome();
-    this._companyIncomeSubject = new BehaviorSubject(companyInconmy);
+    const companyIncome = await this.getCompanyIncome();
+    this._companyIncomeSubject = new BehaviorSubject(companyIncome);
     setInterval(() => this.reGetCompanyIncome(), 60000);
   }
 
