@@ -4,6 +4,16 @@
     <td mat-cell *matCellDef="let luggageLine"> {{ luggageLine.name }}</td>
   </ng-container>
 
+  <ng-container matColumnDef="weight">
+    <th mat-header-cell *matHeaderCellDef> Вес/ед. </th>
+    <td mat-cell *matCellDef="let luggageLine"> {{ luggageLine.weight }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="volume">
+    <th mat-header-cell *matHeaderCellDef> Объем/ед. </th>
+    <td mat-cell *matCellDef="let luggageLine"> {{ luggageLine.volume }}</td>
+  </ng-container>
+
   <ng-container matColumnDef="amount">
     <th mat-header-cell *matHeaderCellDef> Количество </th>
     <td mat-cell *matCellDef="let luggageLine"> {{ luggageLine.amount }}</td>
@@ -15,6 +25,16 @@
       <button color="primary" mat-icon-button (click)="onAdd(luggageLine)"><mat-icon>add</mat-icon></button>
       <button color="primary" mat-icon-button (click)="onRemove(luggageLine)" [disabled]="luggageLine.amount == 0"><mat-icon>remove</mat-icon></button>
     </td>
+  </ng-container>
+
+  <ng-container matColumnDef="weight_total">
+    <th mat-header-cell *matHeaderCellDef> Вес (сумм.) </th>
+    <td mat-cell *matCellDef="let luggageLine"> {{ luggageLine.weightTotal }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="volume_total">
+    <th mat-header-cell *matHeaderCellDef> Объем (сумм.) </th>
+    <td mat-cell *matCellDef="let luggageLine"> {{ luggageLine.volumeTotal }}</td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="getAllColumns()"></tr>

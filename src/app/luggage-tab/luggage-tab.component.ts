@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { MatTableDataSource } from '@angular/material/table';
-import { BackendException, DataService, Luggage, LuggageCode } from 'src/services/data.service';
+import { BackendException, DataService, Luggage, LuggageCode, LuggageTypeInfo } from 'src/services/data.service';
 import { Company, kCompanyCodeToHumanReadableName } from '../util';
 
 interface LuggageLine {
@@ -9,6 +9,10 @@ interface LuggageLine {
   company?: Company;
   name: string;
   amount: number;
+  weight: number;
+  volume: number;
+  weightTotal: number;
+  volumeTotal: number;
 }
 
 @Component({
@@ -27,33 +31,15 @@ export class LuggageTabComponent {
     this.luggage = [];
   }
 
+
+
   @Input()
   public set luggage(luggage: Luggage[]) {
-    const nextLuggageLines: LuggageLine[] = [];
-    for (const code of ['module', 'beacon'] as LuggageCode[]) {
-      const maybeLuggage = luggage.find((l) => l.code == code);
-      nextLuggageLines.push({
-       code,
-       name: this._luggageCodeToHumanReadable(code),
-       amount: maybeLuggage == undefined ? 0 : maybeLuggage.amount,
-      });
-    }
-
-    kCompanyCodeToHumanReadableName.forEach((companyName: string, company: Company) => {
-      const maybeLuggage = luggage.find((l) => l.code == 'mine' && l.company == company);
-      nextLuggageLines.push({
-        code: 'mine',
-        company,
-        name: `Шахта компании ${companyName}`,
-        amount: maybeLuggage == undefined ? 0 : maybeLuggage.amount,
-       });
-    });
-
-    this.dataSource.data = nextLuggageLines;
+    this._setLuggageImpl(luggage);
   }
 
   public getAllColumns(): string[] {
-    return ['name', 'amount', 'buttons'];
+    return ['name', 'weight', 'volume', 'amount', 'buttons', 'weight_total', 'volume_total'];
   }
 
   public async onAdd(luggageLine: LuggageLine) {
@@ -80,6 +66,44 @@ export class LuggageTabComponent {
         this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });
       console.error(err);
     }
+  }
+
+  private async _setLuggageImpl(luggage: Luggage[]) {
+    const luggageTypesInfo = await this._dataService.luggagesInfo();
+    const nextLuggageLines: LuggageLine[] = [];
+    for (const code of ['module', 'beacon'] as LuggageCode[]) {
+      const maybeLuggage = luggage.find((l) => l.code == code);
+      const luggageInfo = luggageTypesInfo.find((info) => info.code == code);
+      const amount = maybeLuggage == undefined ? 0 : maybeLuggage.amount;
+      nextLuggageLines.push({
+       code,
+       name: this._luggageCodeToHumanReadable(code),
+       amount,
+       volume: luggageInfo.volume,
+       weight: luggageInfo.weight,
+       volumeTotal: luggageInfo.volume * amount,
+       weightTotal: luggageInfo.weight * amount,
+      });
+    }
+
+    kCompanyCodeToHumanReadableName.forEach((companyName: string, company: Company) => {
+      const maybeLuggage = luggage.find((l) => l.code == 'mine' && l.company == company);
+      const luggageInfo =
+        luggageTypesInfo.find((info) => info.code == 'mine' && info.company == company);
+      const amount = maybeLuggage == undefined ? 0 : maybeLuggage.amount;
+      nextLuggageLines.push({
+        code: 'mine',
+        company,
+        name: `Шахта компании ${companyName}`,
+        amount,
+        volume: luggageInfo.volume,
+        weight: luggageInfo.weight,
+        volumeTotal: luggageInfo.volume * amount,
+        weightTotal: luggageInfo.weight * amount,
+       });
+    });
+
+    this.dataSource.data = nextLuggageLines;
   }
 
   private _luggageCodeToHumanReadable(code: LuggageCode): string {

@@ -98,6 +98,14 @@ export interface Luggage {
   amount: number;
 }
 
+export interface LuggageTypeInfo {
+  code: LuggageCode;
+  company: Company;
+  weight: number;
+  volume: number;
+
+}
+
 export interface ModelsInfo {
   models: Model[];
   luggage: Luggage[];
@@ -287,6 +295,10 @@ export class DataService {
   public async unloadLuggage(flight_id: number, code: LuggageCode, company?: Company) {
     await this._post('/technopark/unload_luggage', { flight_id, code, company, planet_id: 'aaa' });
     await this.reReadAllModels();
+  }
+
+  public async luggagesInfo(): Promise<LuggageTypeInfo[]> {
+    return await this._get('/technopark/get_luggages_info');
   }
 
   private async queryParamNames(): Promise<void> {
