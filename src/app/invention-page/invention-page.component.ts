@@ -47,6 +47,7 @@ export class InventionPageComponent implements OnInit {
 
   private _nodeCode: string = 'fuel_tank';
   private _resultingModelParams: any = {az_level: 0};
+  private _totalCompanyIncome: any = {};
 
   constructor(private _dataService: DataService,
               private _authService: AuthService,
@@ -68,6 +69,10 @@ export class InventionPageComponent implements OnInit {
     this.modelTypeOptions = [];
     this._dataService.nodeCodeToHumanReadable().forEach(
       (nodeName, nodeCode) => this.modelTypeOptions.push({nodeCode, nodeName}));
+
+    this._dataService.companyIncomeObservable().subscribe({
+      next: (income) => this._totalCompanyIncome = income,
+    });
   }
 
   public async refreshParams() {
@@ -124,13 +129,18 @@ export class InventionPageComponent implements OnInit {
       return tech.id == technologyChoice.technology;
     });
 
-    return technologyChoice.points * (technology.point_cost[col] || 0);
+    return 1.5 * technologyChoice.points * (technology.point_cost[col] || 0);
   }
 
   public getTotalCost(col: string): number {
     return this.dataSource.data
       .map((technologyChoice) => this.getCost(technologyChoice, col))
       .reduce((a, b) => a + b);
+  }
+
+  public getTotalCostClass(col: string): string {
+    return (this.getTotalCost(col) > (this._totalCompanyIncome[col] || 0))
+      ? 'red-text' : 'normal-text';
   }
 
   public isTechnologyEnabled(technologyChoice: TechnologyChoice, tech: Technology): boolean {
