@@ -18,3 +18,15 @@ export function getTotalCost(pumps: EconomicPump[], resource: string): number {
     .map((pump) => getCost(pump, resource))
     .reduce((a, b) => a + b, 0);
 }
+
+export const kCompanyCodeToHumanReadableName = new Map<string, string>([
+  ['gd', 'Гугл Дисней'],
+  ['mat', 'Мицубиси АвтоВАЗ Технолоджи'],
+  ['mst', 'МарсСтройТрест'],
+  ['pre', 'Пони Роскосмос Экспресс'],
+  ['kkg', 'Красный Крест Генетикс'],
+]);
+
+export function companyCodes(): string[] {
+  return Array.from(kCompanyCodeToHumanReadableName.keys());
+}

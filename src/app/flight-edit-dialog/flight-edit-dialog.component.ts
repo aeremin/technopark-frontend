@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { kFlightDepartureTimes } from 'src/app/util';
-import { BackendException, companyCodeToHumanReadableName, DataService,
+import { kCompanyCodeToHumanReadableName, kFlightDepartureTimes } from 'src/app/util';
+import { BackendException, DataService,
   FullFlightInfo, User } from '../../services/data.service';
 
 function getOffsetDate(): Date {
@@ -27,7 +27,7 @@ export class FlightEditDialogComponent {
 
   public companies =  (() => {
     const result: Array<{code: string, name: string}> = [];
-    companyCodeToHumanReadableName.forEach((v, k) => result.push({code: k, name: v}));
+    kCompanyCodeToHumanReadableName.forEach((v, k) => result.push({code: k, name: v}));
     return result;
   })();
 

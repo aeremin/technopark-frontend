@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { MatTableDataSource } from '@angular/material/table';
-import { DataService, Luggage, LuggageCode, BackendException } from 'src/services/data.service';
+import { BackendException, DataService, Luggage, LuggageCode } from 'src/services/data.service';
 
 interface LuggageLine {
   code: LuggageCode;

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { kCompanyCodeToHumanReadableName } from 'src/app/util';
 import { AuthService, Company } from 'src/services/auth.service';
 
 export type NodeStatus = 'decomm' | 'free' | 'freight' | 'lost' | 'reserved'
@@ -331,7 +332,7 @@ export class DataService {
   }
 
   private makeHumanReadable(model: Model): Model {
-    model.company_name = companyCodeToHumanReadableName.get(model.company);
+    model.company_name = kCompanyCodeToHumanReadableName.get(model.company);
     model.node_type = this._nodeCodeToHumanReadable.get(model.node_type_code);
     return model;
   }
@@ -433,16 +434,4 @@ export class DataService {
     }
     return pumps;
   }
-}
-
-export const companyCodeToHumanReadableName = new Map<string, string>([
-  ['gd', 'Гугл Дисней'],
-  ['mat', 'Мицубиси АвтоВАЗ Технолоджи'],
-  ['mst', 'МарсСтройТрест'],
-  ['pre', 'Пони Роскосмос Экспресс'],
-  ['kkg', 'Красный Крест Генетикс'],
-]);
-
-export function companyCodes(): string[] {
-  return Array.from(companyCodeToHumanReadableName.keys());
 }
