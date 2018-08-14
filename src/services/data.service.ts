@@ -452,7 +452,7 @@ export class DataService {
   }
 
   private async reGetCompanyIncome(): Promise<void> {
-    this._economicPumpsSubject.next(await this.getCompanyIncome());
+    this._companyIncomeSubject.next(await this.getCompanyIncome());
   }
 
   private async getCompanyIncome(): Promise<any> {

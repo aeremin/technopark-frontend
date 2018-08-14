@@ -18,22 +18,25 @@ interface EconomicPumpExtended extends EconomicPump {
 export class EconomicsPageComponent implements OnInit {
   public dataSource = new MatTableDataSource<EconomicPumpExtended>();
 
-  private _totalCompanyIncome: any;
+  private _totalCompanyIncome: any = {};
 
   constructor(private _dataService: DataService,
               private _authService: AuthService,
               private _corpTopManagerGuardService: CorpTopManagerGuardService,
               private _matSnackBar: MatSnackBar) { }
 
-  public ngOnInit() {
-    combineLatest(this._dataService.getEconomicPumpsObservable(),
-      this._dataService.readModelsInfoObservable()).subscribe({
-        next: ([pumps, modelsInfo]) => this._updateData(pumps, modelsInfo.models),
-      });
+  public async ngOnInit() {
+    await this._dataService.init();
 
     this._dataService.companyIncomeObservable().subscribe({
       next: (income) => this._totalCompanyIncome = income,
     });
+
+    combineLatest(
+      this._dataService.getEconomicPumpsObservable(),
+      this._dataService.readModelsInfoObservable()).subscribe({
+        next: ([pumps, modelsInfo]) => this._updateData(pumps, modelsInfo.models),
+      });
   }
 
   public getAllColumns() {
