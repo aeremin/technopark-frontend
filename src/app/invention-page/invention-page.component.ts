@@ -70,7 +70,7 @@ export class InventionPageComponent implements OnInit {
   }
 
   public async refreshParams() {
-    this._resultingModelParams = 
+    this._resultingModelParams =
       await this._dataService.previewModelParams(this.nodeCode, this.size, this._calculatePoints());
   }
 
