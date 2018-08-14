@@ -255,7 +255,10 @@ export class DataService {
 
   // tslint:disable-next-line:variable-name
   public async createNode(model_id: number) {
-    await this._http.post(this.url('/node/create'), { model_id, password: '' }).toPromise();
+    const response = await this._http.post(this.url('/node/create'), { model_id, password: '' }).toPromise();
+    const result = response.json();
+    if (result.status != 'ok')
+      throw new BackendException(result.errors);
     await this._updateModelsAndPumps();
   }
 
