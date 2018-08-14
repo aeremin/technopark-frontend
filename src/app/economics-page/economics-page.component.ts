@@ -16,8 +16,9 @@ interface EconomicPumpExtended extends EconomicPump {
   styleUrls: ['./economics-page.component.css'],
 })
 export class EconomicsPageComponent implements OnInit {
-
   public dataSource = new MatTableDataSource<EconomicPumpExtended>();
+
+  private _totalCompanyIncome: any;
 
   constructor(private _dataService: DataService,
               private _authService: AuthService,
@@ -29,6 +30,10 @@ export class EconomicsPageComponent implements OnInit {
       this._dataService.readModelsInfoObservable()).subscribe({
         next: ([pumps, modelsInfo]) => this._updateData(pumps, modelsInfo.models),
       });
+
+    this._dataService.companyIncomeObservable().subscribe({
+      next: (income) => this._totalCompanyIncome = income,
+    });
   }
 
   public getAllColumns() {
@@ -51,7 +56,7 @@ export class EconomicsPageComponent implements OnInit {
   }
 
   public getTotalCost(col: string): number {
-    return getTotalCost(this.dataSource.data, col);
+    return this._totalCompanyIncome[col] || 0;
   }
 
   public commentClass(pump: EconomicPumpExtended): string {

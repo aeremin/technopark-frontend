@@ -136,6 +136,8 @@ export class DataService {
 
   private _isAssignedSupercargoSubject = new BehaviorSubject<number>(undefined);
 
+  private _companyIncomeSubject = new BehaviorSubject<any>({});
+
   private _flightsInfoSubject: BehaviorSubject<FullFlightInfo[]>;
 
   constructor(private _authService: AuthService,
@@ -157,6 +159,10 @@ export class DataService {
     const economicPumps = await this.getEconomicPumps();
     this._economicPumpsSubject = new BehaviorSubject(economicPumps);
     setInterval(() => this.reGetEconomicPumps(), 60000);
+
+    const companyInconmy = await this.getCompanyIncome();
+    this._companyIncomeSubject = new BehaviorSubject(companyInconmy);
+    setInterval(() => this.reGetCompanyIncome(), 60000);
   }
 
   public readModelsInfoObservable(): Observable<ModelsInfo> {
@@ -173,6 +179,10 @@ export class DataService {
 
   public getEconomicPumpsObservable(): Observable<EconomicPump[]> {
     return this._economicPumpsSubject;
+  }
+
+  public companyIncomeObservable(): Observable<any> {
+    return this._companyIncomeSubject;
   }
 
   public async reserve(nodeId: number, password: string): Promise<void> {
@@ -457,5 +467,19 @@ export class DataService {
       }
     }
     return pumps;
+  }
+
+  private async reGetCompanyIncome(): Promise<void> {
+    this._economicPumpsSubject.next(await this.getCompanyIncome());
+  }
+
+  private async getCompanyIncome(): Promise<any> {
+    if (!this._authService.getCompany())
+      return {};
+
+    const response = await this._http.post(this.url('/economics/get_company_income'), {
+      company: this._authService.getCompany(),
+    }).toPromise();
+    return response.json();
   }
 }
