@@ -1,17 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { DataService, Model } from '../../services/data.service';
+import { DataService, Model, Technology } from '../../services/data.service';
 
-interface TechnologyChoice {
-  index: number;
-  technology: string | undefined;
-  points: number;
-}
+class TechnologyChoice {
+  public points: number = 0;
+  private _technology: number | undefined = undefined;
 
-interface Technology {
-  code: string;
-  name: string;
-  costs: any;
+  constructor(public index: number) {}
+
+  public set technology(tech: number | undefined) {
+    this._technology = tech;
+    if (tech == undefined)
+      this.points = 0;
+  }
+
+  public get technology() {
+    return this._technology;
+  }
 }
 
 interface ModelChoice {
@@ -27,24 +32,33 @@ interface ModelChoice {
 export class InventionPageComponent implements OnInit {
   public modelTypeOptions: ModelChoice[];
 
-  public availableTechnologies: Technology[] = [
-    {code: 'first', name: 'Первая', costs: {aluminium: 10, iron: 1} },
-    {code: 'second', name: 'Вторая', costs: {aluminium: 5, iron: 3} },
-  ];
+  public availableTechnologies: Technology[];
 
   public dataSource = new MatTableDataSource<TechnologyChoice>([
-    {index: 0, technology: undefined, points: 0},
-    {index: 1, technology: undefined, points: 0},
-    {index: 2, technology: undefined, points: 0},
-    {index: 3, technology: undefined, points: 0},
+    new TechnologyChoice(0),
+    new TechnologyChoice(1),
+    new TechnologyChoice(2),
+    new TechnologyChoice(3),
   ]);
 
   public size: string = 'medium';
-  public nodeCode: string = 'fuel_tank';
   public modelName: string;
+
+  private _nodeCode: string = 'fuel_tank';
 
   constructor(private _dataService: DataService) { }
 
+  public set nodeCode(code: string) {
+    this.dataSource.data.forEach((choice) => choice.technology = undefined);
+    this._nodeCode = code;
+    this._dataService.readTechs(this._nodeCode)
+      .then((techs) => this.availableTechnologies = techs)
+      .catch((e) => console.error(e));
+  }
+
+  public get nodeCode() {
+    return this._nodeCode;
+  }
   public async ngOnInit() {
     await this._dataService.init();
     this.modelTypeOptions = [];
@@ -56,7 +70,7 @@ export class InventionPageComponent implements OnInit {
   public getModels(): Model[] {
     return [{
       id: 0, company: 'mst', company_name: '', created: '', description: '', level: 0,
-      name: this.modelName, node_type: '', node_type_code: this.nodeCode, nodes: [],
+      name: this.modelName, node_type: '', node_type_code: this._nodeCode, nodes: [],
       params: { az_level: 100 }, size: this.size,
     }];
   }
@@ -73,13 +87,6 @@ export class InventionPageComponent implements OnInit {
     return this._dataService.resourceCodeToHumanReadable(columnCode);
   }
 
-  public technologySelected(value: string, technologyChoice: TechnologyChoice) {
-    technologyChoice.technology = value;
-    if (value == undefined) {
-      technologyChoice.points = 0;
-    }
-  }
-
   public enableSlider(technologyChoice: TechnologyChoice): boolean {
     return technologyChoice.technology != undefined;
   }
@@ -88,10 +95,10 @@ export class InventionPageComponent implements OnInit {
     if (!this.enableSlider(technologyChoice)) return 0;
 
     const technology = this.availableTechnologies.find((tech: Technology) => {
-      return tech.code == technologyChoice.technology;
+      return tech.id == technologyChoice.technology;
     });
 
-    return technologyChoice.points * (technology.costs[col] || 0);
+    return technologyChoice.points * (technology.point_cost[col] || 0);
   }
 
   public getTotalCost(col: string): number {
@@ -104,6 +111,6 @@ export class InventionPageComponent implements OnInit {
     return !this.dataSource.data
       .filter((otherChoice) => otherChoice.index != technologyChoice.index)
       .map((otherChoice) => otherChoice.technology)
-      .includes(tech.code);
+      .includes(tech.id);
   }
 }

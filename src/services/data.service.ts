@@ -76,6 +76,18 @@ export interface EconomicPump {
   resources: any;
 }
 
+export interface Technology {
+  id: number;
+  name: string;
+  description: string;
+  opened_at: string;
+  level: number;
+  company: Company;
+  effects: any[];
+  inventors: Company[];
+  point_cost: any;
+}
+
 export class BackendException {
   constructor(public error: string) { }
 }
@@ -206,6 +218,21 @@ export class DataService {
     await this._http.post(this.url('/node/create'), { model_id, password: '' }).toPromise();
     await this.reGetEconomicPumps();
     await this.reReadAllModels();
+  }
+
+  // tslint:disable-next-line:variable-name
+  public async readTechs(node_type_code: string): Promise<Technology[]> {
+    const company = this._authService.getCompany();
+    if (company == undefined) return [];
+    const response = await this._http.post(this.url('/tech/read'), { node_type_code, company }).toPromise();
+
+    const techs: Technology[] = [];
+    for (const key in response.json()) {
+      if (response.json().hasOwnProperty(key)) {
+        techs.push(response.json()[key]);
+      }
+    }
+    return techs;
   }
 
   private async queryParamNames(): Promise<void> {
