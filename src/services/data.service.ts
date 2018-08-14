@@ -240,7 +240,7 @@ export class DataService {
     const company = this._authService.getCompany();
     const response = await this._http.post(
       this.url('/tech/preview_model_params'),
-        { node_type_code, company, size, tech_balls }).toPromise();
+      { node_type_code, company, size, tech_balls }).toPromise();
 
     return response.json();
   }
