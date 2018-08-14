@@ -281,9 +281,14 @@ export class DataService {
     const response = await this._http.post(
       this.url('/tech/develop_model'),
       { node_type_code, company, size, tech_balls, description, password, name }).toPromise();
-
-    console.log(JSON.stringify(response.json()));
-    return response.json();
+    const result = response.json();
+    if (result.status != 'ok')
+      throw new BackendException(result.errors);
+    
+    // Don't need to await - pump data on another screen anyway
+    this._updateModelsAndPumps();
+    
+    return result;
   }
 
   // tslint:disable-next-line:variable-name
