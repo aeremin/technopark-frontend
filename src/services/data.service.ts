@@ -100,7 +100,7 @@ export interface Luggage {
 
 export interface LuggageTypeInfo {
   code: LuggageCode;
-  company: Company;
+  company?: Company;
   weight: number;
   volume: number;
 
