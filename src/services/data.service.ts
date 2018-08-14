@@ -186,13 +186,7 @@ export class DataService {
   }
 
   public async reserve(nodeId: number, password: string): Promise<void> {
-    const response = await this._http.post(this.url('/node/reserve'),
-      { node_id: nodeId, user_id: this._authService.getAccount()._id, password }).toPromise();
-    const result: { status: string, errors?: string } = response.json();
-    console.log(result);
-    if (result.status != 'ok')
-      throw new BackendException(result.errors);
-
+    await this._post('/node/reserve', { node_id: nodeId, user_id: this._authService.getAccount()._id, password });
     await this.reReadAllModels();
   }
 
@@ -217,48 +211,36 @@ export class DataService {
   }
 
   public async getActiveUsers(): Promise<User[]> {
-    return (await this._http.get(this.url('/users/list')).toPromise()).json();
+    return await this._get('/users/list');
   }
 
   // tslint:disable-next-line:variable-name
   public async setAllCrew(flight_id: number,
                           crew: Array<{ role: string, user_id: number }>): Promise<void> {
-    const response = await this._http.post(this.url('/mcc/set_all_crew'),
-      { flight_id, crew }).toPromise();
-    const result: { status: string, errors?: string, flight?: any } = response.json();
-    if (result.status != 'ok')
-      throw new BackendException(result.errors);
+    await this._post('/mcc/set_all_crew',  { flight_id, crew });
     await this.reGetFlightsInfo();
   }
 
   // tslint:disable-next-line:variable-name
   public async assignFlight(flight_id: number, company: string): Promise<void> {
-    await this._http.post(this.url('/mcc/assign_flight'), { flight_id, company }).toPromise();
+    await this._post('/mcc/assign_flight', { flight_id, company });
   }
 
   // Returns id of created flight
   // tslint:disable-next-line:variable-name
   public async createFlight(departure: string, dock: number, company: string): Promise<number> {
-    const response = await this._http.post(this.url('/mcc/add_flight'),
-      { departure, dock, company }).toPromise();
-    const result: { status: string, errors?: string, flight?: any } = response.json();
-    if (result.status != 'ok')
-      throw new BackendException(result.errors);
+    const result = await this._post('/mcc/add_flight', { departure, dock, company });
     await this.reGetFlightsInfo();
     return result.flight.flight_id;
   }
 
   public async genericRequest(method: string): Promise<any[]> {
-    const response = await this._http.get(this.url(method)).toPromise();
-    return response.json();
+    return await this._get(method);
   }
 
   // tslint:disable-next-line:variable-name
   public async createNode(model_id: number) {
-    const response = await this._http.post(this.url('/node/create'), { model_id, password: '' }).toPromise();
-    const result = response.json();
-    if (result.status != 'ok')
-      throw new BackendException(result.errors);
+    await this._post('/node/create', { model_id, password: '' });
     await this._updateModelsAndPumps();
   }
 
@@ -266,12 +248,12 @@ export class DataService {
   public async readTechs(node_type_code: string): Promise<Technology[]> {
     const company = this._authService.getCompany();
     if (company == undefined) return [];
-    const response = await this._http.post(this.url('/tech/read'), { node_type_code, company }).toPromise();
+    const result = await this._post('/tech/read', { node_type_code, company });
 
     const techs: Technology[] = [];
-    for (const key in response.json()) {
-      if (response.json().hasOwnProperty(key)) {
-        techs.push(response.json()[key]);
+    for (const key in result) {
+      if (result.hasOwnProperty(key)) {
+        techs.push(result[key]);
       }
     }
     return techs;
@@ -280,56 +262,36 @@ export class DataService {
   // tslint:disable-next-line:variable-name
   public async previewModelParams(node_type_code: string, size: string, tech_balls: any): Promise<any> {
     const company = this._authService.getCompany();
-    const response = await this._http.post(
-      this.url('/tech/preview_model_params'),
-      { node_type_code, company, size, tech_balls }).toPromise();
-
-    return response.json();
+    return await this._post('/tech/preview_model_params',
+      { node_type_code, company, size, tech_balls });
   }
 
   // tslint:disable-next-line:variable-name
   public async developModel(node_type_code: string, size: string, tech_balls: any, name: string,
                             description: string = '', password: string = ''): Promise<DevelopModelResponse> {
     const company = this._authService.getCompany();
-    const response = await this._http.post(
-      this.url('/tech/develop_model'),
-      { node_type_code, company, size, tech_balls, description, password, name }).toPromise();
-    const result = response.json();
-    if (result.status != 'ok')
-      throw new BackendException(result.errors);
-
+    const result = await this._post('/tech/develop_model',
+      { node_type_code, company, size, tech_balls, description, password, name });
     // Don't need to await - pump data on another screen anyway
     this._updateModelsAndPumps();
-
     return result;
   }
 
   // tslint:disable-next-line:variable-name
   public async loadLuggage(flight_id: number, code: LuggageCode, company?: Company) {
-    const response = await this._http.post(
-      this.url('/technopark/load_luggage'),
-      { flight_id, code, company, planet_id: 'aaa' }).toPromise();
-    const result = response.json();
-    if (result.status != 'ok')
-      throw new BackendException(result.errors);
+    await this._post('/technopark/load_luggage', { flight_id, code, company, planet_id: 'aaa' });
     await this.reReadAllModels();
   }
 
   // tslint:disable-next-line:variable-name
   public async unloadLuggage(flight_id: number, code: LuggageCode, company?: Company) {
-    const response = await this._http.post(
-      this.url('/technopark/unload_luggage'),
-      { flight_id, code, company, planet_id: 'aaa' }).toPromise();
-    const result = response.json();
-    if (result.status != 'ok')
-      throw new BackendException(result.errors);
+    await this._post('/technopark/unload_luggage', { flight_id, code, company, planet_id: 'aaa' });
     await this.reReadAllModels();
   }
 
   private async queryParamNames(): Promise<void> {
     if (this._nodeCodeToHumanReadable.size > 0 && this._paramCodeToHumanReadable.size > 0)
       return;
-    const response = await this._http.get(this.url('/get-params')).toPromise();
     interface ParamTranslationEntry {
       node_code: string;
       node_name: string;
@@ -337,7 +299,8 @@ export class DataService {
       param_name: string;
       param_short_name: string;
     }
-    const entries: ParamTranslationEntry[] = response.json();
+    const entries: ParamTranslationEntry[] = await this._get('/get-params');
+
     entries.forEach((e) => {
       this._nodeCodeToHumanReadable.set(e.node_code, e.node_name);
       this._paramCodeToHumanReadable.set(e.param_code, e.param_short_name);
@@ -349,13 +312,12 @@ export class DataService {
   }
 
   private async queryResourceNames(): Promise<void> {
-    const response = await this._http.get(this.url('/economics/resources')).toPromise();
     interface ResourceNamesEntry {
       code: string;
       name: string;
       is_active: string;
     }
-    const entries: ResourceNamesEntry[] = response.json();
+    const entries: ResourceNamesEntry[] = await this._get('/economics/resources');
     entries.forEach((e) => {
       if (e.is_active) {
         this._resourceCodeToHumanReadable.set(e.code, e.name);
@@ -374,7 +336,23 @@ export class DataService {
     await this.reReadAllModels();
   }
 
-  private url(path: string): string {
+  private async _get(path: string): Promise<any> {
+    const response = await this._http.get(this._url(path)).toPromise();
+    const result = response.json();
+    if (result.status && result.status != 'ok')
+      throw new BackendException(result.errors);
+    return result;
+  }
+
+  private async _post(path: string, params: any): Promise<any> {
+    const response = await this._http.post(this._url(path), params).toPromise();
+    const result = response.json();
+    if (result.status && result.status != 'ok')
+      throw new BackendException(result.errors);
+    return result;
+  }
+
+  private _url(path: string): string {
     return 'https://technopark-backend.alice.magellan2018.ru' + path;
   }
 
@@ -383,11 +361,11 @@ export class DataService {
   }
 
   private async readAllModels(): Promise<ModelsInfo> {
-    const [reserved, readAllResponse] = await Promise.all([
+    const [reserved, readAllresult] = await Promise.all([
       this.getMyReserved(),
-      this._http.post(this.url('/model/read_all'), {}).toPromise(),
+      this._post('/model/read_all', {}),
     ]);
-    const models: Model[] = readAllResponse.json().map((m) => this.makeHumanReadable(m))
+    const models: Model[] = readAllresult.map((m) => this.makeHumanReadable(m))
       .map((m) => {
         m.nodes = m.nodes.map((node) => {
           if (reserved && reserved.nodes && reserved.nodes[m.node_type_code] == node.id)
@@ -407,20 +385,21 @@ export class DataService {
       this._isAssignedSupercargoSubject.next(undefined);
       return undefined;
     }
-    const response = await this._http.post(this.url('/node/get_my_reserved'),
-      { user_id: this._authService.getAccount()._id }).toPromise();
-
-    const result: MyReservedResponse = response.json();
-    this._isAssignedSupercargoSubject.next(result.result == 'ok' ? result.flight.id : undefined);
+    let result: MyReservedResponse;
+    try {
+      result = await this._post('/node/get_my_reserved',
+        { user_id: this._authService.getAccount()._id });
+      this._isAssignedSupercargoSubject.next(result.flight.id);
+    } catch (e) {
+      this._isAssignedSupercargoSubject.next(undefined);
+    }
 
     return result;
   }
 
   // tslint:disable-next-line:variable-name
   private async _getLuggage(flight_id: number): Promise<Luggage[]> {
-    const response = await this._http.post(this.url('/technopark/get_luggage'),
-      { flight_id }).toPromise();
-    return response.json();
+    return await this._post('/technopark/get_luggage', { flight_id });
   }
 
   private async reGetFlightsInfo(): Promise<void> {
@@ -428,11 +407,11 @@ export class DataService {
   }
 
   private async getFlightsInfo(): Promise<FullFlightInfo[]> {
-    const response = await this._http.get(this.url('/mcc/dashboard')).toPromise();
+    const result = await this._get('/mcc/dashboard');
     const flights: FullFlightInfo[] = [];
-    for (const key in response.json()) {
-      if (response.json().hasOwnProperty(key)) {
-        flights.push(response.json()[key]);
+    for (const key in result) {
+      if (result.hasOwnProperty(key)) {
+        flights.push(result[key]);
       }
     }
 
@@ -460,13 +439,13 @@ export class DataService {
     if (!this._authService.getCompany())
       return [];
 
-    const response = await this._http.post(this.url('/economics/read_pumps'), {
+    const result = await this._post('/economics/read_pumps', {
       company: this._authService.getCompany(),
-    }).toPromise();
+    });
     const pumps: EconomicPump[] = [];
-    for (const key in response.json()) {
-      if (response.json().hasOwnProperty(key)) {
-        pumps.push(response.json()[key]);
+    for (const key in result) {
+      if (result.hasOwnProperty(key)) {
+        pumps.push(result[key]);
       }
     }
     return pumps;
@@ -480,9 +459,8 @@ export class DataService {
     if (!this._authService.getCompany())
       return {};
 
-    const response = await this._http.post(this.url('/economics/get_company_income'), {
+    return await this._post('/economics/get_company_income', {
       company: this._authService.getCompany(),
-    }).toPromise();
-    return response.json();
+    });
   }
 }
