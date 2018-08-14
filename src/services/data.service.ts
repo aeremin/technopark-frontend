@@ -88,6 +88,18 @@ export interface Technology {
   point_cost: any;
 }
 
+export interface Luggage {
+  code: 'mine' | 'beacon' | 'module';
+  company: Company;
+  planet_id?: string;
+  amount: number;
+}
+
+export interface ModelsInfo {
+  models: Model[];
+  luggage: Luggage[];
+}
+
 export class BackendException {
   constructor(public error: string) { }
 }
@@ -100,7 +112,7 @@ export class DataService {
 
   private _resourceCodeToHumanReadable = new Map<string, string>();
 
-  private _readAllModelsSubject: BehaviorSubject<Model[]>;
+  private _readModelsInfoSubject: BehaviorSubject<ModelsInfo>;
 
   private _economicPumpsSubject: BehaviorSubject<EconomicPump[]>;
 
@@ -117,7 +129,7 @@ export class DataService {
       this.queryResourceNames(),
     ]);
     const models = await this.readAllModels();
-    this._readAllModelsSubject = new BehaviorSubject(models);
+    this._readModelsInfoSubject = new BehaviorSubject(models);
     setInterval(() => this.reReadAllModels(), 60000);
 
     const flights = await this.getFlightsInfo();
@@ -129,8 +141,8 @@ export class DataService {
     setInterval(() => this.reGetEconomicPumps(), 60000);
   }
 
-  public readAllModelsObservable(): Observable<Model[]> {
-    return this._readAllModelsSubject;
+  public readModelsInfoObservable(): Observable<ModelsInfo> {
+    return this._readModelsInfoSubject;
   }
 
   public isAssignedSupercargoObservable(): Observable<boolean> {
@@ -306,17 +318,15 @@ export class DataService {
   }
 
   private async reReadAllModels(): Promise<void> {
-    this._readAllModelsSubject.next(await this.readAllModels());
+    this._readModelsInfoSubject.next(await this.readAllModels());
   }
 
-  private async readAllModels(): Promise<Model[]> {
-    const response = await this._http.post(this.url('/model/read_all'), {}).toPromise();
-    const models: Model[] = response.json();
-
-    const reserved = await this.getMyReserved();
-
-    return models
-      .map((m) => this.makeHumanReadable(m))
+  private async readAllModels(): Promise<ModelsInfo> {
+    const [reserved, readAllResponse] = await Promise.all([
+      this.getMyReserved(),
+      this._http.post(this.url('/model/read_all'), {}).toPromise()
+    ]);
+    const models: Model[] = readAllResponse.json().map((m) => this.makeHumanReadable(m))
       .map((m) => {
         m.nodes = m.nodes.map((node) => {
           if (reserved && reserved.nodes && reserved.nodes[m.node_type_code] == node.id)
@@ -325,6 +335,10 @@ export class DataService {
         });
         return m;
       });
+
+    const luggage = (reserved == undefined || reserved.flight == undefined)
+      ? [] : await this._getLuggage(reserved.flight.id);
+    return {models, luggage};
   }
 
   private async getMyReserved(): Promise<MyReservedResponse> {
@@ -339,6 +353,13 @@ export class DataService {
     this._isAssignedSupercargoSubject.next(result.result == 'ok');
 
     return result;
+  }
+
+  // tslint:disable-next-line:variable-name
+  private async _getLuggage(flight_id: number): Promise<Luggage[]> {
+    const response = await this._http.post(this.url('/technopark/get_luggage'),
+      { flight_id }).toPromise();
+    return response.json();
   }
 
   private async reGetFlightsInfo(): Promise<void> {

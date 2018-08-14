@@ -26,8 +26,8 @@ export class EconomicsPageComponent implements OnInit {
 
   public ngOnInit() {
     combineLatest(this._dataService.getEconomicPumpsObservable(),
-      this._dataService.readAllModelsObservable()).subscribe({
-        next: ([pumps, models]) => this._updateData(pumps, models),
+      this._dataService.readModelsInfoObservable()).subscribe({
+        next: ([pumps, modelsInfo]) => this._updateData(pumps, modelsInfo.models),
       });
   }
 

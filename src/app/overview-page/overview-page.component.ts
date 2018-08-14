@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DataService, Model } from '../../services/data.service';
+import { DataService, Model, ModelsInfo } from '../../services/data.service';
 import { LoggedGuardService } from '../../services/logged.guard.service';
 
 interface TabData {
@@ -15,7 +15,7 @@ interface TabData {
 export class OverviewPageComponent {
   public filter: string = '';
   public tabs: TabData[];
-  public models: Model[];
+  public modelsInfo: ModelsInfo;
   public filterUnavailable: boolean = true;
   public onlyBestNodes: boolean = true;
 
@@ -30,8 +30,8 @@ export class OverviewPageComponent {
 
   public async ngOnInit() {
     await this._dataService.init();
-    this._dataService.readAllModelsObservable().subscribe({
-      next: (models) => this.models = models,
+    this._dataService.readModelsInfoObservable().subscribe({
+      next: (modelsInfo) => this.modelsInfo = modelsInfo,
     });
     this.tabs = [];
     this._dataService.nodeCodeToHumanReadable().forEach(

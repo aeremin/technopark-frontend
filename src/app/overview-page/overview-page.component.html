@@ -11,7 +11,7 @@
     <mat-tab *ngFor="let tab of tabs" [label]="tab.nodeName">
       <p>
         <reservation-table-component
-          [models]="models"
+          [models]="modelsInfo.models"
           [nodeCode]='tab.nodeCode'
           [filter]='filter'
           [filterUnavailable]='filterUnavailable'
