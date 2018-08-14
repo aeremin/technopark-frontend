@@ -88,8 +88,10 @@ export interface Technology {
   point_cost: any;
 }
 
+export type LuggageCode = 'mine' | 'beacon' | 'module';
+
 export interface Luggage {
-  code: 'mine' | 'beacon' | 'module';
+  code: LuggageCode;
   company: Company;
   planet_id?: string;
   amount: number;
@@ -324,7 +326,7 @@ export class DataService {
   private async readAllModels(): Promise<ModelsInfo> {
     const [reserved, readAllResponse] = await Promise.all([
       this.getMyReserved(),
-      this._http.post(this.url('/model/read_all'), {}).toPromise()
+      this._http.post(this.url('/model/read_all'), {}).toPromise(),
     ]);
     const models: Model[] = readAllResponse.json().map((m) => this.makeHumanReadable(m))
       .map((m) => {

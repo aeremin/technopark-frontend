@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DataService, Model, ModelsInfo } from '../../services/data.service';
+import { DataService, ModelsInfo } from '../../services/data.service';
 import { LoggedGuardService } from '../../services/logged.guard.service';
 
 interface TabData {

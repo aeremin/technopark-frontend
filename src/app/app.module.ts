@@ -28,6 +28,7 @@ import { ReservationPasswordEnterComponent } from './reservation-password-enter/
 import { ReservationTableComponent } from './reservation-table/reservation-table.component';
 import { ScheduleCardComponent } from './schedule-card/schedule-card.component';
 import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashboard.component';
+import { LuggageTabComponent } from './luggage-tab/luggage-tab.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
     GamemasterGenericTableComponent,
     LoginPageComponent,
     EconomicsPageComponent,
+    LuggageTabComponent,
   ],
   imports: [
     BrowserModule,

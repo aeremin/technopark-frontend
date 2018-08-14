@@ -20,4 +20,7 @@
         </reservation-table-component>
       </p>
     </mat-tab>
+    <mat-tab *ngIf="showReservationColumn" label="Грузы">
+      <luggage-tab [luggage]="modelsInfo.luggage"></luggage-tab>
+    </mat-tab>
   </mat-tab-group>
