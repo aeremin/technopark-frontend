@@ -86,7 +86,15 @@ export class InventionPageComponent implements OnInit {
       node_type: '',
       node_type_code:
       this._nodeCode,
-      nodes: [],
+      nodes: [{
+        az_level: this._resultingModelParams.az_level,
+        date_created: '',
+        id: 0,
+        is_premium: 0,
+        model_id: 0,
+        name: '',
+        status_code: 'free',
+      }],
       params: this._resultingModelParams,
       size: this.size,
     }];
