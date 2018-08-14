@@ -273,7 +273,7 @@ export class DataService {
     const result = await this._post('/tech/develop_model',
       { node_type_code, company, size, tech_balls, description, password, name });
     // Don't need to await - pump data on another screen anyway
-    this._updateModelsAndPumps();
+    await this._updateModelsAndPumps();
     return result;
   }
 
@@ -332,8 +332,15 @@ export class DataService {
   }
 
   private async _updateModelsAndPumps() {
-    await this.reGetEconomicPumps();
-    await this.reReadAllModels();
+    const [modelsInfo, pumps, income] = await Promise.all([
+      this.readAllModels(),
+      this.getEconomicPumps(),
+      this.getCompanyIncome(),
+    ]);
+
+    this._readModelsInfoSubject.next(modelsInfo);
+    this._economicPumpsSubject.next(pumps);
+    this._companyIncomeSubject.next(income);
   }
 
   private async _get(path: string): Promise<any> {
