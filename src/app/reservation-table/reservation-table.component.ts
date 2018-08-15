@@ -85,11 +85,11 @@ export class ReservationTableComponent {
   }
 
   public nodePickerEnabled(model: Model): boolean {
-    return model.nodes.filter((node) => node.status_code != 'fake').length > 0;
+    return model.nodes.filter((node) => node.status != 'fake').length > 0;
   }
 
   public nodeAvailable(node: Node): boolean {
-    return node.status_code == 'free';
+    return node.status == 'free';
   }
 
   public reserveEnabled(model: Model): boolean {
@@ -154,7 +154,7 @@ export class ReservationTableComponent {
   }
 
   public getClass(model: Model) {
-    if (model.nodes[0].status_code == 'reserved_by_you')
+    if (model.nodes[0].status == 'reserved_by_you')
       return 'mat-row ng-star-inserted reserved-by-you';
     else
       return 'mat-row ng-star-inserted not-reserved-by-you';
@@ -205,7 +205,7 @@ export class ReservationTableComponent {
         if (!ownedModel.nodes.length) {
           ownedModel.nodes.push({
             az_level: 0, date_created: '', name: '',
-            model_id: ownedModel.id, id: -1, status_code: 'fake',
+            model_id: ownedModel.id, id: -1, status: 'fake',
             is_premium: 0,
           });
         }
@@ -220,7 +220,7 @@ export class ReservationTableComponent {
 
     if (this._filterUnavailable) {
       expandedModels = expandedModels.filter(
-        (model) => this.reserveEnabled(model) || model.nodes[0].status_code == 'reserved_by_you',
+        (model) => this.reserveEnabled(model) || model.nodes[0].status == 'reserved_by_you',
       );
     }
     this.dataSource.data = expandedModels;

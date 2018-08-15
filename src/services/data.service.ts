@@ -15,7 +15,7 @@ export interface Node {
   model_id: number;
   name: string;
   az_level: number;
-  status_code: NodeStatus;
+  status: NodeStatus;
   date_created: string;
   is_premium: number;
 }
@@ -420,10 +420,10 @@ export class DataService {
       .map((m) => {
         m.nodes = m.nodes
           .filter((node) =>
-            node.status_code == 'free' || node.status_code == 'reserved' || node.status_code == 'freight')
+            node.status == 'free' || node.status == 'reserved' || node.status == 'freight')
           .map((node) => {
             if (reserved && reserved.nodes && reserved.nodes[m.node_type_code] == node.id)
-              node.status_code = 'reserved_by_you';
+              node.status = 'reserved_by_you';
             return node;
           });
         return m;

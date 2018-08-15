@@ -48,7 +48,7 @@ export function getVolumeWeightInfo(modelsInfo: ModelsInfo) {
 
   for (const model of modelsInfo.models) {
     for (const node of model.nodes) {
-      if (node.status_code == 'reserved_by_you') {
+      if (node.status == 'reserved_by_you') {
         if (model.node_type_code == 'hull')
           result.maxVolume = model.params.volume;
         else

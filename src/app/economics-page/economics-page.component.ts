@@ -4,7 +4,7 @@ import { combineLatest } from 'rxjs';
 import { AuthService } from 'src/services/auth.service';
 import { CorpTopManagerGuardService } from 'src/services/corp.topmanager.guard.service';
 import { BackendException, DataService, EconomicPump, Model, Node } from 'src/services/data.service';
-import { getCost, getTotalCost } from '../util';
+import { getCost } from '../util';
 
 interface EconomicPumpExtended extends EconomicPump {
   isDeletable: boolean;
@@ -163,7 +163,7 @@ export class EconomicsPageComponent implements OnInit {
           pumpsReordered.push(this._dummyModelPump(model));
         for (const node of model.nodes) {
           if (nodeIdToPump.has(node.id))
-            pumpsReordered.push({ ...nodeIdToPump.get(node.id), isDeletable: node.status_code == 'free' });
+            pumpsReordered.push({ ...nodeIdToPump.get(node.id), isDeletable: node.status == 'free' });
           else
             pumpsReordered.push(this._dummyNodePump(model, node));
         }
@@ -175,7 +175,7 @@ export class EconomicsPageComponent implements OnInit {
 
   private _dummyNodePump(model: Model, node: Node): EconomicPumpExtended {
     return {
-      isDeletable: node.status_code == 'free',
+      isDeletable: node.status == 'free',
       comment: `Поддержка узла ${node.id} модели ${model.name}`,
       company: this._authService.getCompany(),
       date_begin: '',

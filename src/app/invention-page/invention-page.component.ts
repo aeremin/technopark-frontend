@@ -99,7 +99,7 @@ export class InventionPageComponent implements OnInit {
         is_premium: 0,
         model_id: 0,
         name: '',
-        status_code: 'free',
+        status: 'free',
       }],
       params: this._resultingModelParams,
       size: this.size,
