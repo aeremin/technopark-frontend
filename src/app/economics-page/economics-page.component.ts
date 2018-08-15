@@ -86,8 +86,16 @@ export class EconomicsPageComponent implements OnInit {
 
   public async onButton(pump: EconomicPumpExtended) {
     if (this._isNodePump(pump)) {
-      // TODO: Send request to server
-      console.log('Deleting node');
+      try {
+        await this._dataService.deleteNode(Number(pump.entity_id));
+        this._matSnackBar.open('Узел списан успешно', '', { duration: 2000 });
+      } catch (err) {
+        if (err instanceof BackendException)
+          this._matSnackBar.open(`Ошибка: ${err.error}.`, '', { duration: 3000 });
+        else
+          this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });
+        console.log(err);
+      }
     } else {
       try {
         await this._dataService.createNode(Number(pump.entity_id));

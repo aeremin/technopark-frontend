@@ -260,6 +260,15 @@ export class DataService {
   }
 
   // tslint:disable-next-line:variable-name
+  public async deleteNode(node_id: number) {
+    await this._post('/node/decomm', {
+      node_id,
+      reason: `Узел списан пользователем ${this._authService.getAccount().login}`,
+    });
+    await this._updateModelsAndPumps();
+  }
+
+  // tslint:disable-next-line:variable-name
   public async readTechs(node_type_code: string): Promise<Technology[]> {
     const company = this._authService.getCompany();
     if (company == undefined) return [];
