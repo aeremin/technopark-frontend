@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { MatTableDataSource } from '@angular/material/table';
-import { BackendException, DataService, Luggage, LuggageCode, LuggageTypeInfo } from 'src/services/data.service';
+import { BackendException, DataService, Luggage, LuggageCode } from 'src/services/data.service';
 import { Company, kCompanyCodeToHumanReadableName } from '../util';
 
 interface LuggageLine {
@@ -30,8 +30,6 @@ export class LuggageTabComponent {
               private _matSnackBar: MatSnackBar) {
     this.luggage = [];
   }
-
-
 
   @Input()
   public set luggage(luggage: Luggage[]) {

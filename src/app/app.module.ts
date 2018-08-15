@@ -23,12 +23,12 @@ import { FlightEditDialogComponent } from './flight-edit-dialog/flight-edit-dial
 import { GamemasterGenericTableComponent } from './gamemaster-generic-table/gamemaster-generic-table.component';
 import { InventionPageComponent } from './invention-page/invention-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { LuggageTabComponent } from './luggage-tab/luggage-tab.component';
 import { OverviewPageComponent } from './overview-page/overview-page.component';
 import { ReservationPasswordEnterComponent } from './reservation-password-enter/reservation-password-enter.component';
 import { ReservationTableComponent } from './reservation-table/reservation-table.component';
 import { ScheduleCardComponent } from './schedule-card/schedule-card.component';
 import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashboard.component';
-import { LuggageTabComponent } from './luggage-tab/luggage-tab.component';
 
 @NgModule({
   declarations: [
