@@ -50,7 +50,9 @@ export class ScheduleCardComponent {
   }
 
   public getCompanyIcon() {
-    const company = this.flight.departure.split(' ')[1] == kFlightDepartureTimes[kFlightDepartureTimes.length - 1]
+    const lastDayOfTheGame = this.flight.departure.startsWith('18');
+    const ideologWave = lastDayOfTheGame ? 3 : 6;
+    const company = this.flight.departure.split(' ')[1] == kFlightDepartureTimes[ideologWave - 1]
       ? 'ideolog' : this.flight.company;
     return `assets/company_${company}_40.png`;
   }
