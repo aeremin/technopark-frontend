@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { DataService, ModelsInfo, BackendException } from '../../services/data.service';
+import { MatSnackBar } from '../../../node_modules/@angular/material';
+import { BackendException, DataService, ModelsInfo } from '../../services/data.service';
 import { LoggedGuardService } from '../../services/logged.guard.service';
 import { getVolumeWeightInfo, VolumeWeightInfo } from '../util';
-import { MatSnackBar } from '../../../node_modules/@angular/material';
 
 interface TabData {
   nodeCode: string;
