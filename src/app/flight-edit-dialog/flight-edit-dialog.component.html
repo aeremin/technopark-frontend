@@ -1,7 +1,7 @@
 <mat-form-field>
   <input [disabled]="!enableDateAndDockEditing()" [(ngModel)]="departureDate" readonly matInput [matDatepicker]="picker" placeholder="Дата вылета">
   <mat-datepicker-toggle [disabled]="!enableDateAndDockEditing()" matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker #picker [startAt]="startDate"></mat-datepicker>
+  <mat-datepicker #picker></mat-datepicker>
 </mat-form-field>
 
 <mat-form-field>

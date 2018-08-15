@@ -4,19 +4,12 @@ import { kCompanyCodeToHumanReadableName, kFlightDepartureTimes } from 'src/app/
 import { BackendException, DataService,
   FullFlightInfo, User } from '../../services/data.service';
 
-function getOffsetDate(): Date {
-  const today = new Date();
-  today.setFullYear(2349);
-  return today;
-}
-
 @Component({
   selector: 'app-flight-edit-dialog',
   templateUrl: './flight-edit-dialog.component.html',
   styleUrls: ['./flight-edit-dialog.component.css'],
 })
 export class FlightEditDialogComponent {
-  public startDate = getOffsetDate();
   public departureDate: any;
   public departureTimes = kFlightDepartureTimes;
 
