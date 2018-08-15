@@ -400,15 +400,18 @@ export class DataService {
   private async readAllModels(): Promise<ModelsInfo> {
     const [reserved, readAllresult] = await Promise.all([
       this.getMyReserved(),
-      this._post('/model/read_all', {}),
+      this._post('/model/read_all', {}) as Promise<Model[]>,
     ]);
     const models: Model[] = readAllresult.map((m) => this.makeHumanReadable(m))
       .map((m) => {
-        m.nodes = m.nodes.map((node) => {
-          if (reserved && reserved.nodes && reserved.nodes[m.node_type_code] == node.id)
-            node.status_code = 'reserved_by_you';
-          return node;
-        });
+        m.nodes = m.nodes
+          .filter((node) =>
+            node.status_code == 'free' || node.status_code == 'reserved' || node.status_code == 'freight')
+          .map((node) => {
+            if (reserved && reserved.nodes && reserved.nodes[m.node_type_code] == node.id)
+              node.status_code = 'reserved_by_you';
+            return node;
+          });
         return m;
       });
 
