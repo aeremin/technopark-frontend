@@ -96,6 +96,8 @@ export interface Luggage {
   company: Company;
   planet_id?: string;
   amount: number;
+  weight: number;
+  volume: number;
 }
 
 export interface LuggageTypeInfo {

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService, ModelsInfo } from '../../services/data.service';
 import { LoggedGuardService } from '../../services/logged.guard.service';
+import { getVolumeWeightInfo, VolumeWeightInfo } from '../util';
 
 interface TabData {
   nodeCode: string;
@@ -16,6 +17,7 @@ export class OverviewPageComponent {
   public filter: string = '';
   public tabs: TabData[];
   public modelsInfo: ModelsInfo;
+  public volumeWeightInfo: VolumeWeightInfo;
   public filterUnavailable: boolean = true;
   public onlyBestNodes: boolean = true;
 
@@ -31,7 +33,10 @@ export class OverviewPageComponent {
   public async ngOnInit() {
     await this._dataService.init();
     this._dataService.readModelsInfoObservable().subscribe({
-      next: (modelsInfo) => this.modelsInfo = modelsInfo,
+      next: (modelsInfo) => {
+        this.modelsInfo = modelsInfo;
+        this.volumeWeightInfo = getVolumeWeightInfo(modelsInfo);
+      },
     });
     this.tabs = [];
     this._dataService.nodeCodeToHumanReadable().forEach(
@@ -44,5 +49,10 @@ export class OverviewPageComponent {
     this._dataService.isAssignedSupercargoObservable().subscribe({
       next: (flightId) => this.flightId = flightId,
     });
+  }
+
+  public getVolumeClass(): string {
+    return (this.volumeWeightInfo.totalVolume > this.volumeWeightInfo.maxVolume)
+      ? 'red-text' : 'normal-text';
   }
 }

@@ -7,6 +7,14 @@
 <mat-slide-toggle [(ngModel)]="onlyBestNodes" color="primary">
   Показывать только узел с наименьшим износом (не затрагивает корпуса)
 </mat-slide-toggle>
+<div *ngIf="flightId != undefined">
+  <p [class]="getVolumeClass()">
+      &nbsp;&nbsp;&nbsp;Объем: {{ volumeWeightInfo.totalVolume }} / {{ volumeWeightInfo.maxVolume }}
+  </p> 
+  <p>
+      &nbsp;&nbsp;&nbsp;Масса: {{ volumeWeightInfo.totalWeight }}
+  </p>
+</div>
 <mat-tab-group>
     <mat-tab *ngFor="let tab of tabs" [label]="tab.nodeName">
       <p>

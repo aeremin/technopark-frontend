@@ -1,4 +1,4 @@
-import { EconomicPump } from 'src/services/data.service';
+import { EconomicPump, ModelsInfo } from 'src/services/data.service';
 
 export type Company = 'gd' | 'pre' | 'kkg' | 'mat' | 'mst';
 
@@ -31,4 +31,42 @@ export const kCompanyCodeToHumanReadableName = new Map<Company, string>([
 
 export function companyCodes(): string[] {
   return Array.from(kCompanyCodeToHumanReadableName.keys());
+}
+
+export interface VolumeWeightInfo {
+  totalVolume: number;
+  maxVolume: number;
+  totalWeight: number;
+}
+
+export function getVolumeWeightInfo(modelsInfo: ModelsInfo) {
+  const result: VolumeWeightInfo = {
+    totalVolume: 0,
+    maxVolume: 0,
+    totalWeight: 0,
+  };
+
+  for (const model of modelsInfo.models) {
+    for (const node of model.nodes) {
+      if (node.status_code == 'reserved_by_you') {
+        if (model.node_type_code == 'hull')
+          result.maxVolume = model.params.volume;
+        else
+          result.totalVolume += model.params.volume;
+      }
+
+      result.totalWeight += model.params.weight;
+    }
+  }
+
+  for (const luggage of modelsInfo.luggage) {
+    result.totalVolume += luggage.amount * luggage.volume;
+    result.totalWeight += luggage.amount * luggage.weight;
+  }
+
+  result.maxVolume = Math.round(result.maxVolume);
+  result.totalVolume = Math.round(result.totalVolume);
+  result.totalWeight = Math.round(result.totalWeight);
+
+  return result;
 }
