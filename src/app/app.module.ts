@@ -19,6 +19,7 @@ import { LoggedGuardService } from '../services/logged.guard.service';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './core/app.routing.module';
 import { EconomicsPageComponent } from './economics-page/economics-page.component';
+import { EnterPlanetDialogComponent } from './enter-planet-dialog/enter-planet-dialog.component';
 import { FlightEditDialogComponent } from './flight-edit-dialog/flight-edit-dialog.component';
 import { GamemasterGenericTableComponent } from './gamemaster-generic-table/gamemaster-generic-table.component';
 import { InventionPageComponent } from './invention-page/invention-page.component';
@@ -44,6 +45,7 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
     LoginPageComponent,
     EconomicsPageComponent,
     LuggageTabComponent,
+    EnterPlanetDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,6 +84,7 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
   entryComponents: [
     ReservationPasswordEnterComponent,
     FlightEditDialogComponent,
+    EnterPlanetDialogComponent,
   ],
   bootstrap: [AppComponent],
 })

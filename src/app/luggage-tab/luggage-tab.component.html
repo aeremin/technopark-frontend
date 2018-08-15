@@ -1,7 +1,7 @@
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef> Тип груза </th>
-    <td mat-cell *matCellDef="let luggageLine"> {{ luggageLine.name }}</td>
+    <td mat-cell *matCellDef="let luggageLine"> {{ getName(luggageLine) }}</td>
   </ng-container>
 
   <ng-container matColumnDef="weight">
@@ -22,7 +22,7 @@
   <ng-container matColumnDef="buttons">
     <th mat-header-cell *matHeaderCellDef> Действия </th>
     <td mat-cell *matCellDef="let luggageLine">
-      <button color="primary" mat-icon-button (click)="onAdd(luggageLine)"><mat-icon>add</mat-icon></button>
+      <button color="primary" mat-icon-button (click)="onAdd(luggageLine)" [disabled]="!enableAdd(luggageLine)"><mat-icon>add</mat-icon></button>
       <button color="primary" mat-icon-button (click)="onRemove(luggageLine)" [disabled]="luggageLine.amount == 0"><mat-icon>remove</mat-icon></button>
     </td>
   </ng-container>

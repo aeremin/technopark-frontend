@@ -105,7 +105,6 @@ export interface LuggageTypeInfo {
   company?: Company;
   weight: number;
   volume: number;
-
 }
 
 export interface ModelsInfo {
@@ -302,14 +301,14 @@ export class DataService {
   }
 
   // tslint:disable-next-line:variable-name
-  public async loadLuggage(flight_id: number, code: LuggageCode, company?: Company) {
-    await this._post('/technopark/load_luggage', { flight_id, code, company, planet_id: 'aaa' });
+  public async loadLuggage(flight_id: number, code: LuggageCode, company?: Company, planet_id?: string) {
+    await this._post('/technopark/load_luggage', { flight_id, code, company, planet_id });
     await this.reReadAllModels();
   }
 
   // tslint:disable-next-line:variable-name
-  public async unloadLuggage(flight_id: number, code: LuggageCode, company?: Company) {
-    await this._post('/technopark/unload_luggage', { flight_id, code, company, planet_id: 'aaa' });
+  public async unloadLuggage(flight_id: number, code: LuggageCode, company?: Company, planet_id?: string) {
+    await this._post('/technopark/unload_luggage', { flight_id, code, company, planet_id });
     await this.reReadAllModels();
   }
 

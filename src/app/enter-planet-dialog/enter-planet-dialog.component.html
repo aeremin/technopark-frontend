@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Введите планету высадки</h2>
+<div mat-dialog-content>
+  Для настройки посадочного модуля необходимо указать планету высадки.
+  <mat-form-field>
+    <input type="text" matInput [(ngModel)]="planet">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="undefined">Отмена</button>
+  <button color="primary" mat-button type="submit" [mat-dialog-close]="planet">Ok</button>
+</div>
