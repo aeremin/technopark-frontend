@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { DataService, ModelsInfo } from '../../services/data.service';
+import { DataService, ModelsInfo, BackendException } from '../../services/data.service';
 import { LoggedGuardService } from '../../services/logged.guard.service';
 import { getVolumeWeightInfo, VolumeWeightInfo } from '../util';
+import { MatSnackBar } from '../../../node_modules/@angular/material';
 
 interface TabData {
   nodeCode: string;
@@ -24,7 +25,8 @@ export class OverviewPageComponent {
   public flightId: number;
 
   constructor(private _dataService: DataService,
-              private _loggedGuardService: LoggedGuardService) {}
+              private _loggedGuardService: LoggedGuardService,
+              private _matSnackBar: MatSnackBar) {}
 
   public applyFilter(filterValue: string) {
     this.filter = filterValue.trim().toLowerCase();
@@ -54,5 +56,19 @@ export class OverviewPageComponent {
   public getVolumeClass(): string {
     return (this.volumeWeightInfo.totalVolume > this.volumeWeightInfo.maxVolume)
       ? 'red-text' : 'normal-text';
+  }
+
+  public async onFreight() {
+    try {
+      console.log(this.flightId);
+      await this._dataService.freightShip(this.flightId);
+      this._matSnackBar.open('Корабль зафрахтован', '', { duration: 2000 });
+    } catch (err) {
+      if (err instanceof BackendException)
+        this._matSnackBar.open(`Ошибка: ${err.error}.`, '', { duration: 3000 });
+      else
+        this._matSnackBar.open(`Невозможно подключиться к серверу: ${err}.`, '', { duration: 3000 });
+      console.log(err);
+    }
   }
 }

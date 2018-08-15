@@ -316,6 +316,12 @@ export class DataService {
     return await this._get('/technopark/get_luggages_info');
   }
 
+  // tslint:disable-next-line:variable-name
+  public async freightShip(flight_id: number) {
+    await this._post('/mcc/freight', { flight_id });
+    await this.reReadAllModels();
+  }
+
   public async tableUrls(): Promise<TableUrl[]> {
     const result = await this._get('/table_urls');
     const urls: TableUrl[] = [];
