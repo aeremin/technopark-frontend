@@ -1,7 +1,7 @@
 <mat-form-field>
-  <mat-select [(value)]="method" (selectionChange)="refresh()" placeholder="Адрес">
+  <mat-select [(value)]="method" (selectionChange)="refresh()" placeholder="Метод">
     <mat-option *ngFor="let m of methods" [value]="m">
-      {{ m }}
+      {{ m.description }} ({{ m.method }})
     </mat-option>
   </mat-select>
 </mat-form-field>

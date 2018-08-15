@@ -132,6 +132,11 @@ export class BackendException {
   constructor(public error: string) { }
 }
 
+export interface TableUrl {
+  method: string;
+  description: string;
+}
+
 @Injectable()
 export class DataService {
   private _nodeCodeToHumanReadable = new Map<string, string>();
@@ -301,6 +306,17 @@ export class DataService {
 
   public async luggagesInfo(): Promise<LuggageTypeInfo[]> {
     return await this._get('/technopark/get_luggages_info');
+  }
+
+  public async tableUrls(): Promise<TableUrl[]> {
+    const result = await this._get('/table_urls');
+    const urls: TableUrl[] = [];
+    for (const key in result) {
+      if (result.hasOwnProperty(key)) {
+        urls.push({method: key, description: result[key]});
+      }
+    }
+    return urls;
   }
 
   private async queryParamNames(): Promise<void> {

@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatSort, MatTableDataSource } from '@angular/material';
-import { DataService } from '../../services/data.service';
+import { DataService, TableUrl } from '../../services/data.service';
 
 @Component({
   selector: 'app-gamemaster-generic-table',
@@ -8,20 +8,19 @@ import { DataService } from '../../services/data.service';
   styleUrls: ['./gamemaster-generic-table.component.css'],
 })
 export class GamemasterGenericTableComponent {
-  public methods = [
-    '/economics/resources',
-    '/users/list',
-  ];
+  public methods: TableUrl[] = [];
 
-  public method: string = this.methods[0];
+  public method: TableUrl;
 
   public dataSource = new MatTableDataSource<any>([]);
   @ViewChild(MatSort) public sort: MatSort;
 
   constructor(private _dataService: DataService) {}
 
-  public ngOnInit() {
+  public async ngOnInit() {
     this.dataSource.sort = this.sort;
+    this.methods = await this._dataService.tableUrls();
+    this.method = this.methods[0];
     this.refresh();
   }
 
@@ -36,6 +35,6 @@ export class GamemasterGenericTableComponent {
   }
 
   public async refresh() {
-    this.dataSource.data = await this._dataService.genericRequest(this.method);
+    this.dataSource.data = await this._dataService.genericRequest(this.method.method);
   }
 }
