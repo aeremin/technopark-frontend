@@ -471,7 +471,7 @@ export class DataService {
   }
 
   // tslint:disable-next-line:member-ordering
-  private _kTimeFormat = 'DD.MM.YYYY hh:mm';
+  private _kTimeFormat = 'DD.MM.YYYY HH:mm';
 
   private async getFlightsInfo(): Promise<FullFlightInfo[]> {
     const result = await this._get('/mcc/dashboard');
