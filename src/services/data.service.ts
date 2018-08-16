@@ -18,6 +18,7 @@ export interface Node {
   status: NodeStatus;
   date_created: string;
   is_premium: number;
+  password: string;
 }
 
 export interface Model {

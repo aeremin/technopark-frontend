@@ -8,6 +8,7 @@ import { getCost } from '../util';
 
 interface EconomicPumpExtended extends EconomicPump {
   isDeletable: boolean;
+  password?: string;
 }
 
 @Component({
@@ -121,6 +122,11 @@ export class EconomicsPageComponent implements OnInit {
     return this._isNodePump(pump) ? 'Списать узел' : 'Создать узел';
   }
 
+  public getComment(pump: EconomicPumpExtended): string {
+    return pump.comment + ((pump.password && pump.password.length)
+      ? ` (пароль: ${pump.password})` : '');
+  }
+
   private _isNodePump(pump: EconomicPumpExtended): boolean {
     return pump.section == 'nodes';
   }
@@ -163,7 +169,8 @@ export class EconomicsPageComponent implements OnInit {
           pumpsReordered.push(this._dummyModelPump(model));
         for (const node of model.nodes) {
           if (nodeIdToPump.has(node.id))
-            pumpsReordered.push({ ...nodeIdToPump.get(node.id), isDeletable: node.status == 'free' });
+            pumpsReordered.push({ ...nodeIdToPump.get(node.id),
+              isDeletable: node.status == 'free', password: node.password });
           else
             pumpsReordered.push(this._dummyNodePump(model, node));
         }
@@ -185,6 +192,7 @@ export class EconomicsPageComponent implements OnInit {
       is_income: 0,
       resources: {},
       section: 'nodes',
+      password: node.password,
     };
   }
 
