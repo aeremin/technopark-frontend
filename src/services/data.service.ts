@@ -154,20 +154,25 @@ export class DataService {
 
   private _flightsInfoSubject: BehaviorSubject<FullFlightInfo[]>;
 
+  private _inited = false;
+
   constructor(private _authService: AuthService,
               private _http: Http) { }
 
   public async init(): Promise<void> {
-    await Promise.all([
-      this.queryParamNames(),
-      this.queryResourceNames(),
-    ]);
+    if (this._inited)
+      return;
+
+    this._inited = true;
+
     const [models, flights, economicPumps, companyIncome] =
       await Promise.all([
         this.readAllModels(),
         this.getFlightsInfo(),
         this.getEconomicPumps(),
-        this.reGetCompanyIncome(),
+        this.getCompanyIncome(),
+        this.queryParamNames(),
+        this.queryResourceNames(),
       ]);
 
     this._readModelsInfoSubject = new BehaviorSubject(models);
