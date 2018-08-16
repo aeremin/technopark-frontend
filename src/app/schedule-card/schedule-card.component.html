@@ -1,6 +1,6 @@
 <mat-card [class.highlighted]="isMyFlight()">
   <mat-card-header>
-    <div mat-card-avatar><img [src]="getCompanyIcon()"></div>
+    <div mat-card-avatar *ngIf="getCompanyOrIdeolog()"><img [src]="getCompanyIcon()"></div>
     <mat-card-title>Вылет {{flight.id}} из дока {{flight.dock}}</mat-card-title>
     <mat-card-subtitle>Время вылета: {{ flight.departure }}</mat-card-subtitle>
     <button *ngIf="isAdminMode()" (click)="edit()" mat-icon-button>
