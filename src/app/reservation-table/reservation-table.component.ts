@@ -209,8 +209,19 @@ export class ReservationTableComponent {
             is_premium: 0,
           });
         }
-        if (this._onlyBestNodes)
+
+        if (this._filterUnavailable) {
+          ownedModel.nodes = ownedModel.nodes.filter(
+            (node) => node.status == 'reserved_by_you' || node.status == 'free',
+          );
+        }
+
+        if (ownedModel.nodes.length == 0) return;
+
+        if (this._onlyBestNodes) {
           ownedModel.nodes = [ownedModel.nodes[0]];
+        }
+
         for (const node of ownedModel.nodes) {
           const expandedModel = clone(ownedModel);
           expandedModel.nodes = [clone(node)];
@@ -218,11 +229,6 @@ export class ReservationTableComponent {
         }
       });
 
-    if (this._filterUnavailable) {
-      expandedModels = expandedModels.filter(
-        (model) => this.reserveEnabled(model) || model.nodes[0].status == 'reserved_by_you',
-      );
-    }
     this.dataSource.data = expandedModels;
 
     this._paramsColumns = this._dataService.paramsForNodeCode(this.nodeCode).filter((c) => c != 'az_level');
