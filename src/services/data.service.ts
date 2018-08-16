@@ -174,13 +174,14 @@ export class DataService {
     this._flightsInfoSubject = new BehaviorSubject(flights);
     this._economicPumpsSubject = new BehaviorSubject(economicPumps);
     this._companyIncomeSubject = new BehaviorSubject(companyIncome);
-
+    /*
     setInterval(() => {
       this.reReadAllModels(),
       this.reGetFlightsInfo();
       this.reGetEconomicPumps();
       this.reGetCompanyIncome();
     }, 60000);
+    */
   }
 
   public readModelsInfoObservable(): Observable<ModelsInfo> {
