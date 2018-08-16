@@ -1,5 +1,5 @@
 <div class="whole-page-container">
-  <mat-toolbar color="primary">
+  <mat-toolbar color="primary" *ngIf="showToolbar()">
     <button mat-icon-button (click)="snav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>

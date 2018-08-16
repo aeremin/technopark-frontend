@@ -6,6 +6,7 @@ import { GameMasterGuardService } from 'src/services/gamemaster.guard.service';
 import { LoggedGuardService } from 'src/services/logged.guard.service';
 import { AuthService } from '../services/auth.service';
 import { CorpGuardService } from '../services/corp.guard.service';
+import { RaspberryService } from '../services/raspberry.service';
 
 interface MenuItem {
   link: string;
@@ -26,6 +27,7 @@ export class AppComponent {
 
   constructor(private _router: Router,
               private _authService: AuthService,
+              private _raspberryService: RaspberryService,
               private _corpGuardService: CorpGuardService,
               private _corpTopManagerGuardService: CorpTopManagerGuardService,
               private _gameMasterGuardService: GameMasterGuardService,
@@ -43,6 +45,10 @@ export class AppComponent {
   public logout() {
     this._authService.logout();
     this._router.navigate(['']);
+  }
+
+  public showToolbar(): boolean {
+    return !this._raspberryService.isRaspberry;
   }
 
   private _updateMenuItems() {

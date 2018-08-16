@@ -11,6 +11,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CorpTopManagerGuardService } from 'src/services/corp.topmanager.guard.service';
+import { RaspberryService } from 'src/services/raspberry.service';
 import { AuthService } from '../services/auth.service';
 import { CorpGuardService } from '../services/corp.guard.service';
 import { DataService } from '../services/data.service';
@@ -30,6 +31,7 @@ import { ReservationPasswordEnterComponent } from './reservation-password-enter/
 import { ReservationTableComponent } from './reservation-table/reservation-table.component';
 import { ScheduleCardComponent } from './schedule-card/schedule-card.component';
 import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashboard.component';
+import { RaspberryLandingPageComponent } from './raspberry-landing-page/raspberry-landing-page.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,7 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
     EconomicsPageComponent,
     LuggageTabComponent,
     EnterPlanetDialogComponent,
+    RaspberryLandingPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,6 +83,7 @@ import { ScheduleDashboardComponent } from './schedule-dashboard/schedule-dashbo
     CorpTopManagerGuardService,
     GameMasterGuardService,
     LoggedGuardService,
+    RaspberryService,
   ],
   entryComponents: [
     ReservationPasswordEnterComponent,

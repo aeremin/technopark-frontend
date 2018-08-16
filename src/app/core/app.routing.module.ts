@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { RaspberryLandingPageComponent } from 'src/app/raspberry-landing-page/raspberry-landing-page.component';
 import { CorpGuardService } from '../../services/corp.guard.service';
 import { CorpTopManagerGuardService } from '../../services/corp.topmanager.guard.service';
 import { GameMasterGuardService } from '../../services/gamemaster.guard.service';
@@ -17,7 +18,7 @@ const routes: Routes = [
   {path : 'invention', component : InventionPageComponent, canActivate: [CorpTopManagerGuardService]},
   {path : 'schedule', component : ScheduleDashboardComponent},
   {path : 'generic_table', component : GamemasterGenericTableComponent, canActivate: [GameMasterGuardService]},
-  {path : 'raspberry', component : ScheduleDashboardComponent},
+  {path : 'raspberry', component : RaspberryLandingPageComponent},
 ];
 
 @NgModule({
