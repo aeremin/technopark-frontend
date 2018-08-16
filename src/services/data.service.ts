@@ -470,18 +470,23 @@ export class DataService {
     this._flightsInfoSubject.next(await this.getFlightsInfo());
   }
 
+  // tslint:disable-next-line:member-ordering
+  private _kTimeFormat = 'DD.MM.YYYY hh:mm';
+
   private async getFlightsInfo(): Promise<FullFlightInfo[]> {
     const result = await this._get('/mcc/dashboard');
     const flights: FullFlightInfo[] = [];
     for (const key in result) {
       if (result.hasOwnProperty(key)) {
-        flights.push(result[key]);
+        const f = result[key];
+        f.departure = moment(f.departure, this._kTimeFormat).add(3, 'hours').format(this._kTimeFormat);
+        flights.push(f);
       }
     }
 
     const compareDatesFn = (a: string, b: string) => {
-      const aParsed = moment(a, 'DD.MM.YYYY hh:mm');
-      const bParsed = moment(b, 'DD.MM.YYYY hh:mm');
+      const aParsed = moment(a, this._kTimeFormat);
+      const bParsed = moment(b, this._kTimeFormat);
       if (aParsed < bParsed) return -1;
       if (aParsed > bParsed) return 1;
       return 0;
