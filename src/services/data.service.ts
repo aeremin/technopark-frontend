@@ -162,19 +162,23 @@ export class DataService {
       this.queryParamNames(),
       this.queryResourceNames(),
     ]);
-    const models = await this.readAllModels();
+    const [models, flights, economicPumps, companyIncome] = 
+      await Promise.all([
+        this.readAllModels(),
+        this.getFlightsInfo(),
+        this.getEconomicPumps(),
+        this.reGetCompanyIncome(),
+      ]);
+
     this._readModelsInfoSubject = new BehaviorSubject(models);
     setInterval(() => this.reReadAllModels(), 60000);
 
-    const flights = await this.getFlightsInfo();
     this._flightsInfoSubject = new BehaviorSubject(flights);
     setInterval(() => this.reGetFlightsInfo(), 60000);
 
-    const economicPumps = await this.getEconomicPumps();
     this._economicPumpsSubject = new BehaviorSubject(economicPumps);
     setInterval(() => this.reGetEconomicPumps(), 60000);
 
-    const companyIncome = await this.getCompanyIncome();
     this._companyIncomeSubject = new BehaviorSubject(companyIncome);
     setInterval(() => this.reGetCompanyIncome(), 60000);
   }
