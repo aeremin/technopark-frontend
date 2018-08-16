@@ -162,7 +162,7 @@ export class DataService {
       this.queryParamNames(),
       this.queryResourceNames(),
     ]);
-    const [models, flights, economicPumps, companyIncome] = 
+    const [models, flights, economicPumps, companyIncome] =
       await Promise.all([
         this.readAllModels(),
         this.getFlightsInfo(),
