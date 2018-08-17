@@ -64,7 +64,7 @@ export class ReservationTableComponent {
   }
 
   public getCommonColumns() {
-    return ['name', 'level'];
+    return ['name', 'id', 'level'];
   }
 
   public getCompanyIcon(model: Model) {
@@ -72,6 +72,8 @@ export class ReservationTableComponent {
   }
 
   public cellValue(model: Model, columnId: string): string | number {
+    if (columnId == 'id') return model.nodes[0].id;
+
     if (model.hasOwnProperty(columnId))
       return model[columnId];
 
@@ -82,10 +84,6 @@ export class ReservationTableComponent {
       return Number(p.toFixed(0));
     else
       return p;
-  }
-
-  public nodePickerEnabled(model: Model): boolean {
-    return model.nodes.filter((node) => node.status != 'fake').length > 0;
   }
 
   public nodeAvailable(node: Node): boolean {
@@ -195,21 +193,13 @@ export class ReservationTableComponent {
   }
 
   private _refresh() {
-    let expandedModels: Model[] = [];
+    const expandedModels: Model[] = [];
     this._inputModels.slice()
       .filter((model) => model.node_type_code == this.nodeCode)
       .forEach((model) => {
         // Hack: add fake node to show 0/xxx in az_level column
         const ownedModel = clone(model);
         ownedModel.nodes.sort((n1, n2) => - n1.az_level + n2.az_level);
-        if (!ownedModel.nodes.length) {
-          ownedModel.nodes.push({
-            az_level: 0, date_created: '', name: '',
-            model_id: ownedModel.id, id: -1, status: 'fake',
-            is_premium: 0,
-          });
-        }
-
         if (this._filterUnavailable) {
           ownedModel.nodes = ownedModel.nodes.filter(
             (node) => node.status == 'reserved_by_you' || node.status == 'free',
